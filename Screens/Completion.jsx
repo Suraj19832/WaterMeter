@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-function Dashboard (){
+function Completion (){
     return (
         <View>
-          <Text>Dashboard Screen</Text>
+          <Text>Completion Screen</Text>
         </View>
       );
     };
 
-export default Dashboard;
+export default Completion;
