@@ -19,11 +19,7 @@ function SplashScreen({navigation}){
                     style={styles.image}
                 >
 
-                    <TouchableOpacity style={{margin:"auto"}} onPress={()=> navigation.navigate("Login")}   >
-                        <Text>
-                            Go to Login
-                        </Text>
-                    </TouchableOpacity>
+              
 
 
                 </ImageBackground>
