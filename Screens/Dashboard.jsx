@@ -3,13 +3,50 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import Footer from "./Footer";
 
 
 
 function Dashboard() {
 
+    let monthArr = [
+        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ];
+
+
     const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
-    const [expand,setExpand] = useState(999);
+    const [expandSchedule, setExpandSchedule] = useState(999999999);
+    const [expandCompleted,setExpandCompleted] = useState(999999999);
+    const [monthIndex, setMonthIndex] = useState(0);
+    const [month, setMonth] = useState(monthArr[monthIndex]);
+    const [year, setYear] = useState(2024);
+
+
+
+    const nextDate = () => {
+        if (month == "December") {
+            setMonth(monthArr[0]);
+            setMonthIndex(0);
+            setYear(year + 1);
+        }
+        else {
+            setMonth(monthArr[monthIndex + 1]);
+            setMonthIndex(monthIndex + 1);
+        }
+
+    }
+
+    const previous = () => {
+        if (month == "January") {
+            setMonth(monthArr[11]);
+            setMonthIndex(11);
+            setYear(year - 1);
+        }
+        else {
+            setMonth(monthArr[monthIndex - 1]);
+            setMonthIndex(monthIndex - 1);
+        }
+    }
 
     const styles = StyleSheet.create({
         topToggle: {
@@ -85,17 +122,19 @@ function Dashboard() {
 
         },
         prevNextTxt: {
-            color: "black",
+            color: "#104F9C",
             fontSize: 16,
             textAlign: "center",
             paddingBottom: 5,
-            paddingRight: 4
+            paddingRight: 4,
+            fontWeight: "500"
         },
         dateTxt: {
             color: "white",
             textAlign: "center",
             fontSize: 17,
             paddingTop: 8,
+            height: 40,
         },
         propertyCards: {
             borderWidth: 1,
@@ -158,7 +197,7 @@ function Dashboard() {
             alignItems: "center",
             gap: 45,
             marginTop: 10,
-            marginBottom:15
+            marginBottom: 15
 
         },
         belowFirst: {
@@ -180,13 +219,13 @@ function Dashboard() {
             color: "white",
             textAlign: "center",
             paddingTop: 4,
-            height:30,
-          
+            height: 30,
+
         },
         daysTxt: {
             color: "#C53636",
             height: 20,
-            fontWeight:"500"
+            fontWeight: "500"
 
         },
         belowContentMainNotPast: {
@@ -196,7 +235,7 @@ function Dashboard() {
             alignItems: "center",
             gap: 130,
             marginTop: 8,
-            marginBottom:15
+            marginBottom: 15
         },
         belowSecond: {
             display: "flex",
@@ -219,58 +258,88 @@ function Dashboard() {
             width: 23,
             height: 23
         },
-        expandContent:{
-            height:225,
-            width:"90%",
-       
-            margin:"auto",
-            marginBottom:20,
-            borderRadius:15,
-            backgroundColor:"#e7e7e7"
+        expandContent: {
+            height: 225,
+            width: "90%",
+
+            margin: "auto",
+            marginBottom: 20,
+            borderRadius: 15,
+            backgroundColor: "#e7e7e7"
 
         },
-        expandContentHeading:{
-            display:"flex",
-            flexDirection:"row",
-            justifyContent:"flex-start",
-            alignItems:"center",
+        expandContentHeading: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
         },
-        expandHeadingFTxt:{
-            color:"#104F9C",
-            fontWeight:"500",
-            fontSize:16,
-            paddingLeft:10,
-            paddingTop:15,
-            height:45
+        expandHeadingFTxt: {
+            color: "#104F9C",
+            fontWeight: "500",
+            fontSize: 16,
+            paddingLeft: 10,
+            paddingTop: 15,
+            height: 45
         },
-        expandHeadingSTxt:{
-            fontWeight:"500",
-            fontSize:16,
-            paddingLeft:10,
-            paddingTop:15,
-            height:45,
+        expandHeadingSTxt: {
+            fontWeight: "500",
+            fontSize: 16,
+            paddingLeft: 10,
+            paddingTop: 15,
+            height: 45,
         },
-        expandContentFTxt:{
-            color:"#0099ff",
-            fontWeight:"400",
-            fontSize:14,
-            height:30,
-            paddingLeft:10
+        expandContentFTxt: {
+            color: "#0099ff",
+            fontWeight: "400",
+            fontSize: 14,
+            height: 30,
+            paddingLeft: 10
         },
-        expandContentSTxt:{
-            color:"grey",
-            fontWeight:"400",
-            fontSize:14,
-            height:30,
-            paddingLeft:10
+        expandContentSTxt: {
+            color: "grey",
+            fontWeight: "400",
+            fontSize: 14,
+            height: 30,
+            paddingLeft: 10
         },
-        expandContentButton:{
-          height:37,
-          width:110,
-          borderRadius:10,
-          backgroundColor:"#FF8902",
-          marginLeft:20,
-        
+        expandContentButton: {
+            height: 37,
+            width: 110,
+            borderRadius: 10,
+            backgroundColor: "#FF8902",
+            marginLeft: 20,
+
+        },
+        completedNextDate: {
+            color: "#0099ff",
+            fontWeight: "400",
+            fontSize: 14,
+            height: 20,
+        },
+        belowContentCompleted: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 90,
+            marginTop: 8,
+            marginBottom: 15
+        },
+        expandContentCompletedButton:{
+            height: 37,
+            width: 150,
+            borderRadius: 10,
+            backgroundColor: "#FF8902",
+            marginLeft: 155,
+        },
+        expandContentCompleted:{
+            height: 255,
+            width: "90%",
+            margin: "auto",
+            marginBottom: 20,
+            borderRadius: 15,
+            backgroundColor: "#e7e7e7"
         }
 
 
@@ -291,7 +360,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#C53636"
+            colorCode: "#C53636",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
         },
         {
             property: "XXX",
@@ -306,7 +378,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#C53636"
+            colorCode: "#C53636",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
         },
         {
             property: "XXX",
@@ -321,7 +396,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#104F9C"
+            colorCode: "#104F9C",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
         },
         {
             property: "XXX",
@@ -336,7 +414,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#104F9C"
+            colorCode: "#104F9C",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
 
         },
         {
@@ -352,7 +433,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#FFB604"
+            colorCode: "#FFB604",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
 
         },
         {
@@ -368,7 +452,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#FFB604"
+            colorCode: "#FFB604",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
 
         },
         {
@@ -384,7 +471,10 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#FFB604"
+            colorCode: "#FFB604",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
 
         },
         {
@@ -400,10 +490,15 @@ function Dashboard() {
             nextReadingDate: "Thu Jun 6th, 2024 ",
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
-            colorCode: "#FFB604"
+            colorCode: "#FFB604",
+            dateCompleted:"Fri May 10th, 2024",
+            taskCompletedIn:"1hr 22 mins",
+            nameBelow:"Koushik",
 
         }
-    ]
+    ];
+
+
 
 
 
@@ -430,8 +525,8 @@ function Dashboard() {
 
 
             <View style={styles.prevNextMain} >
-                <TouchableOpacity style={styles.prevBtn} >
-                    <AntDesign name="left" size={15} color="black" />
+                <TouchableOpacity onPress={previous} style={styles.prevBtn} >
+                    <AntDesign name="left" size={15} color="#104F9C" />
                     <Text style={styles.prevNextTxt} >
                         Prev
                     </Text>
@@ -441,24 +536,180 @@ function Dashboard() {
 
                 <View onPress={() => setToggleScheduleCompleted(true)} style={styles.dateView} >
                     <Text style={styles.dateTxt} >
-                        June 2024
+                        {month} {" "} {year}
                     </Text>
 
                 </View>
 
-                <TouchableOpacity style={styles.prevBtn} >
+                <TouchableOpacity onPress={nextDate} style={styles.prevBtn} >
                     <Text style={styles.prevNextTxt} >
                         Next
                     </Text>
-                    <AntDesign name="right" size={15} color="black" />
+                    <AntDesign name="right" size={15} color="#104F9C" />
 
                 </TouchableOpacity>
 
             </View>
 
 
+         
             <ScrollView style={styles.scrollView} >
-                <View style={styles.cardsMain} >
+                {toggleScheduleCompleted ?   <View style={styles.cardsMain}>
+                    {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
+                        return (
+                            <View key={index} style={styles.propertyCards}>
+                                <View style={styles.cardContentTop} >
+                                    <View style={styles.topFirst} >
+                                        <Text style={styles.propertyTxt} >
+                                            Property
+                                        </Text>
+                                        <Text style={styles.besidePropertyTxt}>
+                                            : {items?.property} {"  |  "} {items?.name}
+                                        </Text>
+
+                                    </View>
+
+                                    <View>
+                                        <Text style={styles.contentDateTxt} >
+                                            {items?.date}
+                                        </Text>
+
+                                    </View>
+
+                                </View>
+
+
+                                <View style={styles.belowContentCompleted}  >
+
+                                    {index == expandCompleted ? <View >
+                                        <Text style={styles.completedNextDate}>
+                                            {"                                                      "}
+                                        </Text>
+                                        <Text style={[styles.completedNextDate, { color: "#989898" }]}>
+                                            {"                                                   "}
+                                        </Text>
+
+
+
+                                    </View> : <View >
+                                        <Text style={styles.completedNextDate}>
+                                            Next Reading Date :
+                                        </Text>
+                                        <Text style={[styles.completedNextDate, { color: "#989898" }]}>
+                                            {items?.nextReadingDate}
+                                        </Text>
+
+
+
+                                    </View>}
+
+
+
+                                    <View style={styles.belowSecond} >
+                                        <Text style={{ fontWeight: 500 }}>
+                                            {items?.meters} meters
+                                        </Text>
+                                        <TouchableOpacity onPress={() => {
+                                            if (expandCompleted == index) {
+                                                setExpandCompleted(null);
+                                            }
+                                            else {
+                                                setExpandCompleted(index)
+                                            }
+                                        }} style={styles.expandBtn} >
+                                            {index == expandCompleted ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
+
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                                </View>
+
+                                {index == expandCompleted ? <View style={styles.expandContentCompleted} >
+                                    <View style={styles.expandContentHeading} >
+                                        <Text style={styles.expandHeadingFTxt} >
+                                            Address :
+                                        </Text>
+                                        <Text style={styles.expandHeadingSTxt} >
+                                            {items?.address}
+                                        </Text>
+
+                                    </View>
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Total Meters :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.totalMeters}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                           Date Completed :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.dateCompleted}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Task Completed In :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.taskCompletedIn}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Next Reading Date :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.nextReadingDate}
+                                        </Text>
+
+                                    </View>
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Name :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.nameBelow}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
+                                       
+                                        <TouchableOpacity onPress={() => { alert("Reading...") }} style={styles.expandContentCompletedButton} >
+                                            <Text style={{ color: "white", height: 30, textAlign: "center", paddingTop: 8 }} >
+                                                Completion Summary
+                                            </Text>
+
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                                </View> : null}
+
+
+
+                            </View>
+                        )
+                    })}
+
+
+                </View> : <View style={styles.cardsMain} >
                     {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
 
 
@@ -495,14 +746,14 @@ function Dashboard() {
                                         <Text style={styles.daysTxt} >
                                             {items?.no_of_days}
                                         </Text>
-                                        <TouchableOpacity onPress={()=>{alert("Image pressed")}}>
-                                        <ImageBackground  source={require('../assets/Background 1.png')}
-                                            resizeMode="cover"
-                                            style={styles.image} >
+                                        <TouchableOpacity onPress={() => { alert("Image pressed") }}>
+                                            <ImageBackground source={require('../assets/Background 1.png')}
+                                                resizeMode="cover"
+                                                style={styles.image} >
 
-                                        </ImageBackground>
+                                            </ImageBackground>
                                         </TouchableOpacity>
-                                       
+
 
 
                                     </View>
@@ -512,15 +763,15 @@ function Dashboard() {
                                         <Text style={{ fontWeight: 500 }}>
                                             {items?.meters} meters
                                         </Text>
-                                        <TouchableOpacity onPress={()=>{
-                                            if(expand == index){
-                                                setExpand(null);
+                                        <TouchableOpacity onPress={() => {
+                                            if (expandSchedule == index) {
+                                                setExpandSchedule(null);
                                             }
-                                            else{
-                                                setExpand(index)
+                                            else {
+                                                setExpandSchedule(index)
                                             }
                                         }} style={styles.expandBtn} >
-                                            {index == expand? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" />:<FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
+                                            {index == expandSchedule ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
 
                                         </TouchableOpacity>
 
@@ -543,15 +794,15 @@ function Dashboard() {
                                         <Text style={{ fontWeight: 500 }}>
                                             {items?.meters} meters
                                         </Text>
-                                        <TouchableOpacity onPress={()=>{
-                                            if(expand == index){
-                                                setExpand(null);
+                                        <TouchableOpacity onPress={() => {
+                                            if (expandSchedule == index) {
+                                                setExpandSchedule(null);
                                             }
-                                            else{
-                                                setExpand(index)
+                                            else {
+                                                setExpandSchedule(index)
                                             }
                                         }} style={styles.expandBtn} >
-                                            {index == expand? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" />:<FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
+                                            {index == expandSchedule ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
 
                                         </TouchableOpacity>
 
@@ -559,78 +810,78 @@ function Dashboard() {
 
                                 </View>}
 
-                               {index == expand?  <View style={styles.expandContent} >
-                                <View style={styles.expandContentHeading} >
-                                    <Text style={styles.expandHeadingFTxt} >
-                                        Address :
-                                    </Text>
-                                    <Text style={styles.expandHeadingSTxt} >
-                                        {items?.address}
-                                    </Text>
-
-                                </View>
-                                <View  style={styles.expandContentHeading}>
-                                    <Text style={styles.expandContentFTxt} >
-                                    Total Meters :
-                                    </Text>
-
-                                    <Text style={styles.expandContentSTxt}>
-                                        {items?.totalMeters}
+                                {index == expandSchedule ? <View style={styles.expandContent} >
+                                    <View style={styles.expandContentHeading} >
+                                        <Text style={styles.expandHeadingFTxt} >
+                                            Address :
+                                        </Text>
+                                        <Text style={styles.expandHeadingSTxt} >
+                                            {items?.address}
                                         </Text>
 
-                                </View>
-
-                                <View  style={styles.expandContentHeading}>
-                                    <Text style={styles.expandContentFTxt} >
-                                    Total Meters Pending :
-                                    </Text>
-
-                                    <Text style={styles.expandContentSTxt}>
-                                        {items?.totalMetersPending}
+                                    </View>
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Total Meters :
                                         </Text>
 
-                                </View>
-
-                                <View  style={styles.expandContentHeading}>
-                                    <Text style={styles.expandContentFTxt} >
-                                    Next Reading Date :
-                                    </Text>
-
-                                    <Text style={styles.expandContentSTxt}>
-                                        {items?.nextReadingDate}
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.totalMeters}
                                         </Text>
 
-                                </View>
+                                    </View>
 
-                                <View  style={styles.expandContentHeading}>
-                                    <Text style={styles.expandContentFTxt} >
-                                    Last Reading Date :
-                                    </Text>
-
-                                    <Text style={styles.expandContentSTxt}>
-                                        {items?.lastReadingDate}
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Total Meters Pending :
                                         </Text>
 
-                                </View>
-
-                                <View  style={[styles.expandContentHeading,{marginTop:10}]}>
-                                    <Text style={styles.expandContentFTxt} >
-                                    Estimate Time :
-                                    </Text>
-
-                                    <Text style={styles.expandContentSTxt}>
-                                        {items?.estimateTime}
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.totalMetersPending}
                                         </Text>
-                                        <TouchableOpacity onPress={()=>{alert("Reading...")}} style={styles.expandContentButton} >
-                                            <Text style={{color:"white",height:30,textAlign:"center",paddingTop:8}} >
+
+                                    </View>
+
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Next Reading Date :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.nextReadingDate}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={styles.expandContentHeading}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Last Reading Date :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.lastReadingDate}
+                                        </Text>
+
+                                    </View>
+
+                                    <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
+                                        <Text style={styles.expandContentFTxt} >
+                                            Estimate Time :
+                                        </Text>
+
+                                        <Text style={styles.expandContentSTxt}>
+                                            {items?.estimateTime}
+                                        </Text>
+                                        <TouchableOpacity onPress={() => { alert("Reading...") }} style={styles.expandContentButton} >
+                                            <Text style={{ color: "white", height: 30, textAlign: "center", paddingTop: 8 }} >
                                                 Start Reading
                                             </Text>
 
                                         </TouchableOpacity>
 
-                                </View>
-                                
-                               </View>:null}
+                                    </View>
+
+                                </View> : null}
 
 
 
@@ -638,8 +889,12 @@ function Dashboard() {
                         )
                     })}
 
-                </View>
+                </View>}
+
+
+
             </ScrollView>
+            <Footer/>
         </SafeAreaView>
     )
 }
