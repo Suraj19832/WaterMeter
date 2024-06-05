@@ -1,12 +1,18 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 
-function Dashboard (){
-    return (
-        <View>
-          <Text>Dashboard Screen</Text>
-        </View>
-      );
-    };
+const Dashboard = () => {
+  const texts = Array.from({ length: 100 }, (_, index) => (
+    <Text key={index}>Dashboard Screen</Text>
+  ));
+
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <View style={{ flex: 1 }}>
+        {texts}
+      </View>
+    </ScrollView>
+  );
+};
 
 export default Dashboard;

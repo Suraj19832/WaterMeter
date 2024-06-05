@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 
 function Completion (){
     return (
-        <View>
+      <View style={{display:'flex',height:'100%'}}>
           <Text>Completion Screen</Text>
         </View>
       );
