@@ -3,11 +3,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import Footer from "./Footer";
 
 
 
-function Dashboard() {
+function Dashboard({navigation}) {
 
     let monthArr = [
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
@@ -17,7 +16,7 @@ function Dashboard() {
     const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
     const [expandSchedule, setExpandSchedule] = useState(999999999);
     const [expandCompleted,setExpandCompleted] = useState(999999999);
-    const [monthIndex, setMonthIndex] = useState(0);
+    const [monthIndex, setMonthIndex] = useState(7);
     const [month, setMonth] = useState(monthArr[monthIndex]);
     const [year, setYear] = useState(2024);
 
@@ -502,7 +501,6 @@ function Dashboard() {
 
 
 
-
     return (
         <SafeAreaView>
 
@@ -534,7 +532,7 @@ function Dashboard() {
 
                 </TouchableOpacity>
 
-                <View onPress={() => setToggleScheduleCompleted(true)} style={styles.dateView} >
+                <View style={styles.dateView} >
                     <Text style={styles.dateTxt} >
                         {month} {" "} {year}
                     </Text>
@@ -550,6 +548,18 @@ function Dashboard() {
                 </TouchableOpacity>
 
             </View>
+
+            <TouchableOpacity onPress={()=>navigation.navigate("MeterScreen")} style={{margin:"auto",marginBottom:20}} >
+                <Text>
+                    Go to meter section
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={()=>navigation.navigate("Login")} style={{margin:"auto",}} >
+                <Text>
+                    Go to Login
+                </Text>
+            </TouchableOpacity>
 
 
          
@@ -894,7 +904,7 @@ function Dashboard() {
 
 
             </ScrollView>
-            <Footer/>
+          
         </SafeAreaView>
     )
 }

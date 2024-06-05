@@ -6,6 +6,7 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from 'react-native-check-box'
+import { ScrollView } from "react-native-gesture-handler";
 
 
 
@@ -26,7 +27,7 @@ const handleCheckBoxToggle = () => {
 
     return (
         <SafeAreaView >
-            <View>
+            <ScrollView>
                 <ImageBackground
                     source={require('../assets/bgLogin3.jpg')}
                     resizeMode="cover"
@@ -39,7 +40,7 @@ const handleCheckBoxToggle = () => {
                         </Text>
                         <TextInput placeholder="Email or Username"  style={styles.email} />
 
-                        <TextInput placeholder="Password"  style={styles.password} />
+                        <TextInput secureTextEntry="true"  placeholder="Password"  style={styles.password} />
 
 
                         <View style={styles.RememberPassword} >
@@ -71,9 +72,16 @@ const handleCheckBoxToggle = () => {
 
                        
                     </View>
+                    <TouchableOpacity onPress={()=>navigation.navigate("Dashboard")} style={{margin:"auto",}} >
+                <Text>
+                    Go to Dashboard
+                </Text>
+            </TouchableOpacity>
                  
                 </ImageBackground>
-            </View>
+            </ScrollView>
+
+       
 
         </SafeAreaView>
     )
