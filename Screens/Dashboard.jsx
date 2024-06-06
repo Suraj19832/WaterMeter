@@ -64,7 +64,7 @@ function Dashboard({navigation}) {
 
         },
         scheduleBtn: {
-            backgroundColor: toggleScheduleCompleted ? "#F6F6F6" : "#5EC2C6",
+            backgroundColor: toggleScheduleCompleted ? "white" : colorCodes.tealColorTheme,
             height: 45,
             width: "46%",
             borderRadius: 10,
@@ -79,16 +79,16 @@ function Dashboard({navigation}) {
             borderRadius: 10,
             borderWidth: !toggleScheduleCompleted ? 1.5 : 0,
             borderColor: "#5EC2C6",
-            backgroundColor: !toggleScheduleCompleted ? "#F6F6F6" : "#5EC2C6"
+            backgroundColor: !toggleScheduleCompleted ? "white" : colorCodes.tealColorTheme
         },
         ScheduleText: {
-            color: toggleScheduleCompleted ? "#5EC2C6" : "white",
+            color: toggleScheduleCompleted ? colorCodes.tealColorTheme : "white",
             textAlign: "center",
             fontSize: 15,
             paddingTop: 10
         },
         completeText: {
-            color: !toggleScheduleCompleted ? "#5EC2C6" : "white",
+            color: !toggleScheduleCompleted ? colorCodes.tealColorTheme : "white",
             textAlign: "center",
             fontSize: 15,
             paddingTop: 10,
@@ -120,7 +120,7 @@ function Dashboard({navigation}) {
             height: 45,
             width: "46%",
             borderRadius: 10,
-            backgroundColor: "#104F9C",
+            backgroundColor: colorCodes.navyBlueButton,
             color: "white"
 
         },
@@ -215,7 +215,7 @@ function Dashboard({navigation}) {
             height: 30,
             width: 80,
             borderRadius: 100,
-            backgroundColor: "#C53636"
+            backgroundColor: colorCodes.navyBlueButton
 
         },
         statusTxt: {
@@ -506,7 +506,7 @@ function Dashboard({navigation}) {
 
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{backgroundColor:"white"}} >
 
             <View style={styles.topToggle} >
                 <TouchableOpacity onPress={() => setToggleScheduleCompleted(false)} style={styles.scheduleBtn} >
@@ -553,17 +553,9 @@ function Dashboard({navigation}) {
 
             </View>
 
-            <TouchableOpacity onPress={()=>navigation.navigate("MeterScreen")} style={{margin:"auto",marginBottom:20}} >
-                <Text>
-                    Go to meter section
-                </Text>
-            </TouchableOpacity>
+    
 
-            <TouchableOpacity onPress={()=>navigation.navigate("Login")} style={{margin:"auto",}} >
-                <Text>
-                    Go to Login
-                </Text>
-            </TouchableOpacity>
+          
 
             
 

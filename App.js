@@ -100,11 +100,11 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 const TabNavigator = () => {
   return (
     <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />} headerShown={false}>
-      <Tab.Screen name="Dashboard" component={Dashboard} />
-      <Tab.Screen name="Completion" component={Completion} />
-      <Tab.Screen name="MeterSelection" component={MeterSelection} />
-      <Tab.Screen name="MeterReading" component={MeterReading} />
-      <Tab.Screen name="MeterReadingScanner" component={MeterReadingScanner} />
+      <Tab.Screen name="Dashboard"  options={{ headerShown: false }} component={Dashboard} />
+      <Tab.Screen name="Completion"   options={{ headerShown: false }}  component={Completion} />
+      <Tab.Screen name="MeterSelection"  options={{ headerShown: false }}  component={MeterSelection} />
+      <Tab.Screen name="MeterReading"  options={{ headerShown: false }}  component={Login} />
+      <Tab.Screen name="MeterReadingScanner"   options={{ headerShown: false }} component={MeterSection} />
     </Tab.Navigator>
   );
 };

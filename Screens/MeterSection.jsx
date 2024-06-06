@@ -25,7 +25,7 @@ const [selectMeter,setSelectMeter] = useState(false);
         margin:"auto",
         marginTop:30,
         borderRadius:15,
-        backgroundColor:"#e7e7e7",
+        backgroundColor:colorCodes.bgLightGrey,
         shadowColor:"#2198C9",
         elevation:10,
         display:"flex",
@@ -176,7 +176,7 @@ const [selectMeter,setSelectMeter] = useState(false);
 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:"white"}}>
       <View style={styles.headArrow} >
         <TouchableOpacity onPress={()=> navigation.navigate("Dashboard") } >
         <AntDesign name='left'  size={25} color="#0B9ED2" />

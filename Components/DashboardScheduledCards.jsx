@@ -140,7 +140,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
             margin: "auto",
             marginBottom: 20,
             borderRadius: 15,
-            backgroundColor: "#e7e7e7"
+            backgroundColor: colorCodes.bgLightGrey
 
         },
         expandContentHeading: {
@@ -249,7 +249,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
                                 {items?.status == "Past Due" ? <View style={styles.belowContentMain}  >
 
                                     <View style={styles.belowFirst}>
-                                        <View style={[styles.status, { backgroundColor: items?.colorCode }]} >
+                                        <View style={[styles.status, { backgroundColor: colorCodes.statusPast }]} >
                                             <Text style={styles.statusTxt}>
                                                 {items?.status}
                                             </Text>
@@ -291,7 +291,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
                                 </View> : <View style={styles.belowContentMainNotPast}  >
 
 
-                                    <View style={[styles.status, { backgroundColor: items?.colorCode }]} >
+                                    <View style={[styles.status, { backgroundColor: items?.status == "In Process"? colorCodes.navyBlueButton:colorCodes.statusToday }]} >
                                         <Text style={styles.statusTxt}>
                                             {items?.status}
                                         </Text>

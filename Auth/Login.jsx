@@ -26,7 +26,7 @@ const handleCheckBoxToggle = () => {
 
 
     return (
-        <SafeAreaView >
+        <SafeAreaView style={{backgroundColor:"white"}} >
             <ScrollView>
                 <ImageBackground
                     source={require('../assets/bgLogin3.jpg')}

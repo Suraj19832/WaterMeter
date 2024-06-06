@@ -196,7 +196,7 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
             margin: "auto",
             marginBottom: 20,
             borderRadius: 15,
-            backgroundColor: "#e7e7e7"
+            backgroundColor: "#F2F2F2"
 
         },
         expandContentHeading: {
@@ -270,7 +270,7 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
             margin: "auto",
             marginBottom: 20,
             borderRadius: 15,
-            backgroundColor: "#e7e7e7"
+            backgroundColor: colorCodes.bgLightGrey
         }
 
 
