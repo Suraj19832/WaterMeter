@@ -16,7 +16,9 @@ export default function SubmitButton({text,bgColor,height,width,textSize}) {
             color:"white",
             fontSize:textSize,
             textAlign:"center",
-            paddingTop:8 
+            paddingTop:8 ,
+            fontWeight:'500'
+
           },
 
     })

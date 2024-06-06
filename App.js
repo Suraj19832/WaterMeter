@@ -8,6 +8,7 @@ import SplashScreen from "./Screens/SplashScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Dashboard from "./Screens/Dashboard";
 import MeterSection from "./Screens/MeterSection";
+import ChangePassword from "./Auth/ChangePassword";
 
 const Stack = createStackNavigator();
 const App = () => {
@@ -17,7 +18,7 @@ const App = () => {
   return (
   <NavigationContainer>
 
-  <Stack.Navigator initialRouteName="Dashboard" >
+  <Stack.Navigator initialRouteName="ChangePassword" >
 
   <Stack.Screen
   name="Login"
@@ -40,6 +41,12 @@ options={{ headerShown: false }}
 component={MeterSection}
 options={{ headerShown: false }}
 />
+<Stack.Screen
+  name="ChangePassword"
+component={ChangePassword}
+options={{ headerShown: false }}
+/>
+
 
   </Stack.Navigator>
 
