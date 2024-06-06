@@ -13,7 +13,6 @@ import MeterSelection from "./Screens/MeterSelection";
 import Completion from "./Screens/Completion";
 import SvgComponent from "./Screens/SvgComponent";
 import image12 from './assets/Rectangle22.png'
-import Dashboard from "./Screens/Dashboard";
 import MeterSection from "./Screens/MeterSection";
 
 const Stack = createStackNavigator();
@@ -100,7 +99,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />} headerShown={false}>
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Completion" component={Completion} />
       <Tab.Screen name="MeterSelection" component={MeterSelection} />
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Dashboard">
+      <Stack.Navigator initialRouteName="Main" headerShown={false}>
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -171,11 +170,11 @@ const App = () => {
           component={TabNavigator}
 options={{ headerShown: false }}
 />
-<Stack.Screen
+{/* <Stack.Screen
   name="Dashboard"
 component={Dashboard}
 options={{ headerShown: false }}
-/>
+/> */}
 
 <Stack.Screen
   name="MeterScreen"
