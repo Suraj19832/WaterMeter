@@ -1,14 +1,16 @@
 import { AntDesign, FontAwesome6 } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import React from 'react'
+import React, { useState } from 'react'
 import { View,StyleSheet,Text, ImageBackground } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import SubmitButton from '../Components/SubmitButton'
+import { colorCodes } from '../ColorCodes/Colors'
 
 
 export default function MeterSection({navigation}) {
 
-
+const [selectMeter,setSelectMeter] = useState(false);
 
     const styles = StyleSheet.create({
       headArrow:{
@@ -52,7 +54,7 @@ export default function MeterSection({navigation}) {
        fontWeight:"400",
        paddingTop:30,
        paddingLeft:20,
-       height:60,
+       height:50,
       },
       upperDropdown:{
        borderWidth:1,
@@ -142,7 +144,28 @@ export default function MeterSection({navigation}) {
         fontSize:16,
         textAlign:"center",
         paddingTop:8 
-      }
+      },
+      imageShow:{
+        height:130,
+        width:"90%",
+        borderWidth:2,
+        margin:"auto",
+        marginTop:30,
+        backgroundColor:"#414141",
+        borderRadius:8
+
+      },
+      meterNameScan:{
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"space-between",
+        marginTop:30,
+
+      },
+
+       
+      
     })
 
 
@@ -168,6 +191,29 @@ export default function MeterSection({navigation}) {
         {" "}  Masari Heights
        </Text>
       </View>
+
+
+      {selectMeter?<View>
+      <View style={styles.imageShow}  >
+
+      </View>
+
+      <View style={[styles.meterNameScan,{width:"95%"}]} >
+      <Text style={[styles.meterLabel,{fontSize:23,fontWeight:"400",paddingTop:10}]} >
+        Meter : <Text style={{color:"grey"}}>
+            A10
+        </Text>
+      </Text>
+      <TouchableOpacity>
+      <SubmitButton textSize={14} bgColor={colorCodes.submitButtonEnabled} height={40} width={93} text="Scan" />
+
+      </TouchableOpacity>
+
+      </View>
+
+
+
+      </View>:<View>
       <Text style={styles.meterLabel} >
         Meter : 
       </Text>
@@ -213,12 +259,16 @@ export default function MeterSection({navigation}) {
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.selectMeterBtn} >
-        <Text style={styles.selectMeterTxt} >
-            Select Meter
-        </Text>
+      <TouchableOpacity onPress={()=> setSelectMeter(!selectMeter)} style={{margin:"auto",marginTop:50}} >
+<SubmitButton  text="Select Meter" height={40} width={120} bgColor="#FF8902" textSize={14} />
 
-      </TouchableOpacity>
+</TouchableOpacity>
+
+      </View>}
+  
+
+
+
       
      
     </SafeAreaView>

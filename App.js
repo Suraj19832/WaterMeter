@@ -17,7 +17,7 @@ const App = () => {
   return (
   <NavigationContainer>
 
-  <Stack.Navigator initialRouteName="MeterScreen" >
+  <Stack.Navigator initialRouteName="Dashboard" >
 
   <Stack.Screen
   name="Login"

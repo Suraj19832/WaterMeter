@@ -40,7 +40,7 @@ const handleCheckBoxToggle = () => {
                         </Text>
                         <TextInput placeholder="Email or Username"  style={styles.email} />
 
-                        <TextInput secureTextEntry="true"  placeholder="Password"  style={styles.password} />
+                        <TextInput   placeholder="Password"  style={styles.password} />
 
 
                         <View style={styles.RememberPassword} >
