@@ -34,7 +34,7 @@ const handleCheckBoxToggle = () => {
                     style={styles.image}
                 >
 
-                    <View  style={{marginTop:320}}>
+                    <View  style={{marginTop:"85%"}}>
                         <Text style={styles.heading} >
                             Login
                         </Text>
@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
         borderColor:"#2198C9",
         paddingLeft:20,
         fontSize:14,
-        marginTop:30,
-        marginBottom:20,
+        marginTop:"7%",
+        marginBottom:"5%",
 
     },
     password:{

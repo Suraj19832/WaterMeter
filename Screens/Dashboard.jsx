@@ -3,6 +3,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import SubmitButton from "../Components/SubmitButton";
+import { colorCodes } from "../ColorCodes/Colors";
+import DashboardScheduledCards from "../Components/DashboardScheduledCards";
+import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 
 
 
@@ -561,345 +565,37 @@ function Dashboard({navigation}) {
                 </Text>
             </TouchableOpacity>
 
+            
 
          
             <ScrollView style={styles.scrollView} >
-                {toggleScheduleCompleted ?   <View style={styles.cardsMain}>
-                    {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
-                        return (
-                            <View key={index} style={styles.propertyCards}>
-                                <View style={styles.cardContentTop} >
-                                    <View style={styles.topFirst} >
-                                        <Text style={styles.propertyTxt} >
-                                            Property
-                                        </Text>
-                                        <Text style={styles.besidePropertyTxt}>
-                                            : {items?.property} {"  |  "} {items?.name}
-                                        </Text>
 
-                                    </View>
+                {toggleScheduleCompleted?<View>
+                    {Array.isArray(cardsArr) && cardsArr?.map((items,index)=>{
+                return(
+                    <View key={index}  style={{width:"90%",margin:"auto"}}>
+                    <DashboardCompletedCards expandCompleted={expandCompleted} onPress={setExpandCompleted} index={index} items={items} /> 
 
-                                    <View>
-                                        <Text style={styles.contentDateTxt} >
-                                            {items?.date}
-                                        </Text>
+                    </View>
+                )
+            })}
+                </View>:<View>
+                {Array.isArray(cardsArr) && cardsArr?.map((items,index)=>{
+                return(
+                    <View key={index}  style={{width:"90%",margin:"auto"}}>
+                    <DashboardScheduledCards expandSchedule={expandSchedule} onPress={setExpandSchedule} index={index} items={items} /> 
 
-                                    </View>
+                    </View>
 
-                                </View>
+                )
+            })}
+                    </View>}
+          
 
+         
 
-                                <View style={styles.belowContentCompleted}  >
 
-                                    {index == expandCompleted ? <View >
-                                        <Text style={styles.completedNextDate}>
-                                            {"                                                      "}
-                                        </Text>
-                                        <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                                            {"                                                   "}
-                                        </Text>
-
-
-
-                                    </View> : <View >
-                                        <Text style={styles.completedNextDate}>
-                                            Next Reading Date :
-                                        </Text>
-                                        <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                                            {items?.nextReadingDate}
-                                        </Text>
-
-
-
-                                    </View>}
-
-
-
-                                    <View style={styles.belowSecond} >
-                                        <Text style={{ fontWeight: 500 }}>
-                                            {items?.meters} meters
-                                        </Text>
-                                        <TouchableOpacity onPress={() => {
-                                            if (expandCompleted == index) {
-                                                setExpandCompleted(null);
-                                            }
-                                            else {
-                                                setExpandCompleted(index)
-                                            }
-                                        }} style={styles.expandBtn} >
-                                            {index == expandCompleted ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
-
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View>
-
-                                {index == expandCompleted ? <View style={styles.expandContentCompleted} >
-                                    <View style={styles.expandContentHeading} >
-                                        <Text style={styles.expandHeadingFTxt} >
-                                            Address :
-                                        </Text>
-                                        <Text style={styles.expandHeadingSTxt} >
-                                            {items?.address}
-                                        </Text>
-
-                                    </View>
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Total Meters :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.totalMeters}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                           Date Completed :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.dateCompleted}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Task Completed In :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.taskCompletedIn}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Next Reading Date :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.nextReadingDate}
-                                        </Text>
-
-                                    </View>
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Name :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.nameBelow}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
-                                       
-                                        <TouchableOpacity onPress={() => { alert("Reading...") }} style={styles.expandContentCompletedButton} >
-                                            <Text style={{ color: "white", height: 30, textAlign: "center", paddingTop: 8 }} >
-                                                Completion Summary
-                                            </Text>
-
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View> : null}
-
-
-
-                            </View>
-                        )
-                    })}
-
-
-                </View> : <View style={styles.cardsMain} >
-                    {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
-
-
-                        return (
-                            <View key={index} style={styles.propertyCards}>
-                                <View style={styles.cardContentTop} >
-                                    <View style={styles.topFirst} >
-                                        <Text style={styles.propertyTxt} >
-                                            Property
-                                        </Text>
-                                        <Text style={styles.besidePropertyTxt}>
-                                            : {items?.property} {"  |  "} {items?.name}
-                                        </Text>
-
-                                    </View>
-
-                                    <View>
-                                        <Text style={styles.contentDateTxt} >
-                                            {items?.date}
-                                        </Text>
-
-                                    </View>
-
-                                </View>
-
-                                {items?.status == "Past Due" ? <View style={styles.belowContentMain}  >
-
-                                    <View style={styles.belowFirst}>
-                                        <View style={[styles.status, { backgroundColor: items?.colorCode }]} >
-                                            <Text style={styles.statusTxt}>
-                                                {items?.status}
-                                            </Text>
-                                        </View>
-                                        <Text style={styles.daysTxt} >
-                                            {items?.no_of_days}
-                                        </Text>
-                                        <TouchableOpacity onPress={() => { alert("Image pressed") }}>
-                                            <ImageBackground source={require('../assets/Background 1.png')}
-                                                resizeMode="cover"
-                                                style={styles.image} >
-
-                                            </ImageBackground>
-                                        </TouchableOpacity>
-
-
-
-                                    </View>
-
-
-                                    <View style={styles.belowSecond} >
-                                        <Text style={{ fontWeight: 500 }}>
-                                            {items?.meters} meters
-                                        </Text>
-                                        <TouchableOpacity onPress={() => {
-                                            if (expandSchedule == index) {
-                                                setExpandSchedule(null);
-                                            }
-                                            else {
-                                                setExpandSchedule(index)
-                                            }
-                                        }} style={styles.expandBtn} >
-                                            {index == expandSchedule ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
-
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View> : <View style={styles.belowContentMainNotPast}  >
-
-
-                                    <View style={[styles.status, { backgroundColor: items?.colorCode }]} >
-                                        <Text style={styles.statusTxt}>
-                                            {items?.status}
-                                        </Text>
-
-
-
-                                    </View>
-
-
-                                    <View style={styles.belowSecond} >
-                                        <Text style={{ fontWeight: 500 }}>
-                                            {items?.meters} meters
-                                        </Text>
-                                        <TouchableOpacity onPress={() => {
-                                            if (expandSchedule == index) {
-                                                setExpandSchedule(null);
-                                            }
-                                            else {
-                                                setExpandSchedule(index)
-                                            }
-                                        }} style={styles.expandBtn} >
-                                            {index == expandSchedule ? <FontAwesome style={{ marginLeft: 5.6, marginTop: 0 }} name="angle-up" size={20} color="#FE8700" /> : <FontAwesome style={{ marginLeft: 5.6, marginTop: 2 }} name="angle-down" size={20} color="#FE8700" />}
-
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View>}
-
-                                {index == expandSchedule ? <View style={styles.expandContent} >
-                                    <View style={styles.expandContentHeading} >
-                                        <Text style={styles.expandHeadingFTxt} >
-                                            Address :
-                                        </Text>
-                                        <Text style={styles.expandHeadingSTxt} >
-                                            {items?.address}
-                                        </Text>
-
-                                    </View>
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Total Meters :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.totalMeters}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Total Meters Pending :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.totalMetersPending}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Next Reading Date :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.nextReadingDate}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={styles.expandContentHeading}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Last Reading Date :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.lastReadingDate}
-                                        </Text>
-
-                                    </View>
-
-                                    <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
-                                        <Text style={styles.expandContentFTxt} >
-                                            Estimate Time :
-                                        </Text>
-
-                                        <Text style={styles.expandContentSTxt}>
-                                            {items?.estimateTime}
-                                        </Text>
-                                        <TouchableOpacity onPress={() => { alert("Reading...") }} style={styles.expandContentButton} >
-                                            <Text style={{ color: "white", height: 30, textAlign: "center", paddingTop: 8 }} >
-                                                Start Reading
-                                            </Text>
-
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View> : null}
-
-
-
-                            </View>
-                        )
-                    })}
-
-                </View>}
+              
 
 
 
