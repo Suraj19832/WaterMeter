@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
+import { View, TouchableOpacity, StyleSheet, ImageBackground ,Image} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -19,7 +19,8 @@ const Tab = createBottomTabNavigator();
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   return (
-    <ImageBackground source={image12} style={{width:'100%',height:100}}>
+    <>
+    <Image source={image12} style={{width:'100%',height:100 , backgroundColor: '#fff',}} />
     <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -91,7 +92,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         );
       })}
     </View>
-   </ImageBackground> 
+    </>
   );
 };
 
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,
     // backgroundColor: "#0F77AF",
+    backgroundColor:'transparent',
     padding: 8,
     height: 70,
   },

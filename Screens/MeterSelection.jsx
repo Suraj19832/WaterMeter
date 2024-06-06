@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 
 function MeterSelection (){
     return (
-      <View style={{display:'flex',height:'100%'}}>
+      <View style={{backgroundColor:'#fff',display:'flex',height:'100%'}}>
           <Text>MeterSelection Screen</Text>
         </View>
       );
