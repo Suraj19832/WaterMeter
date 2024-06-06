@@ -5,6 +5,6 @@
   "minify": false,
   "urlRandomness": null,
   "https": false,
-  "scheme": "exp+med-mart",
-  "devClient": false
+  "devClient": true,
+  "scheme": "exp+water-meter"
 }
