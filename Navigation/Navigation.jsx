@@ -14,6 +14,7 @@ import MeterSelection from "../Screens/MeterSelection";
 import { CustomTabBar } from "./TabNavigator";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import DrawerNavigation from "./DrawerNavigation";
+import ChangePassword from './../Auth/ChangePassword';
 
 const Stack = createStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -32,8 +33,15 @@ const TabNavigator = () => {
 };
 
 const DrawerNav = () => (
-    <Drawer.Navigator screenOptions={{ headerShown: false }}  drawerContent={DrawerNavigation}>
+    <Drawer.Navigator screenOptions={{
+        headerShown: false,
+        drawerPosition: "right",
+        drawerStyle: {
+            backgroundColor:"#ffffe200"
+        }
+    }} drawerContent={DrawerNavigation}>
         <Drawer.Screen name="Dash" component={TabNavigator} />
+        <Drawer.Screen name="ChangePassword" component={ChangePassword}  />
     </Drawer.Navigator>
 );
 
@@ -80,6 +88,11 @@ const MainStack = () => {
             <Stack.Screen
                 name="OcrCaptured"
                 component={OcrCaptured}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="ChangePassword"
+                component={ChangePassword}
                 options={{ headerShown: false }}
             />
 
