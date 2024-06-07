@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 
-export default function MeterSection({ navigation }) {
+export default function SummaryScreen({ navigation }) {
   const [selectMeter, setSelectMeter] = useState(false);
 
   const styles = StyleSheet.create({

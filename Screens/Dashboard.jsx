@@ -7,10 +7,13 @@ import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
+import { useNavigation } from "@react-navigation/native";
 
 
 
-function Dashboard({navigation}) {
+function Dashboard({ navigation }) {
+
+
 
     let monthArr = [
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
@@ -19,11 +22,11 @@ function Dashboard({navigation}) {
 
     const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
     const [expandSchedule, setExpandSchedule] = useState(999999999);
-    const [expandCompleted,setExpandCompleted] = useState(999999999);
+    const [expandCompleted, setExpandCompleted] = useState(999999999);
     const [monthIndex, setMonthIndex] = useState(7);
     const [month, setMonth] = useState(monthArr[monthIndex]);
     const [year, setYear] = useState(2024);
-
+    const navigate = useNavigation();
 
 
     const nextDate = () => {
@@ -329,14 +332,14 @@ function Dashboard({navigation}) {
             marginTop: 8,
             marginBottom: 15
         },
-        expandContentCompletedButton:{
+        expandContentCompletedButton: {
             height: 37,
             width: 150,
             borderRadius: 10,
             backgroundColor: "#FF8902",
             marginLeft: 155,
         },
-        expandContentCompleted:{
+        expandContentCompleted: {
             height: 255,
             width: "90%",
             margin: "auto",
@@ -364,9 +367,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#C53636",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
         },
         {
             property: "XXX",
@@ -382,9 +385,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#C53636",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
         },
         {
             property: "XXX",
@@ -400,9 +403,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#104F9C",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
         },
         {
             property: "XXX",
@@ -418,9 +421,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#104F9C",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
 
         },
         {
@@ -437,9 +440,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#FFB604",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
 
         },
         {
@@ -456,9 +459,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#FFB604",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
 
         },
         {
@@ -475,9 +478,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#FFB604",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
 
         },
         {
@@ -494,9 +497,9 @@ function Dashboard({navigation}) {
             lastReadingDate: "Sun May 10th, 2024 ",
             estimateTime: "2hr 32mins",
             colorCode: "#FFB604",
-            dateCompleted:"Fri May 10th, 2024",
-            taskCompletedIn:"1hr 22 mins",
-            nameBelow:"Koushik",
+            dateCompleted: "Fri May 10th, 2024",
+            taskCompletedIn: "1hr 22 mins",
+            nameBelow: "Koushik",
 
         }
     ];
@@ -506,7 +509,7 @@ function Dashboard({navigation}) {
 
 
     return (
-        <SafeAreaView style={{backgroundColor:"white"}} >
+        <SafeAreaView style={{ backgroundColor: "white" }} >
 
             <View style={styles.topToggle} >
                 <TouchableOpacity onPress={() => setToggleScheduleCompleted(false)} style={styles.scheduleBtn} >
@@ -536,12 +539,14 @@ function Dashboard({navigation}) {
 
                 </TouchableOpacity>
 
-                <View style={styles.dateView} >
+                <TouchableOpacity
+                    onPress={() => navigate.openDrawer()}
+                    style={styles.dateView} >
                     <Text style={styles.dateTxt} >
                         {month} {" "} {year}
                     </Text>
 
-                </View>
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={nextDate} style={styles.prevBtn} >
                     <Text style={styles.prevNextTxt} >
@@ -553,46 +558,46 @@ function Dashboard({navigation}) {
 
             </View>
 
-    
 
-          
 
-            
 
-         
+
+
+
+
             <ScrollView style={styles.scrollView} >
 
-                {toggleScheduleCompleted?<View>
-                    {Array.isArray(cardsArr) && cardsArr?.map((items,index)=>{
-                return(
-                    <View key={index}  style={{width:"90%",margin:"auto"}}>
-                    <DashboardCompletedCards expandCompleted={expandCompleted} onPress={setExpandCompleted} index={index} items={items} /> 
+                {toggleScheduleCompleted ? <View>
+                    {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
+                        return (
+                            <View key={index} style={{ width: "90%", margin: "auto" }}>
+                                <DashboardCompletedCards expandCompleted={expandCompleted} onPress={setExpandCompleted} index={index} items={items} />
 
-                    </View>
-                )
-            })}
-                </View>:<View>
-                {Array.isArray(cardsArr) && cardsArr?.map((items,index)=>{
-                return(
-                    <View key={index}  style={{width:"90%",margin:"auto"}}>
-                    <DashboardScheduledCards expandSchedule={expandSchedule} onPress={setExpandSchedule} index={index} items={items} /> 
+                            </View>
+                        )
+                    })}
+                </View> : <View>
+                    {Array.isArray(cardsArr) && cardsArr?.map((items, index) => {
+                        return (
+                            <View key={index} style={{ width: "90%", margin: "auto" }}>
+                                <DashboardScheduledCards expandSchedule={expandSchedule} onPress={setExpandSchedule} index={index} items={items} />
 
-                    </View>
+                            </View>
 
-                )
-            })}
-                    </View>}
-          
-
-         
+                        )
+                    })}
+                </View>}
 
 
-              
+
+
+
+
 
 
 
             </ScrollView>
-          
+
         </SafeAreaView>
     )
 }

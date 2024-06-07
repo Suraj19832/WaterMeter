@@ -8,7 +8,8 @@ import SubmitButton from '../Components/SubmitButton'
 import { colorCodes } from '../ColorCodes/Colors'
 
 
-export default function MeterSection({navigation}) {
+
+export default function OcrCaptured({navigation}) { 
 
 const [selectMeter,setSelectMeter] = useState(false);
 
