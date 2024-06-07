@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   return (
-    <>
+    <View  style={{backgroundColor:"white"}}>
     <Image source={image12} style={{width:'100%',height:100 , backgroundColor: '#fff',}} />
     <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
@@ -93,13 +93,13 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         );
       })}
     </View>
-    </>
+    </View>
   );
 };
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />} headerShown={false}>
+    <Tab.Navigator  tabBar={(props) => <CustomTabBar {...props} />} headerShown={false}>
       <Tab.Screen name="Dashboard"  options={{ headerShown: false }} component={Dashboard} />
       <Tab.Screen name="Completion"   options={{ headerShown: false }}  component={Completion} />
       <Tab.Screen name="MeterSelection"  options={{ headerShown: false }}  component={MeterSelection} />
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer  style={{backgroundColor:"white"}}>
       <Stack.Navigator initialRouteName="Main" headerShown={false}>
         <Stack.Screen
           name="SplashScreen"
@@ -183,6 +183,7 @@ component={MeterSection}
         />
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 };
 

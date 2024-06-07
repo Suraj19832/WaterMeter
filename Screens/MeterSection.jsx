@@ -2,7 +2,7 @@ import { AntDesign, FontAwesome6 } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { View,StyleSheet,Text, ImageBackground } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SubmitButton from '../Components/SubmitButton'
 import { colorCodes } from '../ColorCodes/Colors'
@@ -176,7 +176,8 @@ const [selectMeter,setSelectMeter] = useState(false);
 
 
   return (
-    <SafeAreaView style={{backgroundColor:"white"}}>
+    <SafeAreaView>
+      <View style={{backgroundColor:"white"}} >
       <View style={styles.headArrow} >
         <TouchableOpacity onPress={()=> navigation.navigate("Dashboard") } >
         <AntDesign name='left'  size={25} color="#0B9ED2" />
@@ -191,7 +192,6 @@ const [selectMeter,setSelectMeter] = useState(false);
         {" "}  Masari Heights
        </Text>
       </View>
-
 
       {selectMeter?<View>
       <View style={styles.imageShow}  >
@@ -266,11 +266,14 @@ const [selectMeter,setSelectMeter] = useState(false);
 
       </View>}
   
+  <View style={{backgroundColor:"white",height:150}}>
+
+  </View>
 
 
 
       
-     
+      </View>
     </SafeAreaView>
   )
 }
