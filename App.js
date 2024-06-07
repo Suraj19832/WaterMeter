@@ -14,6 +14,11 @@ import Completion from "./Screens/Completion";
 import SvgComponent from "./Screens/SvgComponent";
 import image12 from './assets/Rectangle22.png'
 import MeterSection from "./Screens/MeterSection";
+import ChangePassword from "./Auth/ChangePassword";
+import EditProfile from "./Auth/EditProfile";
+import ForgotPassword from "./Auth/ForgotPassword";
+import OcrCaptured from "./Screens/OcrCaptured"
+import SummaryScreen from "./Screens/SummaryScreen"
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -153,37 +158,65 @@ const styles = StyleSheet.create({
 
 const App = () => {
   return (
-    <NavigationContainer  style={{backgroundColor:"white"}}>
-      <Stack.Navigator initialRouteName="Main" headerShown={false}>
-        <Stack.Screen
-          name="SplashScreen"
-          component={SplashScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={TabNavigator}
+  <NavigationContainer>
+
+  <Stack.Navigator initialRouteName="SummaryScreen" >
+
+  <Stack.Screen
+  name="Login"
+component={Login}
 options={{ headerShown: false }}
 />
-{/* <Stack.Screen
+
+<Stack.Screen
+  name="EditProfile"
+component={EditProfile}
+options={{ headerShown: false }}
+/>
+<Stack.Screen
+  name="SummaryScreen"
+component={SummaryScreen}
+options={{ headerShown: false }}
+/>
+
+<Stack.Screen
+  name="ForgotPassword"
+component={ForgotPassword}
+options={{ headerShown: false }}
+/>
+
+<Stack.Screen
+  name="OcrCaptured"
+component={OcrCaptured}
+options={{ headerShown: false }}
+/>
+<Stack.Screen
+  name="SplashScreen"
+component={SplashScreen}
+options={{ headerShown: false }}
+/>
+<Stack.Screen
   name="Dashboard"
 component={Dashboard}
 options={{ headerShown: false }}
-/> */}
+/>
 
 <Stack.Screen
   name="MeterScreen"
 component={MeterSection}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+options={{ headerShown: false }}
+/>
+<Stack.Screen
+  name="ChangePassword"
+component={ChangePassword}
+options={{ headerShown: false }}
+/>
 
+
+  </Stack.Navigator>
+
+
+  </NavigationContainer>
   );
 };
 
