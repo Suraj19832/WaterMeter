@@ -43,6 +43,9 @@ const handleCheckBoxToggle = () => {
                         <TextInput   placeholder="Password"  style={styles.password} />
 
 
+
+
+
                         <View style={styles.RememberPassword} >
                             <View style={styles.rememberMain}>
                            <View>

@@ -9,6 +9,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Dashboard from "./Screens/Dashboard";
 import MeterSection from "./Screens/MeterSection";
 import ChangePassword from "./Auth/ChangePassword";
+import EditProfile from "./Auth/EditProfile";
+import ForgotPassword from "./Auth/ForgotPassword";
+import OcrCaptured from "./Screens/OcrCaptured"
+import SummaryScreen from "./Screens/SummaryScreen"
 
 const Stack = createStackNavigator();
 const App = () => {
@@ -18,11 +22,34 @@ const App = () => {
   return (
   <NavigationContainer>
 
-  <Stack.Navigator initialRouteName="ChangePassword" >
+  <Stack.Navigator initialRouteName="SummaryScreen" >
 
   <Stack.Screen
   name="Login"
 component={Login}
+options={{ headerShown: false }}
+/>
+
+<Stack.Screen
+  name="EditProfile"
+component={EditProfile}
+options={{ headerShown: false }}
+/>
+<Stack.Screen
+  name="SummaryScreen"
+component={SummaryScreen}
+options={{ headerShown: false }}
+/>
+
+<Stack.Screen
+  name="ForgotPassword"
+component={ForgotPassword}
+options={{ headerShown: false }}
+/>
+
+<Stack.Screen
+  name="OcrCaptured"
+component={OcrCaptured}
 options={{ headerShown: false }}
 />
 <Stack.Screen

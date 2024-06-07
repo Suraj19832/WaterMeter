@@ -10,18 +10,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 
-function ChangePassword({ navigation }) {
-  const [checked, setChecked] = useState(true);
+function ForgotPassword({ navigation }) {
+//   const [checked, setChecked] = useState(true);
 
-  const handleLogin = () => {
-    alert("Logged in successfully");
-  };
+ 
 
-  const handleCheckBoxToggle = () => {
-    setChecked(!checked);
-  };
+  
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isCurrentPassword ,setIsCurrentPassword] = useState("");
   const [isNewPassword ,setIsNewPassword] = useState("");
   const [isConfirmPassword ,setIsConfirmPassword] = useState("");
   const passwordsMatch = isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
@@ -57,32 +52,12 @@ function ChangePassword({ navigation }) {
             ></Image>
           </View>
           <View style={{ alignItems:'center',justifyContent:'center'}}>
-            <Text style={styles.heading}>Change Password</Text>
+            <Text style={styles.heading}>Forgot Password?</Text>
     
        
             
 
-<View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={[styles.input, { fontSize:  20 }]}
-          placeholder="Current Password"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible} 
-          value= {isCurrentPassword}
-          onChangeText={(text)=>{setIsCurrentPassword(text)
-            console.log(text)
-          }}
-        />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+
     <View style={styles.fields_main}>
       <View style={styles.input_box}>
         <TextInput
@@ -203,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePassword;
+export default ForgotPassword;
