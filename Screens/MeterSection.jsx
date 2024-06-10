@@ -289,7 +289,16 @@ inputBox:{
 
       </View>
 
-      <Modal>
+      <Modal visible={modal2} animationType='slide' transparent >
+        <View>
+        <Entypo onPress={()=> setModal2(false)} name="cross" size={24} color="white" />
+          <View>
+
+          </View>
+        </View>
+        <Text >
+          This is info modal
+        </Text>
         
       </Modal>
 
@@ -310,7 +319,7 @@ inputBox:{
       </View>
       
       <View style={styles.bottomPartInfoBtn} >
-      <Entypo name="info-with-circle" size={24} color="black" />
+      <Entypo onPress={()=> setModal2(true)} name="info-with-circle" size={24} color="black" />
       <TouchableOpacity style={{margin:"auto"}} >
       <SubmitButton text="Submit Reading" textSize={18} bgColor={colorCodes.submitButtonEnabled} height={45} width={180} />
       </TouchableOpacity>
