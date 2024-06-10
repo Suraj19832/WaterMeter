@@ -1,16 +1,19 @@
-import { AntDesign, FontAwesome6 } from '@expo/vector-icons'
+import { AntDesign, Entypo, FontAwesome6 } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { View,StyleSheet,Text, ImageBackground } from 'react-native'
+import { View,StyleSheet,Text, ImageBackground,Modal } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SubmitButton from '../Components/SubmitButton'
 import { colorCodes } from '../ColorCodes/Colors'
+import { Button,  } from 'react-native'
 
 
 export default function MeterSection({navigation}) {
 
 const [selectMeter,setSelectMeter] = useState(false);
+const [modal,setModal] = useState(false);
+const [modal2,setModal2] = useState(false);
 
     const styles = StyleSheet.create({
       headArrow:{
@@ -54,7 +57,7 @@ const [selectMeter,setSelectMeter] = useState(false);
        fontWeight:"400",
        paddingTop:30,
        paddingLeft:20,
-       height:50,
+       height:60,
       },
       upperDropdown:{
        borderWidth:1,
@@ -148,9 +151,9 @@ const [selectMeter,setSelectMeter] = useState(false);
       imageShow:{
         height:130,
         width:"90%",
-        borderWidth:2,
+ 
         margin:"auto",
-        marginTop:30,
+
         backgroundColor:"#414141",
         borderRadius:8
 
@@ -160,10 +163,81 @@ const [selectMeter,setSelectMeter] = useState(false);
         flexDirection:"row",
         alignItems:"center",
         justifyContent:"space-between",
-        marginTop:30,
+      
 
       },
+      Modal:{
+        margin:"auto",
+        width:"90%",
+        backgroundColor:"white",
+        borderRadius:20,
+        justifyContent:"center",
+        alignItems:"center",
+        height:200,
+        shadowColor:"black",
+        elevation:50
 
+},
+ModalText:{
+fontSize:17,
+textAlign:"center",
+padding:10,
+
+},
+ModalButton:{
+backgroundColor:colorCodes.submitButtonEnabled,
+color:"white",
+width:100,
+height:35,
+textAlign:"center",
+paddingTop:6,
+borderRadius:10,
+marginLeft:"60%",
+marginTop:"6%"
+},
+meterRead:{
+  height:"27%",
+  width:"90%",
+  borderWidth:1,
+  margin:"auto",
+  borderRadius:15,
+  borderColor:"#2198C9",
+  marginTop:"10%"
+  
+},
+bottomPartInfoBtn:{
+  display:"flex",
+  flexDirection:"row",
+  alignItems:"center",
+  justifyContent:"space-between",
+  width:"90%",
+  margin:"auto",
+
+},
+meterText:{
+  color:colorCodes.navyBlueButton,
+  fontSize:18,
+  paddingLeft:15,
+  paddingTop:8
+},
+readingMain:{
+  display:"flex",
+  flexDirection:"row",
+  alignItems:"center",
+  justifyContent:"space-between",
+  width:"95%",
+  margin:"auto",
+
+},
+inputBox:{
+  borderWidth:1,
+  height:50,
+  width:50,
+  borderRadius:10,
+  borderColor:"#0B9ED2",
+  elevation:5,
+  backgroundColor:"white"
+}
        
       
     })
@@ -178,6 +252,10 @@ const [selectMeter,setSelectMeter] = useState(false);
   return (
     <SafeAreaView>
       <View style={{backgroundColor:"white"}} >
+        {modal || modal2 ? <View style={{height:"100%",width:"100%", backgroundColor:"#0000006e",position:"absolute",zIndex:10}} >
+          
+          </View>:null}
+       
       <View style={styles.headArrow} >
         <TouchableOpacity onPress={()=> navigation.navigate("Dashboard") } >
         <AntDesign name='left'  size={25} color="#0B9ED2" />
@@ -193,7 +271,7 @@ const [selectMeter,setSelectMeter] = useState(false);
        </Text>
       </View>
 
-      {selectMeter?<View>
+      {selectMeter?<View style={{}} >
       <View style={styles.imageShow}  >
 
       </View>
@@ -211,6 +289,35 @@ const [selectMeter,setSelectMeter] = useState(false);
 
       </View>
 
+      <Modal>
+        
+      </Modal>
+
+
+      <View style={styles.meterRead}>
+        <Text style={styles.meterText} >
+          Meter Reading : 
+        </Text>
+        <View style={styles.readingMain} >
+          <View style={styles.inputBox} ></View>
+          <View style={styles.inputBox} ></View>
+          <View style={styles.inputBox} ></View>
+          <View style={styles.inputBox} ></View>
+          <View style={styles.inputBox} ></View>
+
+        </View>
+
+      </View>
+      
+      <View style={styles.bottomPartInfoBtn} >
+      <Entypo name="info-with-circle" size={24} color="black" />
+      <TouchableOpacity style={{margin:"auto"}} >
+      <SubmitButton text="Submit Reading" textSize={18} bgColor={colorCodes.submitButtonEnabled} height={45} width={180} />
+      </TouchableOpacity>
+     
+      <FontAwesome6 onPress={()=> setModal(true)}  style={{marginTop:5,marginLeft:10}} name="edit" size={22} color="#0F77AF" />
+
+      </View>
 
 
       </View>:<View>
@@ -241,9 +348,29 @@ const [selectMeter,setSelectMeter] = useState(false);
         <Text style={styles.meterNotesTxt} >
             Meter Notes :
         </Text>
-        <TouchableOpacity>
-        <FontAwesome6 style={{marginTop:5,marginLeft:10}} name="edit" size={22} color="#0F77AF" />
-        </TouchableOpacity>
+    
+        <FontAwesome6 onPress={()=> setModal(true)}  style={{marginTop:5,marginLeft:10}} name="edit" size={22} color="#0F77AF" />
+     
+
+       <Modal visible={modal}
+       animationType='slide'
+       transparent
+       
+   
+       >
+        <View     style={styles.Modal}  >
+          <Text style={styles.ModalText} >
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro rerum quaerat nostrum eaque, molestias deserunt tempora libero quas blanditiis laborum!
+          </Text>
+         
+           <Text style={styles.ModalButton} onPress={()=> setModal(false)} >
+            Submit
+           </Text>
+       
+
+        </View>
+
+       </Modal>
    
       </View>
       <TouchableOpacity style={styles.downDropDown} >

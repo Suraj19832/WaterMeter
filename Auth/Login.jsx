@@ -20,7 +20,17 @@ const [filled,setFilled] = useState(false);
 const [emailUsername,setEmailUsername] = useState("");
 const [password,setPassword] = useState("");
 
-
+const validation=(email,password)=>{
+    if(email !== "" && password !== ""){
+     setFilled(true);
+    }
+    if(email !== "" && password == "" ){
+        setFilled(false);
+    }
+    if( email == "" && password !== ""){
+        setFilled(false)
+    }
+}
 
 const handleLogin =()=>{
     alert("Logged in successfully")
@@ -44,9 +54,11 @@ const handleCheckBoxToggle = () => {
                         <Text style={styles.heading} >
                             Login
                         </Text>
-                        <TextInput value={emailUsername} onChange={(e)=> setEmailUsername(e.target.value)}  placeholder="Email or Username"  style={styles.email} />
+                        <TextInput value={emailUsername} onChangeText={(value)=>{
+                            setEmailUsername(value); validation(value,password)}}  placeholder="Email or Username"  style={styles.email} />
 
-                        <TextInput value={password} onChange={(e)=> setPassword(e.target.value)}   placeholder="Password"  style={styles.password} />
+                        <TextInput value={password} onChangeText={(value)=> {
+                            setPassword(value); validation(emailUsername,value)}}   placeholder="Password"  style={styles.password} />
 
 
 
@@ -65,15 +77,15 @@ const handleCheckBoxToggle = () => {
                               </Text>
                             </View>
 
-                            <View>
+                            <TouchableOpacity>
                                 <Text style={styles.forgot} >
                                     Forgot Password?
                                 </Text>
                                 
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity onPress={handleLogin} style={{margin:"auto", marginTop:"20%"}} >
+                        <TouchableOpacity disabled={filled?false:true} onPress={handleLogin} style={{margin:"auto", marginTop:"20%"}} >
                            <SubmitButton height={50} width={150} bgColor={filled?colorCodes.submitButtonEnabled:colorCodes.submitButtonDisabled} text="Login" textSize={18}   />
                         </TouchableOpacity>
 

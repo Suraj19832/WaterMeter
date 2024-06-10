@@ -6,5 +6,6 @@ export const colorCodes = {
     statusPast:"#C53636",
     statusToday:"#FFB604",
     bgLightGrey:"#F2F2F2", 
+    borderTextLightBlue:""
     
 }
