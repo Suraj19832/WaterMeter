@@ -7,13 +7,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from 'react-native-check-box'
 import { ScrollView } from "react-native-gesture-handler";
+import SubmitButton from "../Components/SubmitButton";
+import { colorCodes } from "../ColorCodes/Colors";
 
 
 
 
 function Login({ navigation }) {
 
-const [checked,setChecked] = useState(true)
+const [checked,setChecked] = useState(true);
+const [filled,setFilled] = useState(false); 
+const [emailUsername,setEmailUsername] = useState("");
+const [password,setPassword] = useState("");
+
 
 
 const handleLogin =()=>{
@@ -38,9 +44,9 @@ const handleCheckBoxToggle = () => {
                         <Text style={styles.heading} >
                             Login
                         </Text>
-                        <TextInput placeholder="Email or Username"  style={styles.email} />
+                        <TextInput value={emailUsername} onChange={(e)=> setEmailUsername(e.target.value)}  placeholder="Email or Username"  style={styles.email} />
 
-                        <TextInput   placeholder="Password"  style={styles.password} />
+                        <TextInput value={password} onChange={(e)=> setPassword(e.target.value)}   placeholder="Password"  style={styles.password} />
 
 
 
@@ -67,10 +73,8 @@ const handleCheckBoxToggle = () => {
                             </View>
                         </View>
 
-                        <TouchableOpacity onPress={handleLogin} style={styles.loginBtn} >
-                            <Text style={styles.loginTxt } >
-                                Login
-                            </Text>
+                        <TouchableOpacity onPress={handleLogin} style={{margin:"auto", marginTop:"20%"}} >
+                           <SubmitButton height={50} width={150} bgColor={filled?colorCodes.submitButtonEnabled:colorCodes.submitButtonDisabled} text="Login" textSize={18}   />
                         </TouchableOpacity>
 
                        

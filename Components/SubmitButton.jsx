@@ -2,7 +2,7 @@ import React from 'react'
 import { View,Text,StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-export default function SubmitButton({text,bgColor,height,width,textSize}) {
+export default function SubmitButton({text,bgColor,height,width,textSize,active}) {
 
     const styles = StyleSheet.create({
         submitButton:{
@@ -17,7 +17,7 @@ export default function SubmitButton({text,bgColor,height,width,textSize}) {
             fontSize:textSize,
             textAlign:"center",
             paddingTop:8 ,
-            height:30,
+            height:50,
          
           },
 

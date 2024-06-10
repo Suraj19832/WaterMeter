@@ -83,8 +83,9 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
         cardContentTop: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
-            gap: 50,
+            justifyContent: "space-between",
+            width:"92%",
+            margin:"auto",
             alignItems: "center",
             marginTop: 15,
 
@@ -173,7 +174,7 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            gap: 15
+            gap: 15,
 
         },
         expandBtn: {
@@ -191,7 +192,7 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
         },
         expandContent: {
             height: 225,
-            width: "90%",
+            width: "95%",
 
             margin: "auto",
             marginBottom: 20,
@@ -251,22 +252,17 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
         belowContentCompleted: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 90,
+            width:"92%",
+            margin:"auto",
             marginTop: 8,
             marginBottom: 15
         },
-        expandContentCompletedButton:{
-            height: 37,
-            width: 150,
-            borderRadius: 10,
-            backgroundColor: "#FF8902",
-            marginLeft: 155,
-        },
+      
         expandContentCompleted:{
             height: 255,
-            width: "90%",
+            width: "92%",
             margin: "auto",
             marginBottom: 20,
             borderRadius: 15,
@@ -306,12 +302,12 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
 
                                 <View style={styles.belowContentCompleted}  >
 
-                                    {index == expandCompleted ? <View >
+                                    {index == expandCompleted ? <View style={{width:"37.5%"}} >
                                         <Text style={styles.completedNextDate}>
-                                            {"                                                      "}
+                                           
                                         </Text>
                                         <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                                            {"                                                   "}
+                                         
                                         </Text>
 
 
@@ -416,8 +412,8 @@ export default function DashboardCompletedCards({items,index,onPress,expandCompl
 
                                     <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
                                        
-                                        <TouchableOpacity style={{marginLeft:155}} onPress={() => { alert("Reading...") }}  >
-                                           <SubmitButton  textSize={14} bgColor={colorCodes.submitButtonEnabled} height={37} width={150} text="Completion Summary" />
+                                        <TouchableOpacity style={{marginLeft:"51%"}} onPress={() => { alert("Reading...") }}  >
+                                           <SubmitButton  textSize={13} bgColor={colorCodes.submitButtonEnabled} height={37} width={150} text="Completion Summary" />
 
                                         </TouchableOpacity>
 

@@ -41,7 +41,7 @@ const DrawerNav = () => (
         }
     }} drawerContent={DrawerNavigation}>
         <Drawer.Screen name="Dash" component={TabNavigator} />
-        <Drawer.Screen name="ChangePassword" component={ChangePassword}  />
+       
     </Drawer.Navigator>
 );
 
@@ -93,6 +93,11 @@ const MainStack = () => {
             <Stack.Screen
                 name="ChangePassword"
                 component={ChangePassword}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="DrawerNav"
+                component={DrawerNavigation}
                 options={{ headerShown: false }}
             />
 

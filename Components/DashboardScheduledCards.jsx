@@ -27,8 +27,9 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
         cardContentTop: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
-            gap: 50,
+            justifyContent: "space-between",
+            width:"91%",
+            margin:"auto",
             alignItems: "center",
             marginTop: 15,
 
@@ -68,24 +69,25 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
         belowContentMain: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 45,
-            marginTop: 10,
-            marginBottom: 15
+           width:"91%",
+           margin:"auto",
+            marginTop: "5%",
+            marginBottom: "5%"
 
         },
         belowFirst: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "space",
             alignItems: "center",
-            gap: 10,
+            gap:10,
 
         },
         status: {
             height: 30,
-            width: 80,
+            width: "40%",
             borderRadius: 100,
             backgroundColor: "#C53636"
 
@@ -106,9 +108,10 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
         belowContentMainNotPast: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 130,
+           width:"93%",
+           margin:"auto",
             marginTop: 8,
             marginBottom: 15
         },
@@ -135,7 +138,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
         },
         expandContent: {
             height: 225,
-            width: "90%",
+            width: "92%",
 
             margin: "auto",
             marginBottom: 20,
@@ -215,6 +218,13 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
             marginBottom: 20,
             borderRadius: 15,
             backgroundColor: "#e7e7e7"
+        },
+        expandContentBottomPart:{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width:"97%",
+            alignItems: "center",
         }
 
     })
@@ -232,7 +242,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
                                             Property
                                         </Text>
                                         <Text style={styles.besidePropertyTxt}>
-                                            : {items?.property} {"  |  "} {items?.name}
+                                            : {items?.property} {" | "} {items?.name}
                                         </Text>
 
                                     </View>
@@ -291,7 +301,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
                                 </View> : <View style={styles.belowContentMainNotPast}  >
 
 
-                                    <View style={[styles.status, { backgroundColor: items?.status == "In Process"? colorCodes.navyBlueButton:colorCodes.statusToday }]} >
+                                    <View style={[styles.status, { backgroundColor: items?.status == "In Process"? colorCodes.navyBlueButton:colorCodes.statusToday,width:"25%" }]} >
                                         <Text style={styles.statusTxt}>
                                             {items?.status}
                                         </Text>
@@ -375,7 +385,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
 
                                     </View>
 
-                                    <View style={[styles.expandContentHeading, { marginTop: 10 }]}>
+                                    <View style={[styles.expandContentBottomPart, { marginTop: 10 }]}>
                                         <Text style={styles.expandContentFTxt} >
                                             Estimate Time :
                                         </Text>
@@ -383,7 +393,7 @@ export default function DashboardScheduledCards({items,index,onPress,expandSched
                                         <Text style={styles.expandContentSTxt}>
                                             {items?.estimateTime}
                                         </Text>
-                                        <TouchableOpacity style={{marginLeft:30}} onPress={() => { alert("Reading...") }}  >
+                                        <TouchableOpacity style={{marginLeft:"8%"}} onPress={() => { alert("Reading...") }}  >
                                            <SubmitButton  textSize={14} bgColor={colorCodes.submitButtonEnabled} height={37} width={100} text="Start Reading" />
 
                                         </TouchableOpacity>
