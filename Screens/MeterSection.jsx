@@ -237,6 +237,34 @@ inputBox:{
   borderColor:"#0B9ED2",
   elevation:5,
   backgroundColor:"white"
+},
+infoModalCrosssection:{
+  height:200,
+  width:"85%",
+  backgroundColor:"#00000000",
+  margin:"auto",
+  display:"flex",
+  alignItems:"flex-end"
+},
+infoModalMain:{
+  height:140,
+  width:"100%",
+  backgroundColor:"lightgrey",
+  borderRadius:25,
+  elevation:10
+},
+textContent:{
+  height:120,
+  width:"95%",
+  marginTop:"6%",
+  marginLeft:"5%",
+  margin:"auto",
+
+},
+infoModalTxt:{
+  fontSize:17,
+  color:"#0B9ED2",
+  paddingBottom:10
 }
        
       
@@ -290,15 +318,29 @@ inputBox:{
       </View>
 
       <Modal visible={modal2} animationType='slide' transparent >
-        <View>
+        <View style={styles.infoModalCrosssection} >
         <Entypo onPress={()=> setModal2(false)} name="cross" size={24} color="white" />
-          <View>
-
+          <View style={styles.infoModalMain} >
+         <View style={styles.textContent} >
+          <Text style={styles.infoModalTxt} >
+            Last Reading : <Text style={{color:"grey"}} >
+              916277 OCR
+            </Text>
+          </Text>
+          <Text style={styles.infoModalTxt}  >
+            Last Reading Date : <Text style={{color:"grey"}}>
+            Sun May 19th,2024
+            </Text>
+          </Text>
+          <Text style={styles.infoModalTxt}  >
+            Avg Usage : <Text style={{color:"grey"}}>
+              9162/mth
+            </Text>
+          </Text>
+         </View>
           </View>
         </View>
-        <Text >
-          This is info modal
-        </Text>
+       
         
       </Modal>
 
@@ -324,7 +366,7 @@ inputBox:{
       <SubmitButton text="Submit Reading" textSize={18} bgColor={colorCodes.submitButtonEnabled} height={45} width={180} />
       </TouchableOpacity>
      
-      <FontAwesome6 onPress={()=> setModal(true)}  style={{marginTop:5,marginLeft:10}} name="edit" size={22} color="#0F77AF" />
+      <FontAwesome6  style={{marginTop:5,marginLeft:10}} name="edit" size={22} color="#0F77AF" />
 
       </View>
 
