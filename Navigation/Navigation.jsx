@@ -15,6 +15,8 @@ import { CustomTabBar } from "./TabNavigator";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import DrawerNavigation from "./DrawerNavigation";
 import ChangePassword from './../Auth/ChangePassword';
+import VerifyOTP from './../Auth/VerifyOTP';
+import VerifyEmail from './../Auth/VarifyEmail';
 
 const Stack = createStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -47,7 +49,7 @@ const DrawerNav = () => (
 
 const MainStack = () => {
     return (
-        <Stack.Navigator initialRouteName="Dashboard" headerShown={false}>
+        <Stack.Navigator initialRouteName="Login" headerShown={false}>
             <Stack.Screen
                 name="SplashScreen"
                 component={SplashScreen}
@@ -61,6 +63,16 @@ const MainStack = () => {
             <Stack.Screen
                 name="Dashboard"
                 component={DrawerNav}
+                options={{ headerShown: false }}
+            />
+             <Stack.Screen
+                name="VerifyOTP"
+                component={VerifyOTP}
+                options={{ headerShown: false }}
+            />
+                 <Stack.Screen
+                name="VerifyEmail"
+                component={VerifyEmail}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
