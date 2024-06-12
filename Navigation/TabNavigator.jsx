@@ -9,6 +9,8 @@ import Completion from './../Screens/Completion';
 import MeterSelection from './../Screens/MeterSelection';
 import Login from '../Auth/Login';
 import MeterSection from '../Screens/MeterSection';
+import userIcon from '../assets/Frame (1).png'
+import listIcon from '../assets/Frame (2).png'
 const Tab = createBottomTabNavigator();
 
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
@@ -28,9 +30,10 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                     } else if (route.name === "MeterSelection") {
                         iconName = "clipboard-check";
                     } else if (route.name === "MeterReading") {
-                        iconName = "account";
+                        iconName = listIcon;
+                        
                     } else if (route.name === "MeterReadingScanner") {
-                        iconName = "gauge";
+                        iconName = userIcon;
                     }
 
                     const onPress = () => {
@@ -68,7 +71,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                                 <View
                                     style={[route.name === "MeterSelection" ? styles.middleTab : null, { zIndex: 10, }]}
                                 >
-                                    <MaterialCommunityIcons
+                                    {/* <MaterialCommunityIcons
                                         name={iconName}
                                         color={
                                             isFocused
@@ -78,7 +81,14 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                                                     : "white"
                                         }
                                         size={45}
-                                    />
+                                    /> */}
+                                          <Image
+                                    source={iconName}
+                                    style={[
+                                        styles.icon,
+                                        { tintColor: isFocused ? 'orange' : (route.name === 'MeterSelection' ? '#0F77AF' : 'gray') },
+                                    ]}
+                                />
                                 </View>
                             </TouchableOpacity>
 
@@ -132,4 +142,8 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 10,
     },
+    icon:{
+        width:40,
+        height:40
+    }
 });
