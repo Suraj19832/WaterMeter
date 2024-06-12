@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#5EC2C6",
     fontFamily: "Roboto",
-    fontWeight: "500",
-    lineHeight: 32.81,
+    fontWeight: "700",
+    // lineHeight: 32.81,
   },
   inputContainer: {
     marginHorizontal: 25,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   inputfield: {
     fontFamily: "Roboto",
-    fontWeight: "400",
+    fontWeight: "500",
     fontSize: 14,
     lineHeight: 16.41,
     width: "90%",
@@ -258,8 +258,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitText: {
-    fontSize: 18,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "700",
     fontFamily: "Roboto",
     lineHeight: 21.09,
     color: "#FFFFFF",

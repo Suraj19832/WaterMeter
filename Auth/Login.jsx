@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#5EC2C6",
     fontFamily: "Roboto",
-    fontWeight: "500",
+    fontWeight: "700",
     lineHeight: 32.81,
   },
   email: {
@@ -323,8 +323,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitText: {
-    fontSize: 18,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "700",
     fontFamily: "Roboto",
     lineHeight: 21.09,
     color: "#FFFFFF",

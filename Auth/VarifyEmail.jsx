@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Dimensions, Image, ImageBackground, Text,TextInput, ToastAndroid, TouchableOpacity  } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+} from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 // import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -12,12 +22,11 @@ import SubmitButton from "../Components/SubmitButton";
 import appApi from "../Helper/Api";
 
 function VarifyEmail({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(null);
 
-const [email, setEmail] = useState("");
-const [emailError, setEmailError] = useState(null);
-
-const [loading, setloading] = useState(false)
-const handleEmailChange = (text) => {
+  const [loading, setloading] = useState(false);
+  const handleEmailChange = (text) => {
     setEmail(text);
     if (text.trim()) {
       setEmailError(null);
@@ -38,39 +47,61 @@ const handleEmailChange = (text) => {
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
-  const handleVerifyEmail =()=>{
-    setloading(true)
-    const data ={
-      email :email
-    }
-  appApi.verifyEmail(data)
-  .then((res)=>{
-    if (res?.status) {
-      showToast(res?.message)
-      setloading(false)
-      navigation.navigate("VerifyOTP" , { email: email ,timer:res?.resendInSec })
-    }else{
-      showToast("Something went wrong")
-      setloading(false)
-    }
-  })
-  }
- 
+  const handleVerifyEmail = () => {
+    setloading(true);
+    const data = {
+      email: email,
+    };
+    appApi.verifyEmail(data).then((res) => {
+      if (res?.status) {
+        showToast(res?.message);
+        setloading(false);
+        navigation.navigate("VerifyOTP", {
+          email: email,
+          timer: res?.resendInSec,
+        });
+      } else {
+        showToast("Something went wrong");
+        setloading(false);
+      }
+    });
+  };
+
   return (
-    <SafeAreaView>
-      <ScrollView style={{height:'auto'}}>
-     
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView style={{ height: "auto" }}>
         <ImageBackground
           source={require("../assets/BackgroundImage.png")}
-          resizeMode='cover'
+          resizeMode="cover"
           style={styles.image}
         />
         <View style={{ position: "absolute" }}>
           <Image
             source={require("../assets/Rectangle 11.png")}
-            style={{ height: Dimensions.get("window").height*0.44, width: Dimensions.get("window").width }}
-           
+            style={{
+              height: Dimensions.get("window").height * 0.44,
+              width: Dimensions.get("window").width,
+            }}
           />
+          <TouchableOpacity
+            onPress={navigation.goBack}
+            style={{ position: "absolute" }}
+          >
+            <Image
+              source={require("../assets/left-arrow.png")}
+              style={{
+                height: 22,
+                width: 12,
+                position: "absolute",
+                top: 45,
+                left: 20,
+              }}
+            />
+          </TouchableOpacity>
+
           <View
             style={{
               position: "absolute",
@@ -83,54 +114,54 @@ const handleEmailChange = (text) => {
           >
             <Image
               source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
-              style={{ height: 105, width: 158 ,zIndex:2}}
+              style={{ height: 105, width: 158, zIndex: 2 }}
             ></Image>
           </View>
-          <View style={{ alignItems:'center',justifyContent:'center'}}>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text style={styles.heading}>Enter Your Email Id</Text>
-    
-       
-            
 
+            <View style={styles.fields_main}>
+              <View style={styles.input_box}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Your Email"
+                  placeholderTextColor={"rgba(166, 166, 166, 1)"}
+                  onChangeText={handleEmailChange}
+                  onBlur={validateEmail}
+                  value={email}
+                />
 
-    <View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Your Email"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          onChangeText={handleEmailChange}
-          onBlur={validateEmail}
-          value={email}
-        />
-     
-     <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
-      
-      </View>
-    </View>
-    {emailError ? (
-                <Text style={{ color: "red" }}>{emailError}</Text>
-              ) : null}
-  
-            <View style={{marginVertical:20 ,marginBottom:20}}>
-              <TouchableOpacity disabled={!email || emailError !== null || loading}  onPress={handleVerifyEmail}>
-              <SubmitButton  text="Send OTP"
-        bgColor={email && emailError === null  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
-        height={48}
-        width={180}
-        textSize={18}
-        loading={loading}
-         />
-              </TouchableOpacity>
-          
+                <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
+              </View>
             </View>
+            {emailError ? (
+              <Text style={{ color: "red" }}>{emailError}</Text>
+            ) : null}
 
-
+            <View style={{ marginVertical: 20, marginBottom: 20 }}>
+              <TouchableOpacity
+                disabled={!email || emailError !== null || loading}
+                onPress={handleVerifyEmail}
+              >
+                <SubmitButton
+                  text="Send OTP"
+                  bgColor={
+                    email && emailError === null
+                      ? "rgba(255, 137, 2, 1)"
+                      : "rgba(255, 137, 2, 0.5)"
+                  }
+                  height={48}
+                  width={180}
+                  textSize={18}
+                  loading={loading}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         {/* </ImageBackground> */}
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -140,25 +171,17 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height * 1,
     opacity: 0.1,
     position: "relative",
-    zIndex:0
+    zIndex: 0,
   },
   heading: {
     fontSize: 28,
     textAlign: "center",
-    fontWeight:'500',
-    lineHeight:32,
-    marginTop:30,
+    fontWeight: "500",
+    lineHeight: 32,
+    marginTop: 30,
     color: "#5EC2C6",
-    marginBottom:20
+    marginBottom: 20,
   },
-  
-
-
-
-
-
- 
-
 
   // shourya
 
@@ -167,7 +190,7 @@ const styles = StyleSheet.create({
   },
   fields_main: {
     marginTop: 17,
-    width:'85%'
+    width: "85%",
   },
   inputHeading: {
     fontWeight: "500",
@@ -187,15 +210,14 @@ const styles = StyleSheet.create({
     borderColor: "#2198C9",
     fontSize: 14,
 
-     height: 60,
- 
+    height: 60,
   },
   input: {
     position: "relative",
     color: "black",
     width: "90%",
-    height:"100%",
-    fontSize:14
+    height: "100%",
+    fontSize: 14,
   },
 });
 
