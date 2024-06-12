@@ -12,17 +12,11 @@ import SubmitButton from "../Components/SubmitButton";
 import appApi from "../Helper/Api";
 
 function VarifyEmail({ navigation }) {
-//   const [checked, setChecked] = useState(true);
 
- 
-
-  
-//   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 const [email, setEmail] = useState("");
 const [emailError, setEmailError] = useState(null);
-//   const [isConfirmPassword ,setIsConfirmPassword] = useState("");
-//   const passwordsMatch = isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
 
+const [loading, setloading] = useState(false)
 const handleEmailChange = (text) => {
     setEmail(text);
     if (text.trim()) {
@@ -30,7 +24,6 @@ const handleEmailChange = (text) => {
     }
   };
   const validateEmail = () => {
-    // Regular expression pattern to validate email format
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) {
@@ -46,6 +39,7 @@ const handleEmailChange = (text) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const handleVerifyEmail =()=>{
+    setloading(true)
     const data ={
       email :email
     }
@@ -53,7 +47,11 @@ const handleEmailChange = (text) => {
   .then((res)=>{
     if (res?.status) {
       showToast(res?.message)
+      setloading(false)
       navigation.navigate("VerifyOTP" , { email: email ,timer:res?.resendInSec })
+    }else{
+      showToast("Something went wrong")
+      setloading(false)
     }
   })
   }
@@ -115,12 +113,14 @@ const handleEmailChange = (text) => {
               ) : null}
   
             <View style={{marginVertical:20 ,marginBottom:20}}>
-              <TouchableOpacity  onPress={handleVerifyEmail}>
+              <TouchableOpacity disabled={!email || emailError !== null || loading}  onPress={handleVerifyEmail}>
               <SubmitButton  text="Send OTP"
         bgColor={email && emailError === null  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
         height={48}
         width={180}
-        textSize={18} />
+        textSize={18}
+        loading={loading}
+         />
               </TouchableOpacity>
           
             </View>

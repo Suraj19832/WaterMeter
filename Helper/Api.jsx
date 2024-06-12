@@ -20,5 +20,11 @@ const appApi = {
   
     return sendGetRequest(url, data);
   },
+  ForgotPassword: function(data) {
+    
+    const url = `${baseURL}/api/forget-password`;
+  
+    return sendPostFormData(url, data);
+  },
 };
 export default appApi;

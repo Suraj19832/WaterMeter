@@ -1,8 +1,8 @@
 import React from 'react'
-import { View,Text,StyleSheet } from 'react-native'
+import { View,Text,StyleSheet, ActivityIndicator } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-export default function SubmitButton({text,bgColor,height,width,textSize,active}) {
+export default function SubmitButton({text,bgColor,height,width,textSize,loading}) {
 
     const styles = StyleSheet.create({
         submitButton:{
@@ -30,9 +30,18 @@ export default function SubmitButton({text,bgColor,height,width,textSize,active}
 
   return (
     <View style={styles.submitButton} >
-    <Text style={styles.submitButtonText} >
-       {text}
-    </Text>
+
+      {loading ?(
+        <ActivityIndicator size={24} color={'#FFFFFF'} style={{alignSelf:'center' ,width:'100%'}}/>
+
+        
+      ):(
+        <Text style={styles.submitButtonText} >
+        {text}
+     </Text>
+      )}
+      
+   
 
   </View>
   )

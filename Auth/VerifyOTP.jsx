@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Dimensions, Image, ImageBackground, Text, TextInput, TouchableOpacity } from "react-native";
+import { Dimensions, Image, ImageBackground, Text, TextInput, ToastAndroid, TouchableOpacity } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 // import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -15,9 +15,12 @@ import appApi from "../Helper/Api";
 function VerifyOTP({ navigation }) {
   const route = useRoute();
   const { email ,timer  } = route.params;
+  const [loading, setloading] = useState(false)
     const [otp, setOtp] = useState(['', '', '', '']);
     const [time, setTime] = useState(timer);
-
+    function showToast(message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    }
     useEffect(() => {
       let timer;
       if (time > 0) {
@@ -88,17 +91,45 @@ function VerifyOTP({ navigation }) {
     setIsButtonActive(allFilled);
   };
 const handleOTPVarification =()=>{
-
+  setloading(true)
+console.log("object")
   const otpINT =otp.join('')
   const data ={
     email :email,
     otp:otpINT
   }
   appApi.VerifyOTP(data).then((res)=>{
-    console.log(res.status)
+    // console.log(res.status)
+    if (res?.status) {
+      showToast(res?.message)
+      setloading(false)
+      navigation.navigate("ForgotPassword" ,{email ,otp:otpINT})
+    }else{
+      showToast(res?.message)
+      setloading(false)
+    }
   }
   )
   // console.log( parseInt(otpINT, 10))
+}
+const handleResendOTP =()=>{
+  setloading(true)
+  // console.log("hh")
+  const data ={
+    email :email
+  }
+  
+appApi.verifyEmail(data)
+.then((res)=>{
+  // console.log(res?.status)
+  if (res?.status) {
+    showToast(res?.message)
+   setTime(res?.resendInSec)
+   setloading(false)
+  //  console.log(res?.resendInSec)
+  //  console.log()
+  }
+})
 }
   
   return (
@@ -203,8 +234,7 @@ const handleOTPVarification =()=>{
         </View>
       </View>
       <View>
-    {/* <Text style={{color:'rgba(94, 194, 198, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP</Text>
-     */}
+ 
      {time === 0 ? (
       <TouchableOpacity onPress={handleResendOTP}>
  <Text style={{color:'rgba(94, 194, 198, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP</Text>
@@ -213,9 +243,7 @@ const handleOTPVarification =()=>{
      ):(
       <Text style={{color:'rgba(166, 166, 166, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP in {time} seconds</Text>
      )}
-      {/* <Text style={{ color: 'rgba(94, 194, 198, 1)', fontWeight: '600', fontSize: 14, lineHeight: 21 }}>
-      {time === 0 ? 'Resend OTP' : `Resend OTP in ${time} seconds`}
-    </Text> */}
+      
     </View>
     </View>
 
@@ -227,7 +255,7 @@ const handleOTPVarification =()=>{
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
 
             
-            <TouchableOpacity onPress={handleOTPVarification}>
+            <TouchableOpacity disabled={!isButtonActive || loading} onPress={handleOTPVarification}>
             <SubmitButton
                 text="Verify"
                 bgColor={
@@ -238,6 +266,7 @@ const handleOTPVarification =()=>{
                 height={48}
                 width={148}
                 textSize={18}
+                loading={loading}
               />
             </TouchableOpacity>
             
