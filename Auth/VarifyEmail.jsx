@@ -1,25 +1,46 @@
 import React, { useState } from "react";
-import { Dimensions, Image, ImageBackground, Text } from "react-native";
+import { Dimensions, Image, ImageBackground, Text,TextInput, TouchableOpacity  } from "react-native";
 import { Button } from "react-native";
-import { View, StyleSheet , TextInput, TouchableOpacity} from "react-native";
+import { View, StyleSheet } from "react-native";
 // import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from "react-native-check-box";
 import { ScrollView } from "react-native-gesture-handler";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Feather, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 
-function ForgotPassword({ navigation }) {
+function VarifyEmail({ navigation }) {
 //   const [checked, setChecked] = useState(true);
 
  
 
   
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isNewPassword ,setIsNewPassword] = useState("");
-  const [isConfirmPassword ,setIsConfirmPassword] = useState("");
-  const passwordsMatch = isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
+//   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+const [email, setEmail] = useState("");
+const [emailError, setEmailError] = useState(null);
+//   const [isConfirmPassword ,setIsConfirmPassword] = useState("");
+//   const passwordsMatch = isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
+
+const handleEmailChange = (text) => {
+    setEmail(text);
+    if (text.trim()) {
+      setEmailError(null);
+    }
+  };
+  const validateEmail = () => {
+    // Regular expression pattern to validate email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      setEmailError("Email is required");
+    } else if (!emailPattern.test(email)) {
+      setEmailError("Invalid email format");
+    } else {
+      // setEmailError("");
+      setEmailError(null);
+    }
+  };
  
   return (
     <SafeAreaView>
@@ -52,7 +73,7 @@ function ForgotPassword({ navigation }) {
             ></Image>
           </View>
           <View style={{ alignItems:'center',justifyContent:'center'}}>
-            <Text style={styles.heading}>Forgot Password?</Text>
+            <Text style={styles.heading}>Enter Your Email Id</Text>
     
        
             
@@ -62,46 +83,30 @@ function ForgotPassword({ navigation }) {
       <View style={styles.input_box}>
         <TextInput
           style={styles.input}
-          placeholder="Enter New Password"
+          placeholder="Enter Your Email"
           placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible}  
-          value={isNewPassword}
-          onChangeText={(text)=>{setIsNewPassword(text)}}
+          onChangeText={handleEmailChange}
+          onBlur={validateEmail}
+          value={email}
         />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
+     
+     <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
+      
       </View>
     </View>
-    <View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter New Password"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible}  
-          value={isConfirmPassword}
-          onChangeText={(text)=>{setIsConfirmPassword(text)}}
-        />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
+    {emailError ? (
+                <Text style={{ color: "red" }}>{emailError}</Text>
+              ) : null}
+  
             <View style={{marginVertical:20 ,marginBottom:20}}>
-            <SubmitButton  text="Submit"
-        bgColor={passwordsMatch  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
+              <TouchableOpacity onPress={()=>navigation.navigate("VerifyOTP")}>
+              <SubmitButton  text="Send OTP"
+        bgColor={email && emailError === null  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
         height={48}
-        width={246}
+        width={180}
         textSize={18} />
+              </TouchableOpacity>
+          
             </View>
 
 
@@ -174,8 +179,8 @@ const styles = StyleSheet.create({
     color: "black",
     width: "90%",
     height:"100%",
-    fontSize:20
+    fontSize:14
   },
 });
 
-export default ForgotPassword;
+export default VarifyEmail;

@@ -84,7 +84,7 @@ function Login({ navigation }) {
         });
     }
   };
-
+  
   useEffect(() => {
     if (email && password) {
       setDisabledBtn(false);
@@ -92,6 +92,7 @@ function Login({ navigation }) {
       setDisabledBtn(true);
     }
   }, [email, password]);
+
 
   const handleCheckBoxToggle = () => {
     setChecked(!checked);
