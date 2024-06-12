@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -92,7 +94,7 @@ export async function sendAuthorizeGetRequest(url, params = {}) {
 }
 
 export async function sendAuthorizePostRequest(url, obj) {
-  let token = localStorage.getItem("token");
+  let token = AsyncStorage.getItem("token");
 
   let response = await fetch(url, {
     method: "POST",
@@ -239,24 +241,36 @@ export async function sendDeleteURLencoded(url, obj) {
 }
 
 export async function sendAuthorizePostFormData(url, obj) {
-  let token = localStorage.getItem("token");
+  try {
+    let token = await AsyncStorage.getItem("token");
+    console.log(token, "<=====================");
 
-  let response = await fetch(url, {
-    method: "POST",
-    body: prepareFormDataFromObject(obj),
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    if (!token) {
+      throw new Error("No token found");
+    }
 
-  let data = await response.json();
+    let response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(obj), // Converting the object to JSON string
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!response.ok) {
-    throw new ValidationError(data.message, data.errors);
+    let data = await response.json();
+
+    if (!response.ok) {
+      throw new ValidationError(data.message, data.errors);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in sendAuthorizePostFormData:", error);
+    throw error;
   }
-
-  return data;
 }
+
 export async function sendAuthorizePatchFormData(url, obj) {
   let token = localStorage.getItem("token");
 

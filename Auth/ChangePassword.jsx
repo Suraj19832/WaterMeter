@@ -1,205 +1,264 @@
-import React, { useState } from "react";
-import { Dimensions, Image, ImageBackground, Text } from "react-native";
-import { Button } from "react-native";
-import { View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
-import bgLogin2 from "../assets/bgLogin2.jpg";
-import CheckBox from "react-native-check-box";
-import { ScrollView } from "react-native-gesture-handler";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
-import SubmitButton from "../Components/SubmitButton";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  ImageBackground,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import appApi from "../Helper/Api";
 
 function ChangePassword({ navigation }) {
-  const [checked, setChecked] = useState(true);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPass, setShowCurrentPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [disabledBtn, setDisabledBtn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    alert("Logged in successfully");
+  const validation = () => {
+    if (newPassword !== confirmPassword) {
+      showToast("new and confirm password should be matched");
+      return false;
+    }
+    return true;
   };
 
-  const handleCheckBoxToggle = () => {
-    setChecked(!checked);
+  const handleConfirmPassword = () => {
+    if (validation() === false) {
+      return;
+    } else {
+      const data = {
+        current_password: currentPassword,
+        password: newPassword,
+        password_confirmation: confirmPassword,
+      };
+      setIsLoading(true);
+      setDisabledBtn(true);
+      appApi
+        .changePassword(data)
+        .then((res) => {
+          setIsLoading(false);
+          setDisabledBtn(false);
+          if (res?.status) {
+            showToast(res?.message);
+            navigation.navigate("Dashboard");
+          } else {
+            showToast(res?.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err, "error form chnge password");
+          setIsLoading(false);
+          setDisabledBtn(false);
+        });
+    }
   };
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isCurrentPassword ,setIsCurrentPassword] = useState("");
-  const [isNewPassword ,setIsNewPassword] = useState("");
-  const [isConfirmPassword ,setIsConfirmPassword] = useState("");
-  const passwordsMatch = isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
- 
+
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+
+  useEffect(() => {
+    if (
+      currentPassword.length > 0 &&
+      newPassword.length > 0 &&
+      confirmPassword.length > 0
+    ) {
+      setDisabledBtn(false);
+    } else {
+      setDisabledBtn(true);
+    }
+  }, [currentPassword, newPassword, confirmPassword]);
   return (
-    <SafeAreaView>
-      <ScrollView style={{height:'auto'}}>
-     
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <ImageBackground
           source={require("../assets/BackgroundImage.png")}
-          resizeMode='cover'
+          resizeMode="cover"
           style={styles.image}
-        />
-        <View style={{ position: "absolute" }}>
-          <Image
-            source={require("../assets/Rectangle 11.png")}
-            style={{ height: Dimensions.get("window").height*0.44, width: Dimensions.get("window").width ,zIndex:1}}
-           
-          />
-          <View
-            style={{
-              position: "absolute",
-              alignSelf: "center",
-              width: "100%",
-              height: "50%",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          imageStyle={{ opacity: 0.1 }}
+        >
+          <View style={styles.content}>
+            <Image
+              source={require("../assets/Rectangle 11.png")}
+              style={styles.rectangleImg}
+            />
             <Image
               source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
-              style={{ height: 105, width: 158 ,zIndex:2}}
-            ></Image>
+              style={styles.diamondImg}
+            />
           </View>
-          <View style={{ alignItems:'center',justifyContent:'center'}}>
+
+          <View style={{ marginTop: 20 }}>
             <Text style={styles.heading}>Change Password</Text>
-    
-       
-            
-
-<View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={[styles.input, { fontSize:  20 }]}
-          placeholder="Current Password"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible} 
-          value= {isCurrentPassword}
-          onChangeText={(text)=>{setIsCurrentPassword(text)
-            console.log(text)
-          }}
-        />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-    <View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter New Password"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible}  
-          value={isNewPassword}
-          onChangeText={(text)=>{setIsNewPassword(text)}}
-        />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-    <View style={styles.fields_main}>
-      <View style={styles.input_box}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter New Password"
-          placeholderTextColor={"rgba(166, 166, 166, 1)"}
-          secureTextEntry={!isPasswordVisible}  
-          value={isConfirmPassword}
-          onChangeText={(text)=>{setIsConfirmPassword(text)}}
-        />
-        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <FontAwesome5 
-            name={isPasswordVisible ? "eye" : "eye-slash"} 
-            size={14} 
-            color="black" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-            <View style={{marginVertical:20 ,marginBottom:20}}>
-            <SubmitButton  text="Submit"
-        bgColor={passwordsMatch  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
-        height={48}
-        width={246}
-        textSize={18} />
+            <View style={styles.inputContainer}>
+              <View style={styles.input}>
+                <TextInput
+                  placeholder="Current Password"
+                  placeholderTextColor="#656263"
+                  style={styles.inputfield}
+                  secureTextEntry={!showCurrentPass}
+                  onChangeText={(text) => setCurrentPassword(text)}
+                  value={currentPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowCurrentPass(!showCurrentPass)}
+                >
+                  {showCurrentPass ? (
+                    <Feather name="eye" size={18} color="#656263" />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="eye-off-outline"
+                      size={18}
+                      color="#656263"
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <View style={styles.input}>
+                <TextInput
+                  placeholder="Enter New Password"
+                  placeholderTextColor="#656263"
+                  style={styles.inputfield}
+                  secureTextEntry={!showNewPass}
+                  onChangeText={(text) => setNewPassword(text)}
+                  value={newPassword}
+                />
+                <TouchableOpacity onPress={() => setShowNewPass(!showNewPass)}>
+                  {showNewPass ? (
+                    <Feather name="eye" size={18} color="#656263" />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="eye-off-outline"
+                      size={18}
+                      color="#656263"
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <View style={styles.input}>
+                <TextInput
+                  placeholder="Confirm Password"
+                  placeholderTextColor="#656263"
+                  style={styles.inputfield}
+                  secureTextEntry={!showConfirmPass}
+                  onChangeText={(text) => setConfirmPassword(text)}
+                  value={confirmPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPass(!showConfirmPass)}
+                >
+                  {showConfirmPass ? (
+                    <Feather name="eye" size={18} color="#656263" />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="eye-off-outline"
+                      size={18}
+                      color="#656263"
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-
-
+            <TouchableOpacity
+              style={[styles.submitBtn, { opacity: disabledBtn ? 0.5 : 1 }]}
+              disabled={disabledBtn}
+              onPress={handleConfirmPassword}
+            >
+              {isLoading ? (
+                <ActivityIndicator size={"small"} />
+              ) : (
+                <Text style={styles.submitText}>Change Password</Text>
+              )}
+            </TouchableOpacity>
           </View>
-        </View>
-        {/* </ImageBackground> */}
+        </ImageBackground>
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   image: {
-    width: Dimensions.get("window").width * 1,
-    height: Dimensions.get("window").height * 1,
-    opacity: 0.2,
+    flex: 1,
+  },
+  content: {
     position: "relative",
-    zIndex:0
+  },
+  rectangleImg: {
+    height: Dimensions.get("window").height * 0.44,
+    width: Dimensions.get("window").width,
+  },
+  diamondImg: {
+    height: 101,
+    width: 139,
+    position: "absolute",
+    top: 100,
+    alignSelf: "center",
   },
   heading: {
     fontSize: 28,
     textAlign: "center",
-    fontWeight:'500',
-    lineHeight:32,
-    marginTop:30,
     color: "#5EC2C6",
-    marginBottom:20
-  },
-  
-
-
-
-
-
- 
-
-
-  // shourya
-
-  img: {
-    opacity: "10%",
-  },
-  fields_main: {
-    marginTop: 17,
-    width:'85%'
-  },
-  inputHeading: {
+    fontFamily: "Roboto",
     fontWeight: "500",
-    fontSize: 18,
-    lineHeight: 27,
-    color: "rgba(0, 54, 126, 1)",
-    paddingBottom: 10,
+    lineHeight: 32.81,
   },
-  input_box: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: "#2198C9",
-    fontSize: 14,
-
-     height: 60,
- 
+  inputContainer: {
+    marginHorizontal: 25,
+    marginTop: 20,
   },
   input: {
-    position: "relative",
-    color: "black",
+    borderWidth: 1,
+    borderColor: "#2198C9",
+    paddingVertical: 13,
+    marginVertical: 10,
+    borderRadius: 17,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 17,
+  },
+  inputfield: {
+    fontFamily: "Roboto",
+    fontWeight: "400",
+    fontSize: 14,
+    lineHeight: 16.41,
     width: "90%",
-    height:"100%",
-    fontSize:20
+  },
+  submitBtn: {
+    alignSelf: "center",
+    backgroundColor: "#FF8902",
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginTop: 30,
+    width: 246,
+    alignItems: "center",
+  },
+  submitText: {
+    fontSize: 18,
+    fontWeight: "500",
+    fontFamily: "Roboto",
+    lineHeight: 21.09,
+    color: "#FFFFFF",
   },
 });
 

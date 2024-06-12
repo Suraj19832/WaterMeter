@@ -94,6 +94,8 @@ function Login({ navigation }) {
           setDisabledBtn(false);
           if (res?.status) {
             showToast(res?.message);
+            await AsyncStorage.setItem("token", res?.authorization?.token);
+            console.log(res?.authorization?.token);
             if (checked) {
               await AsyncStorage.setItem("email", email);
               await AsyncStorage.setItem("password", password);
