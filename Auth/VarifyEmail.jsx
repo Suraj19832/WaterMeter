@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, Image, ImageBackground, Text,TextInput, TouchableOpacity  } from "react-native";
+import { Dimensions, Image, ImageBackground, Text,TextInput, ToastAndroid, TouchableOpacity  } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 // import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -9,6 +9,7 @@ import CheckBox from "react-native-check-box";
 import { ScrollView } from "react-native-gesture-handler";
 import { Feather, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
+import appApi from "../Helper/Api";
 
 function VarifyEmail({ navigation }) {
 //   const [checked, setChecked] = useState(true);
@@ -41,6 +42,21 @@ const handleEmailChange = (text) => {
       setEmailError(null);
     }
   };
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+  const handleVerifyEmail =()=>{
+    const data ={
+      email :email
+    }
+  appApi.verifyEmail(data)
+  .then((res)=>{
+    if (res?.status) {
+      showToast(res?.message)
+      navigation.navigate("VerifyOTP" , { email: email ,timer:res?.resendInSec })
+    }
+  })
+  }
  
   return (
     <SafeAreaView>
@@ -54,7 +70,7 @@ const handleEmailChange = (text) => {
         <View style={{ position: "absolute" }}>
           <Image
             source={require("../assets/Rectangle 11.png")}
-            style={{ height: Dimensions.get("window").height*0.44, width: Dimensions.get("window").width ,zIndex:1}}
+            style={{ height: Dimensions.get("window").height*0.44, width: Dimensions.get("window").width }}
            
           />
           <View
@@ -99,7 +115,7 @@ const handleEmailChange = (text) => {
               ) : null}
   
             <View style={{marginVertical:20 ,marginBottom:20}}>
-              <TouchableOpacity onPress={()=>navigation.navigate("VerifyOTP")}>
+              <TouchableOpacity  onPress={handleVerifyEmail}>
               <SubmitButton  text="Send OTP"
         bgColor={email && emailError === null  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
         height={48}

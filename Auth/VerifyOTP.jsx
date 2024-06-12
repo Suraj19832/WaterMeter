@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Image, ImageBackground, Text, TextInput, TouchableOpacity } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
@@ -9,16 +9,27 @@ import CheckBox from "react-native-check-box";
 import { ScrollView } from "react-native-gesture-handler";
 import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
+import { useRoute } from "@react-navigation/native";
+import appApi from "../Helper/Api";
 
 function VerifyOTP({ navigation }) {
-  //   const [checked, setChecked] = useState(true);
-
-//   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-//   const [isNewPassword, setIsNewPassword] = useState("");
-//   const [isConfirmPassword, setIsConfirmPassword] = useState("");
-//   const passwordsMatch =
-//     isNewPassword && isConfirmPassword && isNewPassword === isConfirmPassword;
+  const route = useRoute();
+  const { email ,timer  } = route.params;
     const [otp, setOtp] = useState(['', '', '', '']);
+    const [time, setTime] = useState(timer);
+
+    useEffect(() => {
+      let timer;
+      if (time > 0) {
+        timer = setTimeout(() => {
+          setTime(time - 1);
+        }, 1000);
+      }
+  
+      return () => clearTimeout(timer);
+    }, [time]);
+    // const [first, setfirst] = useState(0967)
+    
   const [isButtonActive, setIsButtonActive] = useState(false);
   const otpInput1 = useRef(null);
   const otpInput2 = useRef(null);
@@ -76,7 +87,19 @@ function VerifyOTP({ navigation }) {
     const allFilled = otpArray.every(field => field.length === 1);
     setIsButtonActive(allFilled);
   };
+const handleOTPVarification =()=>{
 
+  const otpINT =otp.join('')
+  const data ={
+    email :email,
+    otp:otpINT
+  }
+  appApi.VerifyOTP(data).then((res)=>{
+    console.log(res.status)
+  }
+  )
+  // console.log( parseInt(otpINT, 10))
+}
   
   return (
     <SafeAreaView>
@@ -121,7 +144,7 @@ function VerifyOTP({ navigation }) {
               >
                 <Text style={styles.otpText}>to your</Text>
                 <Text style={[styles.otpText, { fontWeight: "600" }]}>
-                  Mobile +91 9876543210
+                  {email}
                 </Text>
               </View>
             </View>
@@ -180,7 +203,19 @@ function VerifyOTP({ navigation }) {
         </View>
       </View>
       <View>
-    <Text style={{color:'rgba(94, 194, 198, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP</Text>
+    {/* <Text style={{color:'rgba(94, 194, 198, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP</Text>
+     */}
+     {time === 0 ? (
+      <TouchableOpacity onPress={handleResendOTP}>
+ <Text style={{color:'rgba(94, 194, 198, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP</Text>
+      </TouchableOpacity>
+     
+     ):(
+      <Text style={{color:'rgba(166, 166, 166, 1)' ,fontWeight:'600',fontSize:14,lineHeight:21}}>Resend OTP in {time} seconds</Text>
+     )}
+      {/* <Text style={{ color: 'rgba(94, 194, 198, 1)', fontWeight: '600', fontSize: 14, lineHeight: 21 }}>
+      {time === 0 ? 'Resend OTP' : `Resend OTP in ${time} seconds`}
+    </Text> */}
     </View>
     </View>
 
@@ -192,7 +227,7 @@ function VerifyOTP({ navigation }) {
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
 
             
-            <TouchableOpacity onPress={()=>navigation.navigate("ForgotPassword")}>
+            <TouchableOpacity onPress={handleOTPVarification}>
             <SubmitButton
                 text="Verify"
                 bgColor={

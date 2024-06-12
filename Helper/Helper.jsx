@@ -133,18 +133,18 @@ export async function sendAuthorizePatchRequest(url, obj) {
 }
 
 export async function sendPostFormData(url, obj) {
-  console.log(url, data);
+  // console.log(url, data);
   let response = await fetch(url, {
     method: "POST",
     cache: "no-cache",
     body: prepareFormDataFromObject(obj),
   });
-  console.log(response, "<============response");
+  // console.log(response, "<============response");
   let data = await response.json();
 
-  if (!response.ok) {
-    throw new ValidationError(data.message, data.errors);
-  }
+  // if (!response.ok) {
+  //   throw new ValidationError(data.message, data.errors);
+  // }
 
   return data;
 }
