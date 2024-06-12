@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import { Dimensions, Image, ImageBackground, Text } from "react-native";
+import { Dimensions, Image, ImageBackground, Text, TextInput, TouchableOpacity } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+// import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from "react-native-check-box";
@@ -190,7 +190,10 @@ function VerifyOTP({ navigation }) {
 
       
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
-              <SubmitButton
+
+            
+            <TouchableOpacity onPress={()=>navigation.navigate("ForgotPassword")}>
+            <SubmitButton
                 text="Verify"
                 bgColor={
                     isButtonActive
@@ -201,6 +204,8 @@ function VerifyOTP({ navigation }) {
                 width={148}
                 textSize={18}
               />
+            </TouchableOpacity>
+            
             </View>
           </View>
         </View>

@@ -10,14 +10,17 @@ export default function SubmitButton({text,bgColor,height,width,textSize,active}
             width: width,
             borderRadius: 10,
             backgroundColor: bgColor,
+            justifyContent:'center',
+            alignItems:'center'
          
           },
           submitButtonText:{
             color:"white",
             fontSize:textSize,
-            textAlign:"center",
-            paddingTop:8 ,
-            height:50,
+            // textAlign:"center",
+            // paddingTop:8 ,
+            // height:50,
+            fontWeight:'500'
          
           },
 

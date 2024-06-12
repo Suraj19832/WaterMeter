@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Dimensions, Image, ImageBackground, Text } from "react-native";
+import { Dimensions, Image, ImageBackground, Text,TextInput, TouchableOpacity  } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+// import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from "react-native-check-box";
@@ -99,11 +99,14 @@ const handleEmailChange = (text) => {
               ) : null}
   
             <View style={{marginVertical:20 ,marginBottom:20}}>
-            <SubmitButton  text="Submit"
-        // bgColor={passwordsMatch  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
+              <TouchableOpacity onPress={()=>navigation.navigate("VerifyOTP")}>
+              <SubmitButton  text="Send OTP"
+        bgColor={email && emailError === null  ?"rgba(255, 137, 2, 1)":"rgba(255, 137, 2, 0.5)"}
         height={48}
-        width={246}
+        width={180}
         textSize={18} />
+              </TouchableOpacity>
+          
             </View>
 
 
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
     color: "black",
     width: "90%",
     height:"100%",
-    fontSize:20
+    fontSize:14
   },
 });
 

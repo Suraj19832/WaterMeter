@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Dimensions, Image, ImageBackground, Text } from "react-native";
 import { Button } from "react-native";
-import { View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { View, StyleSheet , TextInput, TouchableOpacity} from "react-native";
+// import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import bgLogin2 from "../assets/bgLogin2.jpg";
 import CheckBox from "react-native-check-box";
