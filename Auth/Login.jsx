@@ -22,7 +22,7 @@ function Login({ navigation }) {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  console.log(checked, "<=================");
+  
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -76,6 +76,7 @@ function Login({ navigation }) {
           showToast(res?.message);
           setIsLoading(false);
           setDisabledBtn(false);
+          navigation.navigate("Dashboard")
         })
         .catch((err) => {
           console.log(err, "error from api");
@@ -140,7 +141,7 @@ function Login({ navigation }) {
                 <View>
                   <View>
                     <CheckBox
-                      onClick={() => setChecked(!checked)}
+                      onClick={handleCheckBoxToggle}
                       isChecked={checked}
                     />
                   </View>
@@ -148,7 +149,7 @@ function Login({ navigation }) {
                 <Text style={styles.remember}>Remember Me</Text>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=> navigation.navigate("VerifyEmail")}>
                 <Text style={styles.forgot}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>

@@ -28,7 +28,7 @@ const TabNavigator = () => {
             <Bottom.Screen name="Dashboard" options={{ headerShown: false }} component={Dashboard} />
             <Bottom.Screen name="Completion" options={{ headerShown: false }} component={Completion} />
             <Bottom.Screen name="MeterSelection" options={{ headerShown: false }} component={MeterSelection} />
-            <Bottom.Screen name="MeterReading" options={{ headerShown: false }} component={Login} />
+            <Bottom.Screen name="MeterReading" options={{ headerShown: false }} component={OcrCaptured} />
             <Bottom.Screen name="MeterReadingScanner" options={{ headerShown: false }} component={MeterSection} />
         </Bottom.Navigator>
     );
