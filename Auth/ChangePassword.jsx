@@ -32,6 +32,10 @@ function ChangePassword({ navigation }) {
       showToast("new and confirm password should be matched");
       return false;
     }
+    if (currentPassword.length < 8) {
+      showToast("The current password field must be at least 8 characters");
+      return false;
+    }
     return true;
   };
 
