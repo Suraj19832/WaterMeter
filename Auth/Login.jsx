@@ -3,8 +3,7 @@ import {
   ActivityIndicator,
   Dimensions,
   ImageBackground,
-  SafeAreaView,
-  ScrollView,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +13,7 @@ import {
 } from "react-native";
 import appApi from "../Helper/Api";
 import CheckBox from "react-native-check-box";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -22,7 +22,24 @@ function Login({ navigation }) {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  
+
+  useEffect(() => {
+    const loadRememberedData = async () => {
+      try {
+        const savedEmail = await AsyncStorage.getItem("email");
+        const savedPassword = await AsyncStorage.getItem("password");
+        if (savedEmail && savedPassword) {
+          setEmail(savedEmail);
+          setPassword(savedPassword);
+          setChecked(true);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadRememberedData();
+  }, []);
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -60,7 +77,7 @@ function Login({ navigation }) {
     return true;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (validation() === false) {
       return;
     } else {
@@ -72,11 +89,22 @@ function Login({ navigation }) {
       setDisabledBtn(true);
       appApi
         .login(data)
-        .then((res) => {
-          showToast(res?.message);
+        .then(async (res) => {
           setIsLoading(false);
           setDisabledBtn(false);
-          navigation.navigate("Dashboard")
+          if (res?.status) {
+            showToast(res?.message);
+            if (checked) {
+              await AsyncStorage.setItem("email", email);
+              await AsyncStorage.setItem("password", password);
+            } else {
+              await AsyncStorage.removeItem("email");
+              await AsyncStorage.removeItem("password");
+            }
+            navigation.navigate("Dashboard");
+          } else {
+            showToast(res?.message);
+          }
         })
         .catch((err) => {
           console.log(err, "error from api");
@@ -85,7 +113,7 @@ function Login({ navigation }) {
         });
     }
   };
-  
+
   useEffect(() => {
     if (email && password) {
       setDisabledBtn(false);
@@ -94,94 +122,125 @@ function Login({ navigation }) {
     }
   }, [email, password]);
 
-
   const handleCheckBoxToggle = () => {
     setChecked(!checked);
   };
-
   return (
-    <SafeAreaView style={{ backgroundColor: "white" }}>
-      <ScrollView>
-        <ImageBackground
-          source={require("../assets/bgLogin3.jpg")}
-          resizeMode="cover"
-          style={styles.image}
-        >
-          <View style={{ marginTop: "85%" }}>
-            <Text style={styles.heading}>Login</Text>
-            <View>
-              <TextInput
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                placeholder="Email or Username"
-                style={styles.email}
-              />
-              {validationError.email && (
-                <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
-                  {validationError.email}
-                </Text>
-              )}
-            </View>
-            <View>
-              <TextInput
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                placeholder="Password"
-                style={styles.password}
-              />
-              {validationError.password && (
-                <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
-                  {validationError.password}
-                </Text>
-              )}
-            </View>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("../assets/BackgroundImage.png")}
+        resizeMode="cover"
+        style={styles.image}
+        imageStyle={{ opacity: 0.1 }}
+      >
+        <View style={styles.content}>
+          <Image
+            source={require("../assets/Rectangle 11.png")}
+            style={styles.rectangleImg}
+          />
+          <Image
+            source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
+            style={styles.diamondImg}
+          />
+        </View>
 
-            <View style={styles.RememberPassword}>
-              <View style={styles.rememberMain}>
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.heading}>Login</Text>
+          <View>
+            <TextInput
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              placeholder="Email or Username"
+              placeholderTextColor="#656263"
+              style={styles.email}
+              // autoComplete={true}
+            />
+            {validationError.email && (
+              <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
+                {validationError.email}
+              </Text>
+            )}
+          </View>
+          <View>
+            <TextInput
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              placeholder="Password"
+              placeholderTextColor="#656263"
+              style={styles.password}
+              // autoComplete={true}
+            />
+            {validationError.password && (
+              <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
+                {validationError.password}
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.RememberPassword}>
+            <View style={styles.rememberMain}>
+              <View>
                 <View>
-                  <View>
-                    <CheckBox
-                      onClick={handleCheckBoxToggle}
-                      isChecked={checked}
-                    />
-                  </View>
+                  <CheckBox
+                    onClick={handleCheckBoxToggle}
+                    isChecked={checked}
+                  />
                 </View>
-                <Text style={styles.remember}>Remember Me</Text>
               </View>
-
-              <TouchableOpacity onPress={()=> navigation.navigate("VerifyEmail")}>
-                <Text style={styles.forgot}>Forgot Password?</Text>
-              </TouchableOpacity>
+              <Text style={styles.remember}>Remember Me</Text>
             </View>
+
             <TouchableOpacity
-              onPress={handleLogin}
-              disabled={disabledBtn}
-              style={[styles.submitBtn, { opacity: disabledBtn ? 0.5 : 1 }]}
+              onPress={() => navigation.navigate("VerifyEmail")}
             >
-              {isLoading ? (
-                <ActivityIndicator size={"small"} />
-              ) : (
-                <Text style={styles.submitText}>Login</Text>
-              )}
+              <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
           </View>
-        </ImageBackground>
-      </ScrollView>
-    </SafeAreaView>
+          <TouchableOpacity
+            onPress={handleLogin}
+            disabled={disabledBtn}
+            style={[styles.submitBtn, { opacity: disabledBtn ? 0.5 : 1 }]}
+          >
+            {isLoading ? (
+              <ActivityIndicator size={"small"} />
+            ) : (
+              <Text style={styles.submitText}>Login</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   image: {
-    width: Dimensions.get("window").width * 1,
-    height: Dimensions.get("window").height * 1,
+    flex: 1,
+  },
+  content: {
+    position: "relative",
+  },
+  rectangleImg: {
+    height: Dimensions.get("window").height * 0.44,
+    width: Dimensions.get("window").width,
+  },
+  diamondImg: {
+    height: 101,
+    width: 139,
+    position: "absolute",
+    top: 100,
+    alignSelf: "center",
   },
   heading: {
-    fontSize: 25,
+    fontSize: 28,
     textAlign: "center",
-    height: 40,
-    marginTop: 20,
     color: "#5EC2C6",
+    fontFamily: "Roboto",
+    fontWeight: "500",
+    lineHeight: 32.81,
   },
   email: {
     height: 60,
@@ -193,7 +252,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 14,
     marginTop: "7%",
-    // marginBottom: "5%",
+    fontWeight: "400",
   },
   password: {
     height: 60,
@@ -205,6 +264,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 14,
     marginTop: "4%",
+    fontWeight: "400",
   },
   RememberPassword: {
     display: "flex",
@@ -218,13 +278,17 @@ const styles = StyleSheet.create({
   remember: {
     fontWeight: "light",
     color: "#104F9C",
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: "500",
+    lineHeight: 16.41,
+    fontFamily: "Roboto",
   },
   forgot: {
-    fontWeight: "light",
     color: "#104F9C",
-    height: 20,
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: "500",
+    lineHeight: 16.41,
+    fontFamily: "Roboto",
   },
   rememberMain: {
     display: "flex",
