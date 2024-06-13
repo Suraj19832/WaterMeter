@@ -12,8 +12,8 @@ export default function SubmitButton({
 }) {
   const styles = StyleSheet.create({
     submitButton: {
-      // height: height,
-      // width: width,
+      height: height,
+      width: width,
       paddingVertical:10,
       paddingHorizontal:7,
       borderRadius: 10,

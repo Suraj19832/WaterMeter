@@ -12,9 +12,11 @@ import SubmitButton from "../Components/SubmitButton";
 import { useSelector } from 'react-redux';
 import { selectAuthToken } from '../redux/slices/Authslice';
 import appApi from "../Helper/Api";
+import { ToastAndroid } from "react-native";
 function EditProfile({ navigation }) {
   const [checked, setChecked] = useState(true);
   const authToken = useSelector(selectAuthToken);
+  const [loading, setloading] = useState(false);
   console.log(authToken ,"redux setup")
   // const handleLogin = () => {
   //   alert("Logged in successfully");
@@ -23,16 +25,17 @@ function EditProfile({ navigation }) {
   // const handleCheckBoxToggle = () => {
   //   setChecked(!checked);
   // };
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("api call done");
         const res = await appApi.profile();
         if (res?.status) {
           setEmail(res?.data?.email)
           
         }
-        console.log(res?.status, "hhhhhh");
       } catch (err) {
         console.log(err);
       } finally {
@@ -48,7 +51,7 @@ function EditProfile({ navigation }) {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [firstname, setfirstname] = useState()
-  const [lastname, setlastname] = useState()
+  // const [lastname, setlastname] = useState()
 
   // const passwordsMatch = isNewPassword && email && emailError===null ;
   
@@ -71,6 +74,32 @@ function EditProfile({ navigation }) {
       setEmailError(null);
     }
   };
+  const handleEdit = async()=>{
+    try {
+      setloading(true)
+      const data ={
+        name:firstname
+      }
+     const res = await appApi.editProfile(data)
+     if (res?.status) {
+     
+      showToast(res?.message)
+      navigation.navigate("Dashboard")
+     }else{
+      showToast("Login Agian")
+     }
+    } catch (error) {
+      console.log(error)
+      setloading(false)
+      showToast("Login again")
+    }
+    finally {
+      console.log("api call complete");
+      // setloading(false)
+      setloading(false)
+    }
+
+  }
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "auto" }}>
@@ -110,7 +139,7 @@ function EditProfile({ navigation }) {
               <View style={styles.input_box}>
                 <TextInput
                   style={styles.input}
-                  placeholder="First Name"
+                  placeholder="Name"
                   value={firstname}
                   onChangeText={setfirstname}
                   // onBlur={validateEmail}
@@ -119,7 +148,7 @@ function EditProfile({ navigation }) {
               </View>
         
             </View>
-            <View style={styles.fields_main}>
+            {/* <View style={styles.fields_main}>
               <View style={styles.input_box}>
                 <TextInput
                   style={styles.input}
@@ -131,7 +160,7 @@ function EditProfile({ navigation }) {
                 />
               </View>
            
-            </View>
+            </View> */}
             <View style={styles.fields_main}>
               <View style={styles.input_box}>
                 <TextInput
@@ -153,17 +182,21 @@ function EditProfile({ navigation }) {
           
 
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
+              <TouchableOpacity disabled={!email || emailError !=null || !firstname || loading} onPress={handleEdit}>
               <SubmitButton
                 text="Edit Profile"
                 bgColor={
-                  email && emailError ==null && firstname && lastname
+                  email && emailError ==null && firstname && !loading
                     ? "rgba(255, 137, 2, 1)"
                     : "rgba(255, 137, 2, 0.5)"
                 }
                 height={47}
                 width={139}
                 textSize={18}
+                loading={loading}
               />
+              </TouchableOpacity>
+              
             </View>
           </View>
         </View>
