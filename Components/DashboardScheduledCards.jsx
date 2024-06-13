@@ -18,6 +18,7 @@ export default function DashboardScheduledCards({
   index,
   onPress,
   expandSchedule,
+  navigation,
 }) {
   const styles = StyleSheet.create({
     propertyCards: {
@@ -73,16 +74,19 @@ export default function DashboardScheduledCards({
       gap: 4,
     },
     status: {
-      height: 30,
-      width: "40%",
-      borderRadius: 100,
       backgroundColor: "#C53636",
+      paddingVertical: 5,
+      paddingHorizontal: 12,
+      borderRadius: 20,
     },
     statusTxt: {
       color: "white",
       textAlign: "center",
-      paddingTop: 4,
-      height: 30,
+      fontSize: 10,
+      fontWeight: "500",
+      lineHeight: 16,
+      // paddingTop: 4,
+      // height: 30,
     },
     daysTxt: {
       color: "#C53636",
@@ -144,14 +148,14 @@ export default function DashboardScheduledCards({
     expandContentFTxt: {
       color: "#0099ff",
       fontWeight: "400",
-      fontSize: 14,
+      fontSize: 12,
       height: 30,
       //   paddingLeft: 10,
     },
     expandContentSTxt: {
       color: "grey",
       fontWeight: "400",
-      fontSize: 14,
+      fontSize: 12,
       height: 30,
       paddingLeft: 8,
     },
@@ -362,10 +366,8 @@ export default function DashboardScheduledCards({
 
             <Text style={styles.expandContentSTxt}>{items?.estimateTime}</Text>
             <TouchableOpacity
-              style={{ marginLeft: 6, marginBottom: 6 }}
-              onPress={() => {
-                alert("Reading...");
-              }}
+              style={{ marginLeft: 20, marginBottom: 6 }}
+              onPress={() => navigation.navigate("MeterScreen")}
             >
               <SubmitButton
                 textSize={14}

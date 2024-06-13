@@ -18,6 +18,7 @@ export default function DashboardCompletedCards({
   index,
   onPress,
   expandCompleted,
+ 
 }) {
   const styles = StyleSheet.create({
     topToggle: {

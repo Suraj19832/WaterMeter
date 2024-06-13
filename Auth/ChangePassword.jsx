@@ -106,6 +106,21 @@ function ChangePassword({ navigation }) {
               source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
               style={styles.diamondImg}
             />
+            <TouchableOpacity
+              onPress={navigation.goBack}
+              style={{ position: "absolute" }}
+            >
+              <Image
+                source={require("../assets/left-arrow.png")}
+                style={{
+                  height: 22,
+                  width: 12,
+                  position: "absolute",
+                  top: 45,
+                  left: 20,
+                }}
+              />
+            </TouchableOpacity>
           </View>
 
           <View style={{ marginTop: 20 }}>
