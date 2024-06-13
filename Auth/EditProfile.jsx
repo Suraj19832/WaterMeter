@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Image, ImageBackground, Text } from "react-native";
+import { Alert, Dimensions, Image, ImageBackground, Text } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -38,6 +38,18 @@ function EditProfile({ navigation }) {
         }
       } catch (err) {
         console.log(err);
+        showToast("Login again")
+        Alert.alert(
+          "Token Expire",
+          "Login Again",
+          [
+            {
+              text: "Login",
+              onPress: () => navigation.navigate('Login') // Navigate to the login screen
+            }
+          ],
+          { cancelable: false }
+        );
       } finally {
         console.log("api call complete");
       }
@@ -108,7 +120,26 @@ function EditProfile({ navigation }) {
           resizeMode="cover"
           style={styles.image}
         />
+
         <View style={{ position: "absolute" }}>
+          <View style={{position:'absolute' ,zIndex:2}}>
+          <TouchableOpacity
+            onPress={navigation.goBack}
+            style={{ position: "absolute" }}
+          >
+            <Image
+              source={require("../assets/left-arrow.png")}
+              style={{
+                height: 22,
+                width: 12,
+                position: "absolute",
+                top: 30,
+                left: 20,
+              }}
+            />
+          </TouchableOpacity>
+          </View>
+          
           <Image
             source={require("../assets/Rectangle 11.png")}
             style={{
@@ -117,6 +148,7 @@ function EditProfile({ navigation }) {
               zIndex: 1,
             }}
           />
+          
           <View
             style={{
               position: "absolute",
