@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { setAuthToken } from '../redux/slices/Authslice';
 import {
   ActivityIndicator,
   Dimensions,
@@ -22,6 +24,10 @@ function Login({ navigation }) {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState(false);
+  const dispatch = useDispatch();
+
+   
+
 
   useEffect(() => {
     const loadRememberedData = async () => {
@@ -94,8 +100,11 @@ function Login({ navigation }) {
           setDisabledBtn(false);
           if (res?.status) {
             showToast(res?.message);
+            // console.log(res?.authorization?.token,"sksksksksksks")
+            dispatch(setAuthToken(res?.authorization?.token));
             await AsyncStorage.setItem("token", res?.authorization?.token);
-            console.log(res?.authorization?.token);
+           
+            // console.log(res?.authorization?.token);
             if (checked) {
               await AsyncStorage.setItem("email", email);
               await AsyncStorage.setItem("password", password);

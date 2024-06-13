@@ -1,4 +1,5 @@
 import {
+  sendAuthorizeGetRequest,
   sendAuthorizePostFormData,
   sendGetRequest,
   sendPostFormData,
@@ -25,6 +26,14 @@ const appApi = {
   changePassword: function(data) {
     const url = `${baseURL}/api/change-password`;
     return sendAuthorizePostFormData(url, data);
+  },
+  editProfile :function (data){
+    const url = `${baseURL}/api/profile`;
+    return sendAuthorizePostFormData(url, data);
+  },
+ profile:function (data){
+    const url = `${baseURL}/api/profile`;
+    return sendAuthorizeGetRequest(url);
   },
 };
 export default appApi;
