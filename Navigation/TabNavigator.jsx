@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator();
 
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
     const [activeIcon, setActiveIcon] = useState(null);
-    // const navigation = useNavigation();
+    const drawerNavigation = useNavigation(); 
     return (
         <View style={{ backgroundColor: "white" }}>
             <Image source={image12} style={{ width: '100%', height: 100, backgroundColor: '#fff', }} />
@@ -55,34 +55,36 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                     }
 
                     const onPress = () => {
-                        if (route.name === "MeterReadingScanner") {
-                            navigation.openDrawer(); // Open drawer for the last icon
-                          } else {
-                            setActiveIcon(route.name); // Otherwise, update the active icon
-                          }
-                        console.log(`Navigating to ${route.name}`);
-                        const event = navigation.emit({
-                            type: "tabPress",
-                            target: route.key,
-                        });
+                        // if (route.name === "MeterReadingScanner") {
+                        //     navigation.openDrawer(); // Open drawer for the last icon
+                        //   } else {
+                        //     setActiveIcon(route.name); // Otherwise, update the active icon
+                        //   }
+                        // console.log(`Navigating to ${route.name}`);
+                        // const event = navigation.emit({
+                        //     type: "tabPress",
+                        //     target: route.key,
+                        // });
 
-                        if (!isFocused && !event.defaultPrevented) {
-                            navigation.navigate(route.name);
+                        // if (!isFocused && !event.defaultPrevented) {
+                        //     navigation.navigate(route.name);
+                        // }
+
+                        if (route.name === 'MeterReadingScanner') {
+                            drawerNavigation.openDrawer(); // Open drawer for the last icon
+                        } else {
+                            setActiveIcon(route.name); // Otherwise, update the active icon
+                            if (!isFocused) {
+                                navigation.navigate(route.name);
+                            }
                         }
 
                     };
 
                     return (
                         <View
-                        //  style={styles.tab}
                         >
-                            {/* <>
-            {route.name === "MeterSelection" ? (
-              <View style={{ marginTop: -20 ,zIndex:0}}>
-                <SvgComponent />
-              </View>
-            ) : null}
-          </> */}
+                   
                             <TouchableOpacity
                                 key={route.key}
                                 accessibilityRole="button"
@@ -95,24 +97,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                                 <View
                                     style={[route.name === "MeterSelection" ? styles.middleTab : null, { zIndex: 10, }]}
                                 >
-                                    {/* <MaterialCommunityIcons
-                                        name={iconName}
-                                        color={
-                                            isFocused
-                                                ? "orange"
-                                                : route.name === "MeterSelection"
-                                                    ? "#0F77AF"
-                                                    : "white"
-                                        }
-                                        size={45}
-                                    /> */}
-                                          {/* <Image
-                                    source={iconName}
-                                    style={[
-                                        styles.icon,
-                                        { tintColor: isFocused ? 'orange' : (route.name === 'MeterSelection' ? '#0F77AF' : 'gray') },
-                                    ]}
-                                /> */}
+                                
                                  <Image
           source={activeIcon === route.name ? activeIconName : iconName}
           style={styles.icon}

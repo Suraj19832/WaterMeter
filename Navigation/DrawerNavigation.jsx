@@ -162,7 +162,7 @@ const DrawerNavigation = ({ navigation }) => {
       </Modal>
       <TouchableOpacity
         onPress={() => {
-          alert("Profile added");
+         navigation.navigate("EditProfile")
         }}
         style={styles.changePass}
       >

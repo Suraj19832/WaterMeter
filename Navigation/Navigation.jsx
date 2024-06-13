@@ -34,19 +34,32 @@ const TabNavigator = () => {
     );
 };
 
-const DrawerNav = () => (
-    <Drawer.Navigator screenOptions={{
-        headerShown: false,
-        drawerPosition: "right",
-        drawerStyle: {
-            backgroundColor:"#ffffe200"
-        }
-    }} drawerContent={DrawerNavigation}>
-        <Drawer.Screen name="Dash" component={TabNavigator} />
+// const DrawerNav = () => (
+//     <Drawer.Navigator screenOptions={{
+//         headerShown: false,
+//         drawerPosition: "right",
+//         drawerStyle: {
+//             backgroundColor:"#ffffe200"
+//         }
+//     }} drawerContent={DrawerNavigation}>
+//         <Drawer.Screen name="Dash" component={TabNavigator} />
        
+//     </Drawer.Navigator>
+// );
+const DrawerNav = () => (
+    <Drawer.Navigator
+        screenOptions={{
+            headerShown: false,
+            drawerPosition: 'right',
+            drawerStyle: {
+                backgroundColor: '#ffffe200'
+            }
+        }}
+        drawerContent={DrawerNavigation}
+    >
+        <Drawer.Screen name="Dash" component={TabNavigator} />
     </Drawer.Navigator>
 );
-
 const MainStack = () => {
     return (
         <Stack.Navigator initialRouteName="Dashboard" headerShown={false}>
