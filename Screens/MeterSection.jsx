@@ -1,21 +1,76 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  TextInput,
+  Modal,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 
 const MeterSection = ({ navigation }) => {
-  const [isDropdownOpengender, setDropdownOpengender] = useState(false);
-  // const [isDropdownMeter, setisDropdownMeter] = useState(false)
-  const [inputValuegender, setInputValuegender] = useState("");
-  const [genderData, setGenderData] = useState("");
-  const toggleDropdowngender = () => {
-    setDropdownOpengender(!isDropdownOpengender);
+  const [isDropdownMeter, setisDropdownMeter] = useState(false);
+  const [inputValuemeter, setinputValuemeter] = useState("");
+  const [meterData, setmeterData] = useState("");
+
+  const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
+  const [inputValuemeterReading, setinputValuemeterReading] = useState("");
+  const [meterReadingData, setmeterReadingData] = useState("");
+
+  const toggleDropDownMeter = () => {
+    setisDropdownMeter(!isDropdownMeter);
   };
-  const handleSelectOptiongender = (option) => {
-    setInputValuegender(option);
-    setGenderData(option);
-    setDropdownOpengender(false);
+  const handleSelectionOptionMeter = (option) => {
+    setinputValuemeter(option);
+    setmeterData(option);
+    setisDropdownMeter(false);
   };
+
+  const toggleDropDownMeterReading = () => {
+    setisDropdownMeterReading(!isDropdownMeterReading);
+  };
+  const handleSelectionOptionMeterReading = (option) => {
+    setinputValuemeterReading(option);
+    setmeterReadingData(option);
+    setisDropdownMeterReading(false);
+  };
+
+  // For edit
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalValue, setisModalValue] = useState("");
+
+  const toggleModalVisibility = () => {
+    setIsModalVisible(!isModalVisible);
+    setisModalValue("");
+    setisImage()
+  };
+  // For Information
+  const [isModalInformation, setIsModalInformation] = useState(false);
+
+  const toggleModalVisibilityInformation = () => {
+    setIsModalInformation(!isModalInformation);
+    
+  };
+
+  //For Image
+  const [isModalImage, setIsModalImage] = useState(false);
+  const [isImage, setisImage] = useState();
+
+  const toggleModalVisibilityImage = (url =null) => {
+    setIsModalImage(!isModalImage)
+    setisImage(url)
+    if (isModalImage) {
+      setisImage(url)
+      console.log(isImage)
+    }else{
+    
+    }
+  };
+  const color = isModalImage ? '#0F77AF' : '#FFFFFF';
+
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -29,54 +84,251 @@ const MeterSection = ({ navigation }) => {
       <View style={styles.heading}>
         <Text style={styles.headingText}>M01 | Masari Heights</Text>
       </View>
-      {/* <View style={styles.selectBox}>
-        <Text style={styles.selectheading}>Meter :</Text>
-        <View style={styles.select}>
-          <Text style={styles.selecttext}>Select</Text>
-        </View>
-      </View> */}
+    
+
       <View style={styles.fields_main}>
-      <Text style={styles.selectheading}>Meter :</Text>
-                <TouchableOpacity onPress={toggleDropdowngender}>
-                  <View style={styles.input_box}>
-                    
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Select"
-                      value={inputValuegender}
-                      onBlur={() => handleSelectOptiongender(inputValuegender)}
-                      editable={false} // Allow editing only when dropdown is closed
-                      placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                    />
-                  <Entypo name="chevron-down" size={18} color="rgba(152, 152, 152, 1)" />
-                  </View>
-                </TouchableOpacity>
-              </View>
+        <Text style={styles.selectheading}>Meter :</Text>
+        <TouchableOpacity onPress={toggleDropDownMeter}>
+          <View style={styles.input_box}>
+            <TextInput
+              style={styles.input}
+              placeholder="Select"
+              value={inputValuemeter}
+              onBlur={() => handleSelectionOptionMeter(inputValuemeter)}
+              editable={false} // Allow editing only when dropdown is closed
+              placeholderTextColor={"rgba(166, 166, 166, 1)"}
+            />
+            <Entypo
+              name="chevron-down"
+              size={18}
+              color="rgba(152, 152, 152, 1)"
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
 
-              {/* Dropdown of gender */}
+      {/* Dropdown of meter */}
 
-              {isDropdownOpengender && (
-                <View style={styles.dropdownContainer}>
-                  <TouchableOpacity
-                    style={styles.dropdownOption}
-                    onPress={() => handleSelectOptiongender("male")}
-                  >
-                    <Text>Male</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.dropdownOption}
-                    onPress={() => handleSelectOptiongender("female")}
-                  >
-                    <Text>Female</Text>
-                  </TouchableOpacity>
+      {isDropdownMeter && (
+        <View style={styles.dropdownContainer}>
+          <TouchableOpacity
+            style={styles.dropdownOption}
+            onPress={() => handleSelectionOptionMeter("A10")}
+          >
+            <Text>A10</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.dropdownOption}
+            onPress={() => handleSelectionOptionMeter("A20")}
+          >
+            <Text>A20</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      <Modal
+        visible={isModalVisible || isModalInformation || isModalImage}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={toggleModalVisibility}
+      >
+        <View style={styles.modalBackground}>
+          {isModalInformation && (
+            <View style={{ width: "90%", alignItems: "flex-end" }}>
+              <TouchableOpacity onPress={toggleModalVisibilityInformation}>
+                <Entypo name="cross" size={24} color={color}/>
+              </TouchableOpacity>
+            </View>
+          )}
+          {
+            isModalImage && (
+              <View style={[styles.modalContainer ,{padding:0 ,height:326 ,justifyContent:'center' ,borderRadius:0,borderWidth:0}]}>
+                <View style={{width:'100%'}}>
+                <View style={{ width: "90%", alignItems: "flex-end"  ,alignSelf:'center' }}>
+              <TouchableOpacity onPress={toggleModalVisibilityImage} >
+                <Entypo name="cross" size={24} color={color} />
+              </TouchableOpacity>
+            </View>
+            <Image
+               source={{ uri: isImage }} 
+               style={{
+                 height: 220,
+                 width: '100%',
+             
+               }}
+             />
                 </View>
-              )}
-      <View style={styles.selectBox}>
+
+                <View style={{ width: "90%", alignItems: "flex-end" ,marginTop:15}}>
+               <TouchableOpacity
+                 style={{
+                   width: 102,
+                   height: 32,
+                   backgroundColor: "#FF8902",
+                   borderRadius: 8,
+                   justifyContent: "center",
+                 }}
+                 onPress={toggleModalVisibility}
+               >
+                 <Text style={styles.closeButton}>Change Image</Text>
+               </TouchableOpacity>
+             </View>
+             
+            </View>
+            )
+          }
+ {!isModalImage && (
+         <View style={styles.modalContainer}>
+         {isModalVisible && (
+           <>
+             <TextInput
+               style={styles.modalInput}
+               placeholder="Enter your notes here"
+               multiline
+               numberOfLines={4}
+               onChangeText={(text) => setisModalValue(text)}
+               value={isModalValue}
+             />
+             <View style={{ width: "100%", alignItems: "flex-end" }}>
+               <TouchableOpacity
+                 style={{
+                   width: 63,
+                   height: 32,
+                   backgroundColor: "#FF8902",
+                   borderRadius: 8,
+                   justifyContent: "center",
+                 }}
+                 onPress={toggleModalVisibility}
+               >
+                 <Text style={styles.closeButton}>Submit</Text>
+               </TouchableOpacity>
+             </View>
+           </>
+         )}
+         {isModalInformation && (
+           <View style={{ width: "100%", gap: 10 }}>
+             <View style={{ flexDirection: "row" }}>
+               <Text style={styles.modalKeyText}>Last Reading :</Text>
+               <Text style={styles.modalValueText}> 91627 OCR</Text>
+             </View>
+             <View style={{ flexDirection: "row" }}>
+               <Text style={styles.modalKeyText}>Last Reading Date : </Text>
+               <Text style={styles.modalValueText}> Sun May 19th,2024</Text>
+             </View>
+             <View style={{ flexDirection: "row" }}>
+               <Text style={styles.modalKeyText}>Avg Usage : </Text>
+               <Text style={styles.modalValueText}> 2425/mth</Text>
+             </View>
+           </View>
+         )}
+
+         {/* {isModalImage && (
+            <Image
+            source={{ uri: isImage }} 
+            style={{
+              height: 100,
+              width: '100%',
+          
+            }}
+          />
+         )} */}
+       </View>
+            )}
+         
+        </View>
+      </Modal>
+      {inputValuemeter && (
+        <View
+          style={{
+            marginTop: 24,
+            justifyContent: "space-between",
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={styles.selectheading}>Make :</Text>
+            <Text
+              style={{
+                color: "rgba(152, 152, 152, 1)",
+                fontWeight: "400",
+                fontSize: 18,
+              }}
+            >
+              YongXi
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity onPress={()=>toggleModalVisibilityImage("https://eshop.fotohub.com/modules/ybc_blog/views/img/post/thumb/xmwpf2024-8.jpg.pagespeed.ic.NDU_QNRTSB.webp")}>
+            <Image
+              source={require("../assets/Group (5).png")}
+              style={{
+                height: 28,
+                width: 31,
+              }}
+              resizeMode="center"
+            />
+            </TouchableOpacity>
+          
+          </View>
+        </View>
+      )}
+
+      <View style={styles.fields_main}>
+        <View style={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
+          <Text style={[styles.selectheading, { fontSize: 20 }]}>
+            Meter Notes :
+          </Text>
+          <TouchableOpacity onPress={toggleModalVisibility}>
+            <Image
+              source={require("../assets/Group (6).png")}
+              style={{ height: 20, width: 20 }}
+              resizeMode="center"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity onPress={toggleDropDownMeterReading}>
+          <View style={styles.input_box}>
+            <TextInput
+              style={styles.input}
+              placeholder="Select"
+              value={inputValuemeterReading}
+              onBlur={() => handleSelectionOptionMeter(inputValuemeterReading)}
+              editable={false} // Allow editing only when dropdown is closed
+              placeholderTextColor={"rgba(166, 166, 166, 1)"}
+            />
+            <Entypo
+              name="chevron-down"
+              size={18}
+              color="rgba(152, 152, 152, 1)"
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Dropdown of gender */}
+
+      {isDropdownMeterReading && (
+        <View style={styles.dropdownContainer}>
+          <TouchableOpacity
+            style={styles.dropdownOption}
+            onPress={() => handleSelectionOptionMeterReading("A10")}
+          >
+            <Text>A10</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.dropdownOption}
+            onPress={() => handleSelectionOptionMeterReading("A20")}
+          >
+            <Text>A20</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {/* <View style={styles.selectBox}>
         <Text style={styles.selectheading}>Meter :</Text>
         <View style={styles.select}>
           <Text style={styles.selectCompleter}>Completed Readings</Text>
         </View>
-      </View>
+      </View> */}
       <View style={{ justifyContent: "flex-end", marginVertical: 15 }}>
         <TouchableOpacity
           style={{
@@ -93,9 +345,27 @@ const MeterSection = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ alignSelf: "center", marginVertical: 15 }}>
+      <View style={{ marginVertical: 15, flexDirection: "row", gap: 80 }}>
+        <TouchableOpacity onPress={toggleModalVisibilityInformation}>
+          <Image
+            source={require("../assets/Group (7).png")}
+            style={{
+              height: 30,
+              width: 30,
+            }}
+            resizeMode="center"
+          />
+        </TouchableOpacity>
+
         <TouchableOpacity
-          style={{ padding: 10, backgroundColor: "#FF8902", borderRadius: 10 }}
+          style={{
+            backgroundColor: "#FF8902",
+            borderRadius: 8,
+            height: 40,
+            width: 120,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           <Text style={{ fontWeight: "700", color: "white" }}>
             Select Meter
@@ -135,7 +405,7 @@ const styles = StyleSheet.create({
   selectheading: {
     fontFamily: "Roboto",
     fontWeight: "700",
-    fontSize: 20,
+    fontSize: 18,
     lineHeight: 21.09,
     color: "#0B9ED2",
   },
@@ -184,7 +454,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "#2198C9",
-    marginTop: 18
+    marginTop: 18,
   },
 
   arrowdown: {
@@ -216,5 +486,48 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent background
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "90%",
+    backgroundColor: "rgba(255, 255, 255, 1)",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    borderColor: "#2198C9",
+    borderWidth: 1,
+  },
+  modalInput: {
+    width: "100%",
+    height: 100,
+    borderRadius: 5,
+    padding: 10,
+    textAlignVertical: "top",
+    color:'#595959',
+    fontSize:14,
+    fontWeight:'400'
+  },
+  closeButton: {
+    fontSize: 12,
+
+    color: "#FFFFFF",
+    fontWeight: "500",
+    lineHeight: 16,
+    alignSelf: "center",
+  },
+  modalKeyText: {
+    color: "#2198C9",
+    fontWeight: "500",
+    fontSize: 16,
+  },
+  modalValueText: {
+    color: "#989898",
+    fontWeight: "400",
+    fontSize: 16,
   },
 });
