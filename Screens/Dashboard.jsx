@@ -6,12 +6,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
 import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 import { useNavigation } from "@react-navigation/native";
+import appApi from "../Helper/Api";
 
 function Dashboard({ navigation }) {
   let monthArr = [
@@ -209,14 +211,16 @@ function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("https://api.npoint.io/ba03259b798d2fc750d5")
-      .then((res) => res.json())
+    appApi
+      .dashboard()
       .then((res) => {
-        console.log(res?.data);
-        setData(res?.data);
+        if (res?.data) {
+          setData(res?.data);
+          console.log(res.data, "<<<<<<<<<<<<<<<<<<<<<response");
+        }
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err, "<<<<<<<<<<<<<<<<<error");
       });
   }, []);
 
@@ -388,8 +392,9 @@ const styles = StyleSheet.create({
   dateView: {
     borderRadius: 10,
     backgroundColor: colorCodes.navyBlueButton,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    width: 150,
+    paddingVertical: 11.5,
+    alignItems: "center",
   },
   prevNextTxt: {
     color: "#104F9C",
@@ -401,7 +406,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignItems: "center",
     fontSize: 16,
-    lineHeight: 16,
+    // lineHeight: 16,
     color: "#fff",
   },
   propertyCards: {
@@ -436,6 +441,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     marginTop: 25,
+    marginBottom: 140,
   },
   besidePropertyTxt: {
     fontSize: 15,
