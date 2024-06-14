@@ -27,16 +27,20 @@ const appApi = {
     const url = `${baseURL}/api/change-password`;
     return sendAuthorizePostFormData(url, data);
   },
-  editProfile :function (data){
+  editProfile: function(data) {
     const url = `${baseURL}/api/profile`;
     return sendAuthorizePostFormData(url, data);
   },
- profile:function (data){
+  profile: function(data) {
     const url = `${baseURL}/api/profile`;
     return sendAuthorizeGetRequest(url);
   },
-  logout:function (data){
+  logout: function(data) {
     const url = `${baseURL}/api/logout`;
+    return sendAuthorizeGetRequest(url);
+  },
+  dashboard: function(data) {
+    const url = `${baseURL}/api/dashboard`;
     return sendAuthorizeGetRequest(url);
   },
 };
