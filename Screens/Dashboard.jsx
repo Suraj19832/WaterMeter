@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Text,
@@ -206,6 +206,20 @@ function Dashboard({ navigation }) {
     },
   ];
 
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.npoint.io/ba03259b798d2fc750d5")
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res?.data);
+        setData(res?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <SafeAreaView style={{ backgroundColor: "white", paddingHorizontal: 20 }}>
       <View style={styles.topToggle}>
@@ -302,8 +316,8 @@ function Dashboard({ navigation }) {
           </View>
         ) : (
           <View>
-            {Array.isArray(cardsArr) &&
-              cardsArr?.map((items, index) => {
+            {Array.isArray(data) &&
+              data?.map((items, index) => {
                 return (
                   <View key={index}>
                     <DashboardScheduledCards

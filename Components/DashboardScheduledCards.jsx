@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Text,
@@ -13,206 +13,32 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 
-export default function DashboardScheduledCards({
+function DashboardScheduledCards({
   items,
   index,
   onPress,
   expandSchedule,
   navigation,
 }) {
-  const styles = StyleSheet.create({
-    propertyCards: {
-      borderWidth: 1,
-      borderRadius: 10,
-      borderColor: "#2198C9",
-      marginBottom: 20,
-      paddingHorizontal: 13,
-    },
-
-    cardContentTop: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: 15,
-      marginBottom: 10,
-    },
-    topFirst: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    propertyTxt: {
-      fontSize: 15,
-      height: 30,
-      color: "#104F9C",
-      fontWeight: "500",
-    },
-    scrollView: {
-      marginTop: 35,
-    },
-    besidePropertyTxt: {
-      fontSize: 15,
-      height: 30,
-      fontWeight: "500",
-      color: "#595959",
-    },
-    contentDateTxt: {
-      fontSize: 12,
-      height: 25,
-      fontWeight: "500",
-      color: "#989898",
-    },
-    belowContentMain: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 15,
-    },
-    belowFirst: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 4,
-    },
-    status: {
-      backgroundColor: "#C53636",
-      paddingVertical: 5,
-      paddingHorizontal: 12,
-      borderRadius: 20,
-    },
-    statusTxt: {
-      color: "white",
-      textAlign: "center",
-      fontSize: 10,
-      fontWeight: "500",
-      lineHeight: 16,
-      // paddingTop: 4,
-      // height: 30,
-    },
-    daysTxt: {
-      color: "#C53636",
-      height: 20,
-      fontWeight: "500",
-    },
-    belowContentMainNotPast: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 15,
-    },
-    belowSecond: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: 8,
-    },
-    expandBtn: {
-      borderWidth: 0.5,
-      height: 25,
-      width: 25,
-      borderRadius: 100,
-      borderColor: "#FE8700",
-      shadowColor: "black",
-    },
-    image: {
-      width: 23,
-      height: 23,
-    },
-    expandContent: {
-      marginBottom: 20,
-      borderRadius: 15,
-      backgroundColor: colorCodes.bgLightGrey,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-    },
-    expandContentHeading: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    expandHeadingFTxt: {
-      color: "#104F9C",
-      fontWeight: "500",
-      fontSize: 16,
-      //   paddingLeft: 10,
-      //   paddingTop: 15,/
-      //   height: 45,
-    },
-    expandHeadingSTxt: {
-      fontWeight: "500",
-      fontSize: 16,
-      paddingLeft: 10,
-      //   paddingTop: 15,
-      //   height: 45,
-    },
-    expandContentFTxt: {
-      color: "#0099ff",
-      fontWeight: "400",
-      fontSize: 12,
-      height: 30,
-      //   paddingLeft: 10,
-    },
-    expandContentSTxt: {
-      color: "grey",
-      fontWeight: "400",
-      fontSize: 12,
-      height: 30,
-      paddingLeft: 8,
-    },
-    expandContentButton: {
-      height: 37,
-      width: 110,
-      borderRadius: 10,
-      //   backgroundColor: "#FF8902",
-      //   marginLeft: 20,
-    },
-    completedNextDate: {
-      color: "#0099ff",
-      fontWeight: "400",
-      fontSize: 14,
-      //   height: 20,
-    },
-    belowContentCompleted: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: 90,
-      //   marginTop: 8,
-      //   marginBottom: 15,
-    },
-    expandContentCompletedButton: {
-      height: 37,
-      width: 150,
-      //   borderRadius: 10,/
-      //   backgroundColor: "#FF8902",
-      marginLeft: 155,
-    },
-    expandContentCompleted: {
-      height: 255,
-      //   width: "90%",
-      margin: "auto",
-      //   marginBottom: 20,
-      //   borderRadius: 15,
-      //   backgroundColor: "#e7e7e7",
-    },
-    expandContentBottomPart: {
-      //   display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-      //   width: "97%",
-      alignItems: "center",
-      paddingRight: 10,
-    },
-  });
-
+  // const [data, setData] = useState([]);
+  // useEffect(() => {
+  //   fetch("https://api.npoint.io/ba03259b798d2fc750d5")
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       console.log(res?.data);
+  //       setData(res?.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
   return (
     <View style={styles.propertyCards}>
       <View style={styles.cardContentTop}>
         <View style={styles.topFirst}>
           <Text style={styles.propertyTxt}>Property</Text>
           <Text style={styles.besidePropertyTxt}>
-            : {items?.property} {" | "} {items?.name}
+            : {items?.id} {" | "} {items?.name}
           </Text>
         </View>
 
@@ -221,18 +47,18 @@ export default function DashboardScheduledCards({
         </View>
       </View>
 
-      {items?.status == "Past Due" ? (
+      {items?.status?.name == "past due" ? (
         <View style={styles.belowContentMain}>
           <View style={styles.belowFirst}>
             <View
               style={[
                 styles.status,
-                { backgroundColor: colorCodes.statusPast },
+                { backgroundColor: items.status.colorCode },
               ]}
             >
-              <Text style={styles.statusTxt}>{items?.status}</Text>
+              <Text style={styles.statusTxt}>{items?.status.name}</Text>
             </View>
-            <Text style={styles.daysTxt}>{items?.no_of_days}</Text>
+            <Text style={styles.daysTxt}>{items?.status.days} Days</Text>
             <TouchableOpacity
               onPress={() => {
                 alert("Image pressed");
@@ -247,7 +73,7 @@ export default function DashboardScheduledCards({
           </View>
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.meters} meters</Text>
+            <Text style={{ fontWeight: 500 }}>{items?.meter.total} meters</Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandSchedule == index) {
@@ -283,18 +109,18 @@ export default function DashboardScheduledCards({
               styles.status,
               {
                 backgroundColor:
-                  items?.status == "In Process"
-                    ? colorCodes.navyBlueButton
-                    : colorCodes.statusToday,
+                  items?.status.name == "in process"
+                    ? items?.status?.colorCode
+                    :"#FFB604",
                 width: "25%",
               },
             ]}
           >
-            <Text style={styles.statusTxt}>{items?.status}</Text>
+            <Text style={styles.statusTxt}>{items?.status.name}</Text>
           </View>
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.meters} meters</Text>
+            <Text style={{ fontWeight: 500 }}>{items?.meter.total} meters</Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandSchedule == index) {
@@ -334,22 +160,20 @@ export default function DashboardScheduledCards({
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
 
-            <Text style={styles.expandContentSTxt}>{items?.totalMeters}</Text>
+            <Text style={styles.expandContentSTxt}>{items?.meter.total}</Text>
           </View>
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters Pending :</Text>
 
-            <Text style={styles.expandContentSTxt}>
-              {items?.totalMetersPending}
-            </Text>
+            <Text style={styles.expandContentSTxt}>{items?.meter.pending}</Text>
           </View>
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.nextReadingDate}
+              {items?.reading_date.next}
             </Text>
           </View>
 
@@ -357,14 +181,16 @@ export default function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.lastReadingDate}
+              {items?.reading_date.last}
             </Text>
           </View>
 
           <View style={[styles.expandContentBottomPart, {}]}>
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
-            <Text style={styles.expandContentSTxt}>{items?.estimateTime}</Text>
+            <Text style={styles.expandContentSTxt}>
+              {items?.estimate_time_in_sec}
+            </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
               onPress={() => navigation.navigate("MeterScreen")}
@@ -372,8 +198,8 @@ export default function DashboardScheduledCards({
               <SubmitButton
                 textSize={14}
                 bgColor={colorCodes.submitButtonEnabled}
-                height={37}
-                width={100}
+                // height={37}
+                // width={100}
                 text="Start Reading"
               />
             </TouchableOpacity>
@@ -383,3 +209,187 @@ export default function DashboardScheduledCards({
     </View>
   );
 }
+export default DashboardScheduledCards;
+
+const styles = StyleSheet.create({
+  propertyCards: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#2198C9",
+    marginBottom: 20,
+    paddingHorizontal: 13,
+  },
+
+  cardContentTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  topFirst: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  propertyTxt: {
+    fontSize: 15,
+    height: 30,
+    color: "#104F9C",
+    fontWeight: "500",
+  },
+  scrollView: {
+    marginTop: 35,
+  },
+  besidePropertyTxt: {
+    fontSize: 15,
+    height: 30,
+    fontWeight: "500",
+    color: "#595959",
+  },
+  contentDateTxt: {
+    fontSize: 12,
+    height: 25,
+    fontWeight: "500",
+    color: "#989898",
+  },
+  belowContentMain: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  belowFirst: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  status: {
+    backgroundColor: "#C53636",
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  statusTxt: {
+    color: "white",
+    textAlign: "center",
+    fontSize: 10,
+    fontWeight: "500",
+    lineHeight: 16,
+  },
+  daysTxt: {
+    color: "#C53636",
+    height: 20,
+    fontWeight: "500",
+  },
+  belowContentMainNotPast: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  belowSecond: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
+  },
+  expandBtn: {
+    borderWidth: 0.5,
+    height: 25,
+    width: 25,
+    borderRadius: 100,
+    borderColor: "#FE8700",
+    shadowColor: "black",
+  },
+  image: {
+    width: 23,
+    height: 23,
+  },
+  expandContent: {
+    marginBottom: 20,
+    borderRadius: 15,
+    backgroundColor: colorCodes.bgLightGrey,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  expandContentHeading: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  expandHeadingFTxt: {
+    color: "#104F9C",
+    fontWeight: "500",
+    fontSize: 16,
+    //   paddingLeft: 10,
+    //   paddingTop: 15,/
+    //   height: 45,
+  },
+  expandHeadingSTxt: {
+    fontWeight: "500",
+    fontSize: 16,
+    paddingLeft: 10,
+    //   paddingTop: 15,
+    //   height: 45,
+  },
+  expandContentFTxt: {
+    color: "#0099ff",
+    fontWeight: "400",
+    fontSize: 12,
+    height: 30,
+    //   paddingLeft: 10,
+  },
+  expandContentSTxt: {
+    color: "grey",
+    fontWeight: "400",
+    fontSize: 12,
+    height: 30,
+    paddingLeft: 8,
+  },
+  expandContentButton: {
+    height: 37,
+    width: 110,
+    borderRadius: 10,
+    //   backgroundColor: "#FF8902",
+    //   marginLeft: 20,
+  },
+  completedNextDate: {
+    color: "#0099ff",
+    fontWeight: "400",
+    fontSize: 14,
+    //   height: 20,
+  },
+  belowContentCompleted: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 90,
+    //   marginTop: 8,
+    //   marginBottom: 15,
+  },
+  expandContentCompletedButton: {
+    height: 37,
+    width: 150,
+    //   borderRadius: 10,/
+    //   backgroundColor: "#FF8902",
+    marginLeft: 155,
+  },
+  expandContentCompleted: {
+    height: 255,
+    //   width: "90%",
+    margin: "auto",
+    //   marginBottom: 20,
+    //   borderRadius: 15,
+    //   backgroundColor: "#e7e7e7",
+  },
+  expandContentBottomPart: {
+    //   display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 10,
+  },
+});
