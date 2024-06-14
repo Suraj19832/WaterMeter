@@ -35,5 +35,9 @@ const appApi = {
     const url = `${baseURL}/api/profile`;
     return sendAuthorizeGetRequest(url);
   },
+  logout:function (data){
+    const url = `${baseURL}/api/logout`;
+    return sendAuthorizeGetRequest(url);
+  },
 };
 export default appApi;
