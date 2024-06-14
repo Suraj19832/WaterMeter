@@ -211,18 +211,20 @@ function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    const params = {
+      status: !toggleScheduleCompleted ? "scheduled" : "completed",
+      date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
+    };
+    console.log(params, ">>>>>>>>>111111111233");
     appApi
-      .dashboard()
+      .dashboard(params)
       .then((res) => {
-        if (res?.data) {
-          setData(res?.data);
-          console.log(res.data, "<<<<<<<<<<<<<<<<<<<<<response");
-        }
+        setData(res?.data);
       })
       .catch((err) => {
         console.error(err, "<<<<<<<<<<<<<<<<<error");
       });
-  }, []);
+  }, [toggleScheduleCompleted]); // Add toggleScheduleCompleted to the dependency array
 
   return (
     <SafeAreaView style={{ backgroundColor: "white", paddingHorizontal: 20 }}>
@@ -304,8 +306,8 @@ function Dashboard({ navigation }) {
       <ScrollView style={styles.scrollView}>
         {toggleScheduleCompleted ? (
           <View>
-            {Array.isArray(cardsArr) &&
-              cardsArr?.map((items, index) => {
+            {Array.isArray(data) &&
+              data?.map((items, index) => {
                 return (
                   <View key={index} style={{}}>
                     <DashboardCompletedCards

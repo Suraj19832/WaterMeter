@@ -41,7 +41,7 @@ const appApi = {
   },
   dashboard: function(data) {
     const url = `${baseURL}/api/dashboard`;
-    return sendAuthorizeGetRequest(url);
+    return sendAuthorizeGetRequest(url, data);
   },
 };
 export default appApi;

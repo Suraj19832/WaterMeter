@@ -18,8 +18,8 @@ export default function DashboardCompletedCards({
   index,
   onPress,
   expandCompleted,
- 
 }) {
+  console.log(items, "<<<<<<<<<<<<<<<<<<<<<<<<complete");
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -268,12 +268,12 @@ export default function DashboardCompletedCards({
           <View style={styles.topFirst}>
             <Text style={styles.propertyTxt}>Property</Text>
             <Text style={styles.besidePropertyTxt}>
-              : {items?.property} {"  |  "} {items?.name}
+              : {items?.id} {"  |  "} {items?.name}
             </Text>
           </View>
 
           <View>
-            <Text style={styles.contentDateTxt}>{items?.date}</Text>
+            <Text style={styles.contentDateTxt}>{items?.date?.completed}</Text>
           </View>
         </View>
 
@@ -289,13 +289,13 @@ export default function DashboardCompletedCards({
             <View>
               <Text style={styles.completedNextDate}>Next Reading Date :</Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                {items?.nextReadingDate}
+                {items?.date?.next_reading}
               </Text>
             </View>
           )}
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.meters} meters</Text>
+            <Text style={{ fontWeight: 500 }}>{items?.total_meter} meters</Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandCompleted == index) {
@@ -334,14 +334,14 @@ export default function DashboardCompletedCards({
             <View style={styles.expandContentHeading}>
               <Text style={styles.expandContentFTxt}>Total Meters :</Text>
 
-              <Text style={styles.expandContentSTxt}>{items?.totalMeters}</Text>
+              <Text style={styles.expandContentSTxt}>{items?.total_meter}</Text>
             </View>
 
             <View style={styles.expandContentHeading}>
               <Text style={styles.expandContentFTxt}>Date Completed :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.dateCompleted}
+                {items?.date?.completed}
               </Text>
             </View>
 
@@ -349,7 +349,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Task Completed In :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.taskCompletedIn}
+                {items?.task_completed_in_sec}
               </Text>
             </View>
 
@@ -357,13 +357,13 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.nextReadingDate}
+                {items?.date?.next_reading}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
               <Text style={styles.expandContentFTxt}>Name :</Text>
 
-              <Text style={styles.expandContentSTxt}>{items?.nameBelow}</Text>
+              <Text style={styles.expandContentSTxt}>{items?.read_by}</Text>
             </View>
 
             <View

@@ -20,8 +20,9 @@ function DashboardScheduledCards({
   expandSchedule,
   navigation,
 }) {
+  console.log(items, "<<<<<<<<<<schedule");
   const firstCapitalize = (text) => {
-    const words = text.split(" ");
+    const words = text?.split(" ");
     for (let i = 0; i < words.length; i++) {
       words[i] = words[i][0].toUpperCase() + words[i].substring(1);
     }
@@ -44,7 +45,7 @@ function DashboardScheduledCards({
     ];
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    const dateParts = inputDate.split("-");
+    const dateParts = inputDate?.split("-");
     const year = dateParts[0];
     const month = months[parseInt(dateParts[1], 10) - 1];
     const day = dateParts[2];
@@ -91,7 +92,9 @@ function DashboardScheduledCards({
         </View>
 
         <View>
-          <Text style={styles.contentDateTxt}>{formatDate(items?.date)}</Text>
+          <Text style={styles.contentDateTxt}>
+            {formatDate(items?.reading_date?.on)}
+          </Text>
         </View>
       </View>
 
@@ -218,14 +221,16 @@ function DashboardScheduledCards({
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters Pending :</Text>
 
-            <Text style={styles.expandContentSTxt}>{items?.meter.pending}</Text>
+            <Text style={styles.expandContentSTxt}>
+              {items?.meter?.pending}
+            </Text>
           </View>
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {formatDate(items?.reading_date.next)}
+              {formatDate(items?.reading_date?.next)}
             </Text>
           </View>
 

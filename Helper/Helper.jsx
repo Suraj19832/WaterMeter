@@ -68,7 +68,7 @@ export async function sendGetRequest(url, params = {}) {
   return data;
 }
 
-export async function sendAuthorizeGetRequest(url, params = {}) {
+export async function sendAuthorizeGetRequest(url, params) {
   let token = await AsyncStorage.getItem("token");
   // console.log(token, "==token");
 
