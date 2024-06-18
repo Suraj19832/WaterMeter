@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from 'react-redux';
-import { setAuthToken } from '../redux/slices/Authslice';
+import { useDispatch } from "react-redux";
+import { setAuthToken } from "../redux/slices/Authslice";
 import {
   ActivityIndicator,
   Dimensions,
@@ -12,10 +12,12 @@ import {
   ToastAndroid,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import appApi from "../Helper/Api";
 import CheckBox from "react-native-check-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -24,10 +26,40 @@ function Login({ navigation }) {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const dispatch = useDispatch();
 
-   
+  console.log(latitude, longitude, "????????????????????");
 
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "granted") {
+          const location = await Location.getCurrentPositionAsync({});
+          const { latitude, longitude } = location.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          // Use latitude and longitude as needed
+          console.log(latitude, longitude, "<<<<<<<<<<<<");
+          setLocationPermission(true);
+        } else {
+          setLocationPermission(false);
+          Alert.alert(
+            "Location Permission Denied",
+            "Please allow location permission to use this app."
+          );
+        }
+      } catch (err) {
+        console.warn(err, "::::::::::::");
+        setLocationPermission(false);
+      }
+    };
+
+    requestLocationPermission();
+  }, []);
 
   useEffect(() => {
     const loadRememberedData = async () => {
@@ -84,6 +116,13 @@ function Login({ navigation }) {
   };
 
   const handleLogin = async () => {
+    if (locationPermission === false) {
+      Alert.alert(
+        "Location Permission Denied",
+        "Please allow location permission to use this app."
+      );
+      return;
+    }
     if (validation() === false) {
       return;
     } else {
@@ -103,7 +142,7 @@ function Login({ navigation }) {
             // console.log(res?.authorization?.token,"sksksksksksks")
             dispatch(setAuthToken(res?.authorization?.token));
             await AsyncStorage.setItem("token", res?.authorization?.token);
-           
+
             // console.log(res?.authorization?.token);
             if (checked) {
               await AsyncStorage.setItem("email", email);
