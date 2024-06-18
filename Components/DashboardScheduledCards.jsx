@@ -21,65 +21,70 @@ function DashboardScheduledCards({
   navigation,
 }) {
   console.log(items, "<<<<<<<<<<schedule");
-  // const firstCapitalize = (text) => {
-  //   const words = text?.split(" ");
-  //   for (let i = 0; i < words.length; i++) {
-  //     words[i] = words[i][0]?.toUpperCase() + words[i]?.substring(1);
-  //   }
-  //   return words?.join(" ");
-  // };
-  // function formatDate(inputDate) {
-  //   const months = [
-  //     "Jan",
-  //     "Feb",
-  //     "Mar",
-  //     "Apr",
-  //     "May",
-  //     "Jun",
-  //     "Jul",
-  //     "Aug",
-  //     "Sep",
-  //     "Oct",
-  //     "Nov",
-  //     "Dec",
-  //   ];
-  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const firstCapitalize = (text) => {
+    const words = text?.split(" ");
+    for (let i = 0; i < words?.length; i++) {
+      words[i] = words[i][0]?.toUpperCase() + words[i]?.substring(1);
+    }
+    return words?.join(" ");
+  };
+  function formatDate(inputDate) {
+    if (!inputDate) {
+      return ""; // or any default value you prefer
+    }
 
-  //   const dateParts = inputDate?.split("-");
-  //   const year = dateParts[0];
-  //   const month = months[parseInt(dateParts[1], 10) - 1];
-  //   const day = dateParts[2];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  //   const date = new Date(inputDate);
-  //   const dayOfWeek = days[date.getDay()];
+    const dateParts = inputDate.split("-");
+    const year = dateParts[0];
+    const month = months[parseInt(dateParts[1], 10) - 1];
+    const day = parseInt(dateParts[2], 10); // Convert day to integer
 
-  //   const suffixes = ["th", "st", "nd", "rd"];
-  //   const daySuffix =
-  //     day % 10 === 1 && day !== 11
-  //       ? suffixes[1]
-  //       : day % 10 === 2 && day !== 12
-  //       ? suffixes[2]
-  //       : day % 10 === 3 && day !== 13
-  //       ? suffixes[3]
-  //       : suffixes[0];
+    const date = new Date(inputDate);
+    const dayOfWeek = days[date.getDay()];
 
-  //   return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
-  // }
-  // function convertToDuration(seconds) {
-  //   const hours = Math.floor(seconds / 3600);
-  //   const remainingSeconds = seconds % 3600;
-  //   const minutes = Math.floor(remainingSeconds / 60);
+    const suffixes = ["th", "st", "nd", "rd"];
+    const daySuffix =
+      day % 10 === 1 && day !== 11
+        ? suffixes[1]
+        : day % 10 === 2 && day !== 12
+        ? suffixes[2]
+        : day % 10 === 3 && day !== 13
+        ? suffixes[3]
+        : suffixes[0];
 
-  //   let duration = "";
-  //   if (hours > 0) {
-  //     duration += `${hours}hr `;
-  //   }
-  //   if (minutes > 0) {
-  //     duration += `${minutes}mins`;
-  //   }
+    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+  }
 
-  //   return duration?.trim();
-  // }
+  function convertToDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const remainingSeconds = seconds % 3600;
+    const minutes = Math.floor(remainingSeconds / 60);
+
+    let duration = "";
+    if (hours > 0) {
+      duration += `${hours}hr `;
+    }
+    if (minutes > 0) {
+      duration += `${minutes}mins`;
+    }
+
+    return duration?.trim();
+  }
 
   return (
     <View style={styles.propertyCards}>
@@ -92,7 +97,9 @@ function DashboardScheduledCards({
         </View>
 
         <View>
-          <Text style={styles.contentDateTxt}>{items?.reading_date?.on}</Text>
+          <Text style={styles.contentDateTxt}>
+            {formatDate(items?.reading_date?.on)}
+          </Text>
         </View>
       </View>
 
@@ -105,7 +112,9 @@ function DashboardScheduledCards({
                 { backgroundColor: items?.status?.colorCode },
               ]}
             >
-              <Text style={styles.statusTxt}>{items?.status?.name}</Text>
+              <Text style={styles.statusTxt}>
+                {firstCapitalize(items?.status?.name)}
+              </Text>
             </View>
             <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
             <TouchableOpacity
@@ -167,7 +176,9 @@ function DashboardScheduledCards({
               },
             ]}
           >
-            <Text style={styles.statusTxt}>{items?.status?.name}</Text>
+            <Text style={styles.statusTxt}>
+              {firstCapitalize(items?.status?.name)}
+            </Text>
           </View>
 
           <View style={styles.belowSecond}>
@@ -228,7 +239,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.reading_date?.next}
+              {formatDate(items?.reading_date?.next)}
             </Text>
           </View>
 
@@ -236,7 +247,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.reading_date.last}
+              {formatDate(items?.reading_date?.last)}
             </Text>
           </View>
 
@@ -244,7 +255,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.estimate_time_in_sec}
+              {convertToDuration(items?.estimate_time_in_sec)}
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
@@ -253,8 +264,6 @@ function DashboardScheduledCards({
               <SubmitButton
                 textSize={14}
                 bgColor={colorCodes.submitButtonEnabled}
-                // height={37}
-                // width={100}
                 text="Start Reading"
               />
             </TouchableOpacity>

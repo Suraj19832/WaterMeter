@@ -215,7 +215,6 @@ function Dashboard({ navigation }) {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
       date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
     };
-    console.log(params, ">>>>>>>>>111111111233");
     appApi
       .dashboard(params)
       .then((res) => {

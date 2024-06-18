@@ -117,7 +117,7 @@ export default function DashboardCompletedCards({
       color: "#595959",
     },
     contentDateTxt: {
-      fontSize: 12,
+      fontSize: 10,
       height: 25,
       fontWeight: "500",
       color: "#989898",
@@ -223,7 +223,7 @@ export default function DashboardCompletedCards({
     expandContentSTxt: {
       color: "grey",
       fontWeight: "400",
-      fontSize: 14,
+      fontSize: 12,
       height: 30,
       paddingLeft: 10,
     },
@@ -237,7 +237,7 @@ export default function DashboardCompletedCards({
     completedNextDate: {
       color: "#0099ff",
       fontWeight: "400",
-      fontSize: 14,
+      fontSize: 12,
       height: 20,
     },
     belowContentCompleted: {
@@ -261,6 +261,64 @@ export default function DashboardCompletedCards({
     },
   });
 
+  function formatDate(inputDate) {
+    if (!inputDate) {
+      return ""; // or any default value you prefer
+    }
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    const dateParts = inputDate.split("-");
+    const year = dateParts[0];
+    const month = months[parseInt(dateParts[1], 10) - 1];
+    const day = parseInt(dateParts[2], 10); // Convert day to integer
+
+    const date = new Date(inputDate);
+    const dayOfWeek = days[date.getDay()];
+
+    const suffixes = ["th", "st", "nd", "rd"];
+    const daySuffix =
+      day % 10 === 1 && day !== 11
+        ? suffixes[1]
+        : day % 10 === 2 && day !== 12
+        ? suffixes[2]
+        : day % 10 === 3 && day !== 13
+        ? suffixes[3]
+        : suffixes[0];
+
+    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+  }
+
+  function convertToDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const remainingSeconds = seconds % 3600;
+    const minutes = Math.floor(remainingSeconds / 60);
+
+    let duration = "";
+    if (hours > 0) {
+      duration += `${hours}hr `;
+    }
+    if (minutes > 0) {
+      duration += `${minutes}mins`;
+    }
+
+    return duration?.trim();
+  }
+
   return (
     <>
       <View key={index} style={styles.propertyCards}>
@@ -273,7 +331,9 @@ export default function DashboardCompletedCards({
           </View>
 
           <View>
-            <Text style={styles.contentDateTxt}>{items?.date?.completed}</Text>
+            <Text style={styles.contentDateTxt}>
+              {formatDate(items?.date?.completed)}
+            </Text>
           </View>
         </View>
 
@@ -289,7 +349,7 @@ export default function DashboardCompletedCards({
             <View>
               <Text style={styles.completedNextDate}>Next Reading Date :</Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                {items?.date?.next_reading}
+                {formatDate(items?.date?.next_reading)}
               </Text>
             </View>
           )}
@@ -341,7 +401,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Date Completed :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.date?.completed}
+                {formatDate(items?.date?.completed)}
               </Text>
             </View>
 
@@ -349,7 +409,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Task Completed In :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.task_completed_in_sec}
+                {convertToDuration(items?.task_completed_in_sec)}
               </Text>
             </View>
 
@@ -357,7 +417,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.date?.next_reading}
+                {formatDate(items?.date?.next_reading)}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
