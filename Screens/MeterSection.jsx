@@ -568,27 +568,17 @@ const styles = StyleSheet.create({
     right: 22,
   },
   dropdownContainer: {
-    // // position: "absolute",
-    // top: "100%",
-    // // left: 0,
-    // marginTop: 10,
-    // width: "89%",
-    // backgroundColor: "#fff",
+
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 4,
-    // backgroundColor:"red"
     padding: 8,
     color: "black",
-    // zIndex: 1,
-    // left: 17,
-    // alignSelf: "center",
-    // justifyContent:'center'
+
   },
   dropdownOption: {
     paddingVertical: 8,
     alignSelf: "center",
-    // backgroundColor:"red",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -600,7 +590,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    width: "90%",
+    width: "100%",
     backgroundColor: "rgba(255, 255, 255, 1)",
     borderRadius: 20,
     padding: 20,

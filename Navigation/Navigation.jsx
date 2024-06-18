@@ -17,6 +17,7 @@ import DrawerNavigation from "./DrawerNavigation";
 import ChangePassword from './../Auth/ChangePassword';
 import VerifyOTP from './../Auth/VerifyOTP';
 import VerifyEmail from './../Auth/VarifyEmail';
+import MeterReading from '../Screens/MeterReading'
 
 const Stack = createStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -26,9 +27,9 @@ const TabNavigator = () => {
     return (
         <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />} headerShown={false}>
             <Bottom.Screen name="Dashboard" options={{ headerShown: false }} component={Dashboard} />
-            <Bottom.Screen name="Completion" options={{ headerShown: false }} component={Completion} />
+            <Bottom.Screen name="Completion" options={{ headerShown: false }} component={Dashboard} />
             <Bottom.Screen name="MeterSelection" options={{ headerShown: false }} component={MeterSelection} />
-            <Bottom.Screen name="MeterReading" options={{ headerShown: false }} component={OcrCaptured} />
+            <Bottom.Screen name="MeterReading" options={{ headerShown: false }} component={SummaryScreen} />
             <Bottom.Screen name="MeterReadingScanner" options={{ headerShown: false }} component={MeterSection} />
         </Bottom.Navigator>
     );
@@ -62,7 +63,7 @@ const DrawerNav = () => (
 );
 const MainStack = () => {
     return (
-        <Stack.Navigator initialRouteName="MeterScreen" headerShown={false}>
+        <Stack.Navigator initialRouteName="Login" headerShown={false}>
             <Stack.Screen
                 name="SplashScreen"
                 component={SplashScreen}
@@ -113,6 +114,11 @@ const MainStack = () => {
             <Stack.Screen
                 name="OcrCaptured"
                 component={OcrCaptured}
+                options={{ headerShown: false }}
+            />
+             <Stack.Screen
+                name="MeterReading"
+                component={MeterReading}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
