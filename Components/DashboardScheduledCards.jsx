@@ -21,65 +21,65 @@ function DashboardScheduledCards({
   navigation,
 }) {
   console.log(items, "<<<<<<<<<<schedule");
-  const firstCapitalize = (text) => {
-    const words = text?.split(" ");
-    for (let i = 0; i < words.length; i++) {
-      words[i] = words[i][0].toUpperCase() + words[i].substring(1);
-    }
-    return words.join(" ");
-  };
-  function formatDate(inputDate) {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // const firstCapitalize = (text) => {
+  //   const words = text?.split(" ");
+  //   for (let i = 0; i < words.length; i++) {
+  //     words[i] = words[i][0]?.toUpperCase() + words[i]?.substring(1);
+  //   }
+  //   return words?.join(" ");
+  // };
+  // function formatDate(inputDate) {
+  //   const months = [
+  //     "Jan",
+  //     "Feb",
+  //     "Mar",
+  //     "Apr",
+  //     "May",
+  //     "Jun",
+  //     "Jul",
+  //     "Aug",
+  //     "Sep",
+  //     "Oct",
+  //     "Nov",
+  //     "Dec",
+  //   ];
+  //   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    const dateParts = inputDate?.split("-");
-    const year = dateParts[0];
-    const month = months[parseInt(dateParts[1], 10) - 1];
-    const day = dateParts[2];
+  //   const dateParts = inputDate?.split("-");
+  //   const year = dateParts[0];
+  //   const month = months[parseInt(dateParts[1], 10) - 1];
+  //   const day = dateParts[2];
 
-    const date = new Date(inputDate);
-    const dayOfWeek = days[date.getDay()];
+  //   const date = new Date(inputDate);
+  //   const dayOfWeek = days[date.getDay()];
 
-    const suffixes = ["th", "st", "nd", "rd"];
-    const daySuffix =
-      day % 10 === 1 && day !== 11
-        ? suffixes[1]
-        : day % 10 === 2 && day !== 12
-        ? suffixes[2]
-        : day % 10 === 3 && day !== 13
-        ? suffixes[3]
-        : suffixes[0];
+  //   const suffixes = ["th", "st", "nd", "rd"];
+  //   const daySuffix =
+  //     day % 10 === 1 && day !== 11
+  //       ? suffixes[1]
+  //       : day % 10 === 2 && day !== 12
+  //       ? suffixes[2]
+  //       : day % 10 === 3 && day !== 13
+  //       ? suffixes[3]
+  //       : suffixes[0];
 
-    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
-  }
-  function convertToDuration(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const remainingSeconds = seconds % 3600;
-    const minutes = Math.floor(remainingSeconds / 60);
+  //   return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+  // }
+  // function convertToDuration(seconds) {
+  //   const hours = Math.floor(seconds / 3600);
+  //   const remainingSeconds = seconds % 3600;
+  //   const minutes = Math.floor(remainingSeconds / 60);
 
-    let duration = "";
-    if (hours > 0) {
-      duration += `${hours}hr `;
-    }
-    if (minutes > 0) {
-      duration += `${minutes}mins`;
-    }
+  //   let duration = "";
+  //   if (hours > 0) {
+  //     duration += `${hours}hr `;
+  //   }
+  //   if (minutes > 0) {
+  //     duration += `${minutes}mins`;
+  //   }
 
-    return duration.trim();
-  }
+  //   return duration?.trim();
+  // }
 
   return (
     <View style={styles.propertyCards}>
@@ -92,9 +92,7 @@ function DashboardScheduledCards({
         </View>
 
         <View>
-          <Text style={styles.contentDateTxt}>
-            {formatDate(items?.reading_date?.on)}
-          </Text>
+          <Text style={styles.contentDateTxt}>{items?.reading_date?.on}</Text>
         </View>
       </View>
 
@@ -107,9 +105,7 @@ function DashboardScheduledCards({
                 { backgroundColor: items?.status?.colorCode },
               ]}
             >
-              <Text style={styles.statusTxt}>
-                {firstCapitalize(items?.status?.name)}
-              </Text>
+              <Text style={styles.statusTxt}>{items?.status?.name}</Text>
             </View>
             <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
             <TouchableOpacity
@@ -126,7 +122,9 @@ function DashboardScheduledCards({
           </View>
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.meter.total} meters</Text>
+            <Text style={{ fontWeight: 500 }}>
+              {items?.meter?.total} meters
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandSchedule == index) {
@@ -169,13 +167,13 @@ function DashboardScheduledCards({
               },
             ]}
           >
-            <Text style={styles.statusTxt}>
-              {firstCapitalize(items?.status?.name)}
-            </Text>
+            <Text style={styles.statusTxt}>{items?.status?.name}</Text>
           </View>
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.meter.total} meters</Text>
+            <Text style={{ fontWeight: 500 }}>
+              {items?.meter?.total} meters
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandSchedule == index) {
@@ -215,7 +213,7 @@ function DashboardScheduledCards({
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
 
-            <Text style={styles.expandContentSTxt}>{items?.meter.total}</Text>
+            <Text style={styles.expandContentSTxt}>{items?.meter?.total}</Text>
           </View>
 
           <View style={styles.expandContentHeading}>
@@ -230,7 +228,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {formatDate(items?.reading_date?.next)}
+              {items?.reading_date?.next}
             </Text>
           </View>
 
@@ -238,7 +236,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {formatDate(items?.reading_date.last)}
+              {items?.reading_date.last}
             </Text>
           </View>
 
@@ -246,7 +244,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {convertToDuration(items?.estimate_time_in_sec)}
+              {items?.estimate_time_in_sec}
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
