@@ -6,10 +6,15 @@ import {
   StyleSheet,
   TextInput,
   Modal,
+  Button,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+
+
+import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 
 const MeterSection = ({ navigation }) => {
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
@@ -42,10 +47,15 @@ const MeterSection = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalValue, setisModalValue] = useState("");
 
+  //for picture 
+
+
+
   const toggleModalVisibility = () => {
     setIsModalVisible(!isModalVisible);
     setisModalValue("");
     setisImage()
+    // setModalVisibleUploadImage(true)
   };
   // For Information
   const [isModalInformation, setIsModalInformation] = useState(false);
@@ -59,18 +69,92 @@ const MeterSection = ({ navigation }) => {
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
 
-  const toggleModalVisibilityImage = (url =null) => {
+  const toggleModalVisibilityImage = () => {
     setIsModalImage(!isModalImage)
-    setisImage(url)
-    if (isModalImage) {
-      setisImage(url)
-      console.log(isImage)
-    }else{
     
+  };
+    // Image Upload
+    const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
+    const [errorMessageUploadImage, setErrorMessageUploadImage] =
+      useState(null);
+    const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] =
+      useState(false);
+  const toggleChangeImage =()=>{
+    setIsModalImage(!isModalImage)
+    setModalVisibleUploadImage(true)
+  }
+  const color = isModalImage ? '#0F77AF' : '#FFFFFF';
+  // camera and ducument picker fuctionality 
+  const closeModal = () => {
+    setModalVisibleUploadImage(false);
+
+  };
+  const pickFilePassPortPhoto = async () => {
+    if (isPickingFilePassPortPhoto) {
+      console.log("Document picking in progress");
+      return;
+    }
+
+    setIsPickingFilePassPortPhoto(true);
+    setErrorMessageUploadImage(null);
+
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+      });
+
+      console.log("File picker result:", result);
+
+      if (
+        !result.canceled &&
+        result.assets &&
+        result.assets.length > 0 &&
+        result.assets[0].uri
+      ) {
+        // console.log("File picked:", result.assets[0].uri);
+
+        setisImage(result.assets[0].uri)
+
+
+
+      } else if (result.canceled) {
+        console.log("File picking cancelled");
+      } else {
+        console.log("File picking failed");
+        setErrorMessageUploadImage("File picking failed");
+      }
+    } catch (error) {
+      console.error("Error picking file:", error);
+      setErrorMessageUploadImage("Error picking file");
+    } finally {
+      setIsPickingFilePassPortPhoto(false);
+    }
+    closeModal();
+  };
+  const takePicture = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Camera permission is required to take photos.");
+      return;
+    }
+
+    try {
+      const imageResult = await ImagePicker.launchCameraAsync();
+      console.log("sdkfpf", imageResult);
+      if (imageResult.assets[0].uri !== null) {
+   
+        
+          setModalVisibleUploadImage(false);
+          setisImage(imageResult.assets[0].uri)
+    
+       
+      }
+    } catch (error) {
+      console.error("Error taking picture:", error);
+      showToast("Error Occur")
+      // Handle error
     }
   };
-  const color = isModalImage ? '#0F77AF' : '#FFFFFF';
-
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -95,7 +179,7 @@ const MeterSection = ({ navigation }) => {
               placeholder="Select"
               value={inputValuemeter}
               onBlur={() => handleSelectionOptionMeter(inputValuemeter)}
-              editable={false} // Allow editing only when dropdown is closed
+              editable={false} 
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
             <Entypo
@@ -155,6 +239,7 @@ const MeterSection = ({ navigation }) => {
                  width: '100%',
              
                }}
+               resizeMode="cover"
              />
                 </View>
 
@@ -167,7 +252,7 @@ const MeterSection = ({ navigation }) => {
                    borderRadius: 8,
                    justifyContent: "center",
                  }}
-                 onPress={toggleModalVisibility}
+                 onPress={toggleChangeImage}
                >
                  <Text style={styles.closeButton}>Change Image</Text>
                </TouchableOpacity>
@@ -221,16 +306,7 @@ const MeterSection = ({ navigation }) => {
            </View>
          )}
 
-         {/* {isModalImage && (
-            <Image
-            source={{ uri: isImage }} 
-            style={{
-              height: 100,
-              width: '100%',
-          
-            }}
-          />
-         )} */}
+      
        </View>
             )}
          
@@ -257,7 +333,7 @@ const MeterSection = ({ navigation }) => {
             </Text>
           </View>
           <View>
-            <TouchableOpacity onPress={()=>toggleModalVisibilityImage("https://eshop.fotohub.com/modules/ybc_blog/views/img/post/thumb/xmwpf2024-8.jpg.pagespeed.ic.NDU_QNRTSB.webp")}>
+            <TouchableOpacity onPress={toggleModalVisibilityImage}>
             <Image
               source={require("../assets/Group (5).png")}
               style={{
@@ -293,7 +369,7 @@ const MeterSection = ({ navigation }) => {
               placeholder="Select"
               value={inputValuemeterReading}
               onBlur={() => handleSelectionOptionMeter(inputValuemeterReading)}
-              editable={false} // Allow editing only when dropdown is closed
+              editable={false} 
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
             <Entypo
@@ -323,12 +399,7 @@ const MeterSection = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       )}
-      {/* <View style={styles.selectBox}>
-        <Text style={styles.selectheading}>Meter :</Text>
-        <View style={styles.select}>
-          <Text style={styles.selectCompleter}>Completed Readings</Text>
-        </View>
-      </View> */}
+ 
       <View style={{ justifyContent: "flex-end", marginVertical: 15 }}>
         <TouchableOpacity
           style={{
@@ -371,7 +442,42 @@ const MeterSection = ({ navigation }) => {
             Select Meter
           </Text>
         </TouchableOpacity>
+
+     
       </View>
+
+    {/* ca mera gallery modal */}
+      <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisibleUploadImage}
+                  onRequestClose={closeModal}
+                >
+                  <View style={styles.modalContainerCG}>
+                    <View style={styles.modalContent}>
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={takePicture}
+                      >
+                        <Text style={styles.modalOptionText}>Camera</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={pickFilePassPortPhoto}
+                      >
+                        <Text style={styles.modalOptionText}>
+                        Choose Gallery
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.modalOption}
+                        onPress={closeModal}
+                      >
+                        <Text style={styles.modalOptionText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
     </SafeAreaView>
   );
 };
@@ -530,4 +636,29 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 16,
   },
+
+  //down modal css for camera gallery
+  modalContainerCG: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    width: "90%",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  modalOption: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2198C9",
+  },
+  modalOptionText: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+
 });

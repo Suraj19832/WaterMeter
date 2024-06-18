@@ -62,7 +62,7 @@ const DrawerNav = () => (
 );
 const MainStack = () => {
     return (
-        <Stack.Navigator initialRouteName="Dashboard" headerShown={false}>
+        <Stack.Navigator initialRouteName="MeterScreen" headerShown={false}>
             <Stack.Screen
                 name="SplashScreen"
                 component={SplashScreen}
