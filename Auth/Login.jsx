@@ -33,33 +33,47 @@ function Login({ navigation }) {
 
   console.log(latitude, longitude, "????????????????????");
 
-  useEffect(() => {
-    const requestLocationPermission = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === "granted") {
-          const location = await Location.getCurrentPositionAsync({});
-          const { latitude, longitude } = location.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-          // Use latitude and longitude as needed
-          console.log(latitude, longitude, "<<<<<<<<<<<<");
-          setLocationPermission(true);
-        } else {
-          setLocationPermission(false);
-          Alert.alert(
-            "Location Permission Denied",
-            "Please allow location permission to use this app."
-          );
-        }
-      } catch (err) {
-        console.warn(err, "::::::::::::");
+  const requestLocationPermission = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === "granted") {
+        const location = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = location.coords;
+        setLatitude(latitude);
+        setLongitude(longitude);
+        console.log(latitude, longitude, "<<<<<<<<<<<<");
+        setLocationPermission(true);
+      } else {
         setLocationPermission(false);
+        Alert.alert(
+          "Location Permission Denied",
+          "Please allow location permission to use this app."
+        );
       }
-    };
-
+    } catch (err) {
+      console.warn(err, "::::::::::::");
+      setLocationPermission(false);
+    }
+  };
+  useEffect(() => {
     requestLocationPermission();
   }, []);
+
+  const saveLocationApi = () => {
+    const data = {
+      lat: latitude,
+      lng: longitude,
+    };
+    console.log("checking");
+    appApi
+      .saveLocationApi(data)
+      .then((res) => {
+        console.log(res, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<response");
+      })
+      .catch((err) => {
+        console.log(err, "<<<<<<<<<<<<<<<<<<<<<error");
+      });
+  };
 
   useEffect(() => {
     const loadRememberedData = async () => {
@@ -117,10 +131,7 @@ function Login({ navigation }) {
 
   const handleLogin = async () => {
     if (locationPermission === false) {
-      Alert.alert(
-        "Location Permission Denied",
-        "Please allow location permission to use this app."
-      );
+      requestLocationPermission();
       return;
     }
     if (validation() === false) {
@@ -139,11 +150,9 @@ function Login({ navigation }) {
           setDisabledBtn(false);
           if (res?.status) {
             showToast(res?.message);
-            // console.log(res?.authorization?.token,"sksksksksksks")
+            saveLocationApi();
             dispatch(setAuthToken(res?.authorization?.token));
             await AsyncStorage.setItem("token", res?.authorization?.token);
-
-            // console.log(res?.authorization?.token);
             if (checked) {
               await AsyncStorage.setItem("email", email);
               await AsyncStorage.setItem("password", password);
@@ -154,12 +163,14 @@ function Login({ navigation }) {
             navigation.navigate("Dashboard");
           } else {
             showToast(res?.message);
+            // setIsLoading(false);
           }
         })
         .catch((err) => {
           console.log(err, "error from api");
+          showToast(err.message);
           setIsLoading(false);
-          setDisabledBtn(false);
+          // setDisabledBtn(false);
         });
     }
   };
