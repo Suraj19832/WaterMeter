@@ -10,5 +10,7 @@ export const colorCodes = {
   heading: "#5EC2C6",
   borderColor: "#2198C9",
   yaleBlue: "#104F9C",
-  placeholder: "#656263",
+  placeholder: "#AAAAAA",
+  placeholderFill: "#656263",
+  error: "#FF0000",
 };
