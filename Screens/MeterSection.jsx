@@ -7,16 +7,20 @@ import {
   TextInput,
   Modal,
   Button,
+  ToastAndroid,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 
-
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 
 const MeterSection = ({ navigation }) => {
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
   const [meterData, setmeterData] = useState("");
@@ -42,27 +46,28 @@ const MeterSection = ({ navigation }) => {
     setmeterReadingData(option);
     setisDropdownMeterReading(false);
   };
-
+// fffff
   // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalValue, setisModalValue] = useState("");
 
-  //for picture 
-
-
+  //for picture
 
   const toggleModalVisibility = () => {
     setIsModalVisible(!isModalVisible);
     setisModalValue("");
-    setisImage()
+    setisImage();
     // setModalVisibleUploadImage(true)
   };
+  const toggleModalVisibilitySubmit =()=>{
+    setIsModalVisible(false)
+  }
   // For Information
   const [isModalInformation, setIsModalInformation] = useState(false);
 
   const toggleModalVisibilityInformation = () => {
     setIsModalInformation(!isModalInformation);
-    
+    setIsModalVisible(false);
   };
 
   //For Image
@@ -70,24 +75,28 @@ const MeterSection = ({ navigation }) => {
   const [isImage, setisImage] = useState();
 
   const toggleModalVisibilityImage = () => {
-    setIsModalImage(!isModalImage)
-    
+    setIsModalImage(!isModalImage);
+
   };
-    // Image Upload
-    const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
-    const [errorMessageUploadImage, setErrorMessageUploadImage] =
-      useState(null);
-    const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] =
-      useState(false);
-  const toggleChangeImage =()=>{
-    setIsModalImage(!isModalImage)
-    setModalVisibleUploadImage(true)
-  }
-  const color = isModalImage ? '#0F77AF' : '#FFFFFF';
-  // camera and ducument picker fuctionality 
+
+
+  // fffffff
+
+    
+  // Image Upload
+  const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
+  const [errorMessageUploadImage, setErrorMessageUploadImage] = useState(null);
+  const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] = useState(
+    false
+  );
+  const toggleChangeImage = () => {
+    setIsModalImage(!isModalImage);
+    setModalVisibleUploadImage(true);
+  };
+  const color = isModalImage ? "#0F77AF" : "#FFFFFF";
+  // camera and ducument picker fuctionality
   const closeModal = () => {
     setModalVisibleUploadImage(false);
-
   };
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
@@ -113,10 +122,8 @@ const MeterSection = ({ navigation }) => {
       ) {
         // console.log("File picked:", result.assets[0].uri);
 
-        setisImage(result.assets[0].uri)
-
-
-
+        setisImage(result.assets[0].uri);
+        showToast("Uploaded Successfully");
       } else if (result.canceled) {
         console.log("File picking cancelled");
       } else {
@@ -142,19 +149,18 @@ const MeterSection = ({ navigation }) => {
       const imageResult = await ImagePicker.launchCameraAsync();
       console.log("sdkfpf", imageResult);
       if (imageResult.assets[0].uri !== null) {
-   
-        
-          setModalVisibleUploadImage(false);
-          setisImage(imageResult.assets[0].uri)
-    
-       
+        setModalVisibleUploadImage(false);
+        setisImage(imageResult.assets[0].uri);
       }
     } catch (error) {
       console.error("Error taking picture:", error);
-      showToast("Error Occur")
+      showToast("Error Occur");
       // Handle error
     }
   };
+
+
+  
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -168,7 +174,6 @@ const MeterSection = ({ navigation }) => {
       <View style={styles.heading}>
         <Text style={styles.headingText}>M01 | Masari Heights</Text>
       </View>
-    
 
       <View style={styles.fields_main}>
         <Text style={styles.selectheading}>Meter :</Text>
@@ -179,7 +184,7 @@ const MeterSection = ({ navigation }) => {
               placeholder="Select"
               value={inputValuemeter}
               onBlur={() => handleSelectionOptionMeter(inputValuemeter)}
-              editable={false} 
+              editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
             <Entypo
@@ -199,13 +204,13 @@ const MeterSection = ({ navigation }) => {
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeter("A10")}
           >
-            <Text>A10</Text>
+            <Text style={styles.input}>A10</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeter("A20")}
           >
-            <Text>A20</Text>
+            <Text style={styles.input}>A20</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -215,102 +220,170 @@ const MeterSection = ({ navigation }) => {
         animationType="slide"
         onRequestClose={toggleModalVisibility}
       >
+       
         <View style={styles.modalBackground}>
+      
           {isModalInformation && (
             <View style={{ width: "90%", alignItems: "flex-end" }}>
               <TouchableOpacity onPress={toggleModalVisibilityInformation}>
-                <Entypo name="cross" size={24} color={color}/>
-              </TouchableOpacity>
-            </View>
-          )}
-          {
-            isModalImage && (
-              <View style={[styles.modalContainer ,{padding:0 ,height:326 ,justifyContent:'center' ,borderRadius:0,borderWidth:0}]}>
-                <View style={{width:'100%'}}>
-                <View style={{ width: "90%", alignItems: "flex-end"  ,alignSelf:'center' }}>
-              <TouchableOpacity onPress={toggleModalVisibilityImage} >
                 <Entypo name="cross" size={24} color={color} />
               </TouchableOpacity>
             </View>
-            <Image
-               source={{ uri: isImage }} 
-               style={{
-                 height: 220,
-                 width: '100%',
-             
-               }}
-               resizeMode="cover"
-             />
+          )}
+          {isModalImage && (
+            <View
+              style={[
+                styles.modalContainer,
+                {
+                  padding: 0,
+                  height: 326,
+                  justifyContent: "center",
+                  borderRadius: 0,
+                  borderWidth: 0,
+                },
+              ]}
+            >
+              <View style={{ width: "100%" }}>
+                <View
+                  style={{
+                    width: "90%",
+                    alignItems: "flex-end",
+                    alignSelf: "center",
+                  }}
+                >
+                  <TouchableOpacity onPress={toggleModalVisibilityImage}>
+                    <Entypo name="cross" size={24} color={color} />
+                  </TouchableOpacity>
                 </View>
 
-                <View style={{ width: "90%", alignItems: "flex-end" ,marginTop:15}}>
-               <TouchableOpacity
-                 style={{
-                   width: 102,
-                   height: 32,
-                   backgroundColor: "#FF8902",
-                   borderRadius: 8,
-                   justifyContent: "center",
-                 }}
-                 onPress={toggleChangeImage}
-               >
-                 <Text style={styles.closeButton}>Change Image</Text>
-               </TouchableOpacity>
-             </View>
-             
+                {isImage ? (
+                  <Image
+                    source={{ uri: isImage }}
+                    style={{
+                      height: 220,
+                      width: "100%",
+                    }}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View
+                    style={{
+                      height: 220,
+                      width: "100%",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <Text style={styles.headingText}> Upload Image</Text>
+                    <View
+                      style={{
+                        width: "100%",
+                        alignItems: "center",
+                        marginTop: 15,
+                      }}
+                    >
+                      <TouchableOpacity
+                        style={{
+                          width: 102,
+                          height: 32,
+                          backgroundColor: "#FF8902",
+                          borderRadius: 8,
+                          justifyContent: "center",
+                        }}
+                        onPress={toggleChangeImage}
+                      >
+                        <Text style={styles.closeButton}>Upload Image</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+              {isImage && (
+                <View
+                  style={{
+                    width: "90%",
+                    alignItems: "flex-end",
+                    marginTop: 15,
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      width: 102,
+                      height: 32,
+                      backgroundColor: "#FF8902",
+                      borderRadius: 8,
+                      justifyContent: "center",
+                    }}
+                    onPress={toggleChangeImage}
+                  >
+                    <Text style={styles.closeButton}>Change Image</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
-            )
-          }
- {!isModalImage && (
-         <View style={styles.modalContainer}>
-         {isModalVisible && (
-           <>
-             <TextInput
-               style={styles.modalInput}
-               placeholder="Enter your notes here"
-               multiline
-               numberOfLines={4}
-               onChangeText={(text) => setisModalValue(text)}
-               value={isModalValue}
-             />
-             <View style={{ width: "100%", alignItems: "flex-end" }}>
-               <TouchableOpacity
-                 style={{
-                   width: 63,
-                   height: 32,
-                   backgroundColor: "#FF8902",
-                   borderRadius: 8,
-                   justifyContent: "center",
-                 }}
-                 onPress={toggleModalVisibility}
-               >
-                 <Text style={styles.closeButton}>Submit</Text>
-               </TouchableOpacity>
-             </View>
-           </>
-         )}
-         {isModalInformation && (
-           <View style={{ width: "100%", gap: 10 }}>
-             <View style={{ flexDirection: "row" }}>
-               <Text style={styles.modalKeyText}>Last Reading :</Text>
-               <Text style={styles.modalValueText}> 91627 OCR</Text>
-             </View>
-             <View style={{ flexDirection: "row" }}>
-               <Text style={styles.modalKeyText}>Last Reading Date : </Text>
-               <Text style={styles.modalValueText}> Sun May 19th,2024</Text>
-             </View>
-             <View style={{ flexDirection: "row" }}>
-               <Text style={styles.modalKeyText}>Avg Usage : </Text>
-               <Text style={styles.modalValueText}> 2425/mth</Text>
-             </View>
-           </View>
-         )}
+          )}
+          {!isModalImage && (
+            <View style={styles.modalContainer}>
+              {isModalVisible && (
+                <>
+                <View style={{width:'100%' }}>
+                <TouchableOpacity onPress={toggleModalVisibilitySubmit}>
+                    <Entypo style={{alignSelf:'flex-end'}} name="cross" size={24} color="#197AB6" />
+                  </TouchableOpacity>
+                </View>
+                
+                  <TextInput
+                    style={styles.modalInput}
+                    placeholder="Enter your notes here"
+                    multiline
+                    numberOfLines={4}
+                    onChangeText={(text) => setisModalValue(text)}
+                    value={isModalValue}
+                  />
+                  <View style={{ width: "100%", alignItems: "flex-end" }}>
+                    <TouchableOpacity
+                      style={{
+                        width: 63,
+                        height: 32,
+                        backgroundColor: "#FF8902",
+                        borderRadius: 8,
+                        justifyContent: "center",
+                      }}
+                      onPress={toggleModalVisibility}
+                    >
+                      <Text style={styles.closeButton}>Submit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
+              {isModalInformation && (
+                <View style={{ width: "100%", gap: 10 }}>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.modalKeyText}>Last Reading :</Text>
+                    <Text style={styles.modalValueText}> 91627 OCR</Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.modalKeyText}>
+                      Last Reading Date :{" "}
+                    </Text>
+                    <Text style={styles.modalValueText}>
+                      {" "}
+                      Sun May 19th,2024
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.modalKeyText}>Avg Usage : </Text>
+                    <Text style={styles.modalValueText}> 2425/mth</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
 
-      
-       </View>
-            )}
-         
+
+          
         </View>
+   
+       
       </Modal>
       {inputValuemeter && (
         <View
@@ -334,16 +407,15 @@ const MeterSection = ({ navigation }) => {
           </View>
           <View>
             <TouchableOpacity onPress={toggleModalVisibilityImage}>
-            <Image
-              source={require("../assets/Group (5).png")}
-              style={{
-                height: 28,
-                width: 31,
-              }}
-              resizeMode="center"
-            />
+              <Image
+                source={require("../assets/Group (5).png")}
+                style={{
+                  height: 28,
+                  width: 31,
+                }}
+                resizeMode="center"
+              />
             </TouchableOpacity>
-          
           </View>
         </View>
       )}
@@ -369,7 +441,7 @@ const MeterSection = ({ navigation }) => {
               placeholder="Select"
               value={inputValuemeterReading}
               onBlur={() => handleSelectionOptionMeter(inputValuemeterReading)}
-              editable={false} 
+              editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
             <Entypo
@@ -381,7 +453,7 @@ const MeterSection = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Dropdown of gender */}
+      {/* Dropdown of meter reading */}
 
       {isDropdownMeterReading && (
         <View style={styles.dropdownContainer}>
@@ -389,17 +461,17 @@ const MeterSection = ({ navigation }) => {
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeterReading("A10")}
           >
-            <Text>A10</Text>
+            <Text style={styles.input}>A10</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeterReading("A20")}
           >
-            <Text>A20</Text>
+            <Text style={styles.input}>A20</Text>
           </TouchableOpacity>
         </View>
       )}
- 
+
       <View style={{ justifyContent: "flex-end", marginVertical: 15 }}>
         <TouchableOpacity
           style={{
@@ -442,42 +514,32 @@ const MeterSection = ({ navigation }) => {
             Select Meter
           </Text>
         </TouchableOpacity>
-
-     
       </View>
 
-    {/* ca mera gallery modal */}
+      {/* camera gallery modal */}
       <Modal
-                  animationType="slide"
-                  transparent={true}
-                  visible={modalVisibleUploadImage}
-                  onRequestClose={closeModal}
-                >
-                  <View style={styles.modalContainerCG}>
-                    <View style={styles.modalContent}>
-                      <TouchableOpacity
-                        style={styles.modalOption}
-                        onPress={takePicture}
-                      >
-                        <Text style={styles.modalOptionText}>Camera</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.modalOption}
-                        onPress={pickFilePassPortPhoto}
-                      >
-                        <Text style={styles.modalOptionText}>
-                        Choose Gallery
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.modalOption}
-                        onPress={closeModal}
-                      >
-                        <Text style={styles.modalOptionText}>Cancel</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </Modal>
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleUploadImage}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainerCG}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.modalOption} onPress={takePicture}>
+              <Text style={styles.modalOptionText}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={pickFilePassPortPhoto}
+            >
+              <Text style={styles.modalOptionText}>Choose Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalOption} onPress={closeModal}>
+              <Text style={styles.modalOptionText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -568,13 +630,12 @@ const styles = StyleSheet.create({
     right: 22,
   },
   dropdownContainer: {
-
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    borderColor: "#2198C9",
+    borderRadius: 15,
     padding: 8,
     color: "black",
-
+    marginTop:2
   },
   dropdownOption: {
     paddingVertical: 8,
@@ -604,9 +665,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     textAlignVertical: "top",
-    color:'#595959',
-    fontSize:14,
-    fontWeight:'400'
+    color: "#595959",
+    fontSize: 14,
+    fontWeight: "400",
   },
   closeButton: {
     fontSize: 12,
@@ -650,5 +711,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-
 });
