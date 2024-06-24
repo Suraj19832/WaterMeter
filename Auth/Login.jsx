@@ -13,6 +13,8 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import appApi from "../Helper/Api";
 import CheckBox from "react-native-check-box";
@@ -187,90 +189,94 @@ function Login({ navigation }) {
     setChecked(!checked);
   };
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../assets/BackgroundImage.png")}
-        resizeMode="cover"
-        style={styles.image}
-        imageStyle={{ opacity: 0.1 }}
-      >
-        <View style={styles.content}>
-          <Image
-            source={require("../assets/Rectangle 11.png")}
-            style={styles.rectangleImg}
-          />
-          <Image
-            source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
-            style={styles.diamondImg}
-          />
-        </View>
-
-        <View style={{ marginTop: 20 }}>
-          <Text style={styles.heading}>Login</Text>
-          <View>
-            <TextInput
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              placeholder="Email or Username"
-              placeholderTextColor="#656263"
-              style={styles.email}
-              // autoComplete={true}
-            />
-            {validationError.email && (
-              <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
-                {validationError.email}
-              </Text>
-            )}
-          </View>
-          <View>
-            <TextInput
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              placeholder="Password"
-              placeholderTextColor="#656263"
-              style={styles.password}
-              // autoComplete={true}
-            />
-            {validationError.password && (
-              <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
-                {validationError.password}
-              </Text>
-            )}
-          </View>
-
-          <View style={styles.RememberPassword}>
-            <View style={styles.rememberMain}>
-              <View>
-                <View>
-                  <CheckBox
-                    onClick={handleCheckBoxToggle}
-                    isChecked={checked}
-                  />
-                </View>
-              </View>
-              <Text style={styles.remember}>Remember Me</Text>
+    <KeyboardAvoidingView behavior="padding">
+      <ScrollView contentContainerStyle={{}}>
+        <View style={styles.container}>
+          <ImageBackground
+            source={require("../assets/BackgroundImage.png")}
+            resizeMode="cover"
+            style={styles.image}
+            imageStyle={{ opacity: 0.1 }}
+          >
+            <View style={styles.content}>
+              <Image
+                source={require("../assets/Rectangle 11.png")}
+                style={styles.rectangleImg}
+              />
+              <Image
+                source={require("../assets/HYRA REAL ESTATE LOGO 1.png")}
+                style={styles.diamondImg}
+              />
             </View>
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate("VerifyEmail")}
-            >
-              <Text style={styles.forgot}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            onPress={handleLogin}
-            disabled={disabledBtn}
-            style={[styles.submitBtn, { opacity: disabledBtn ? 0.5 : 1 }]}
-          >
-            {isLoading ? (
-              <ActivityIndicator size={"small"} />
-            ) : (
-              <Text style={styles.submitText}>Login</Text>
-            )}
-          </TouchableOpacity>
+            <View style={{ marginTop: 20 }}>
+              <Text style={styles.heading}>Login</Text>
+              <View>
+                <TextInput
+                  value={email}
+                  onChangeText={(text) => setEmail(text)}
+                  placeholder="Email or Username"
+                  placeholderTextColor="#656263"
+                  style={styles.email}
+                  // autoComplete={true}
+                />
+                {validationError.email && (
+                  <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
+                    {validationError.email}
+                  </Text>
+                )}
+              </View>
+              <View>
+                <TextInput
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                  placeholder="Password"
+                  placeholderTextColor="#656263"
+                  style={styles.password}
+                  // autoComplete={true}
+                />
+                {validationError.password && (
+                  <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
+                    {validationError.password}
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.RememberPassword}>
+                <View style={styles.rememberMain}>
+                  <View>
+                    <View>
+                      <CheckBox
+                        onClick={handleCheckBoxToggle}
+                        isChecked={checked}
+                      />
+                    </View>
+                  </View>
+                  <Text style={styles.remember}>Remember Me</Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("VerifyEmail")}
+                >
+                  <Text style={styles.forgot}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={handleLogin}
+                disabled={disabledBtn}
+                style={[styles.submitBtn, { opacity: disabledBtn ? 0.5 : 1 }]}
+              >
+                {isLoading ? (
+                  <ActivityIndicator size={"small"} />
+                ) : (
+                  <Text style={styles.submitText}>Login</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
         </View>
-      </ImageBackground>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
