@@ -19,6 +19,7 @@ import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
+import InputField from "../Components/InputField";
 
 function ForgotPassword({ navigation }) {
   //   const [checked, setChecked] = useState(true);
@@ -116,7 +117,7 @@ function ForgotPassword({ navigation }) {
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text style={styles.heading}>Forgot Password?</Text>
 
-            <View style={styles.fields_main}>
+            {/* <View style={styles.fields_main}>
               <View style={styles.input_box}>
                 <TextInput
                   style={styles.input}
@@ -138,13 +139,19 @@ function ForgotPassword({ navigation }) {
                   />
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
+                <InputField
+                setValue={setIsNewPassword}
+                value={isNewPassword}
+                placeholderValue="Enter New Password"
+                ispassword={true}
+              />
             {!passwordLength && isNewPassword?.length < 8 && (
               <Text style={{ color: "red" }}>
                 Password must be of 8 character
               </Text>
             )}
-            <View style={styles.fields_main}>
+            {/* <View style={styles.fields_main}>
               <View style={styles.input_box}>
                 <TextInput
                   style={styles.input}
@@ -166,7 +173,14 @@ function ForgotPassword({ navigation }) {
                   />
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
+
+<InputField
+                setValue={setIsConfirmPassword}
+                value={isConfirmPassword}
+                placeholderValue="Enter New Password"
+                ispassword={true}
+              />
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
               <TouchableOpacity
                 disabled={!passwordsMatch}

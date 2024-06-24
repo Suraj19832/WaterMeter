@@ -68,9 +68,9 @@ export async function sendGetRequest(url, params = {}) {
   return data;
 }
 
-export async function sendAuthorizeGetRequest(url, params) {
+export async function sendAuthorizeGetRequest(url, params=[] ) {
   let token = await AsyncStorage.getItem("token");
-  // console.log(token, "==token");
+
 
   if (Object.keys(params).length != 0) {
     let queryString = new URLSearchParams(params);
@@ -85,7 +85,6 @@ export async function sendAuthorizeGetRequest(url, params) {
   });
 
   let data = await response.json();
-
   if (!response.ok) {
     throw new ValidationError(data.message, data.errors);
   }

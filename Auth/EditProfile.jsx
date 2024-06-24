@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { selectAuthToken } from '../redux/slices/Authslice';
 import appApi from "../Helper/Api";
 import { ToastAndroid } from "react-native";
+import InputField from "../Components/InputField";
 function EditProfile({ navigation }) {
   const [checked, setChecked] = useState(true);
   const authToken = useSelector(selectAuthToken);
@@ -30,6 +31,8 @@ function EditProfile({ navigation }) {
   }
   useEffect(() => {
     const fetchData = async () => {
+      console.log("pppp[pppppppppppppppppppppp")
+      
       try {
         const res = await appApi.profile();
         if (res?.status) {
@@ -50,9 +53,7 @@ function EditProfile({ navigation }) {
           ],
           { cancelable: false }
         );
-      } finally {
-        console.log("api call complete");
-      }
+      } 
     };
 
     fetchData();
@@ -167,48 +168,25 @@ function EditProfile({ navigation }) {
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text style={styles.heading}>Edit Profile</Text>
 
-            <View style={styles.fields_main}>
-              <View style={styles.input_box}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Name"
-                  value={firstname}
-                  onChangeText={setfirstname}
-                  // onBlur={validateEmail}
-                  placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                />
-              </View>
-        
-            </View>
-            {/* <View style={styles.fields_main}>
-              <View style={styles.input_box}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Last Name"
-                  value={lastname}
-                  onChangeText={setlastname}
-                  // onBlur={validateEmail}
-                  placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                />
-              </View>
-           
-            </View> */}
-            <View style={styles.fields_main}>
-              <View style={styles.input_box}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your Email id"
-                  value={email}
-                  onChangeText={handleEmailChange}
-                  onBlur={validateEmail}
-                  placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                  editable ={false}
-                />
-              </View>
-              {emailError ? (
+      
+
+<InputField
+                setValue={setfirstname}
+                value={firstname}
+                placeholderValue="Name"
+                ispassword={false}
+              />
+   
+
+<InputField
+                setValue={handleEmailChange}
+                value={email}
+                placeholderValue="Enter your Email id"
+                ispassword={false}
+              />
+            {emailError ? (
                 <Text style={{ color: "red" }}>{emailError}</Text>
               ) : null}
-            </View>
          
 
           
