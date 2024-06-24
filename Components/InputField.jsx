@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -10,8 +10,6 @@ import {
 import { Feather, Fontisto, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const InputField = (props) => {
-
-
   const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -30,7 +28,7 @@ const InputField = (props) => {
       animatePlaceholder(16);
     }
     if (props.isemail) {
-        props.validateEmail()
+      props.validateEmail();
     }
   };
 
@@ -59,7 +57,7 @@ const InputField = (props) => {
         placeholder={!isFocused && !props.value ? props.placeholderValue : ""}
         placeholderTextColor="#656263"
         style={[styles.inputfield, isFocused && styles.inputfieldFocused]}
-        secureTextEntry={props.ispassword && !showCurrentPass} 
+        secureTextEntry={props.ispassword && !showCurrentPass}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChangeText={(text) => props.setValue(text)}
@@ -67,23 +65,23 @@ const InputField = (props) => {
       />
       {props.ispassword && (
         <TouchableOpacity
-        onPress={() => setShowCurrentPass(!showCurrentPass)}
-        style={styles.eyeIcon}
-      >
-        {showCurrentPass ? (
-          <Feather name="eye" size={18} color="#656263" />
-        ) : (
-          <MaterialCommunityIcons
-            name="eye-off-outline"
-            size={18}
-            color="#656263"
-          />
-        )}
-      </TouchableOpacity>
+          onPress={() => setShowCurrentPass(!showCurrentPass)}
+          style={styles.eyeIcon}
+        >
+          {showCurrentPass ? (
+            <Feather name="eye" size={18} color="#656263" />
+          ) : (
+            <MaterialCommunityIcons
+              name="eye-off-outline"
+              size={18}
+              color="#656263"
+            />
+          )}
+        </TouchableOpacity>
       )}
-       {props.isemail && (
+      {props.isemail && (
         <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
-       )}
+      )}
     </View>
   );
 };
@@ -101,7 +99,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 17,
-    position: "relative", 
+    position: "relative",
   },
 
   inputfield: {
@@ -113,8 +111,8 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   inputfieldFocused: {
-    fontSize: 12, 
-    color: "#333", 
+    fontSize: 12,
+    color: "#333",
   },
   placeholder: {
     position: "absolute",
@@ -125,11 +123,12 @@ const styles = StyleSheet.create({
   },
   placeholderFocused: {
     top: -10,
-    fontSize: 12, 
+    fontSize: 12,
     color: "#A6A6A6",
-    backgroundColor: "#f3f1f1",
+    backgroundColor: "#f2f2f2",
+    paddingHorizontal: 2,
   },
- 
+
   eyeIcon: {
     position: "absolute",
     right: 17,
