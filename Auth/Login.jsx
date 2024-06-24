@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: "7%",
     fontWeight: "400",
+    color: colorCodes.placeholderFill,
   },
   password: {
     height: 60,
@@ -333,6 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: "4%",
     fontWeight: "400",
+    color: colorCodes.placeholderFill,
   },
   RememberPassword: {
     display: "flex",
