@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ToastProvider, useToast } from "react-native-toast-notifications";
 import { useDispatch } from "react-redux";
 import { setAuthToken } from "../redux/slices/Authslice";
 import {
@@ -20,6 +21,7 @@ import appApi from "../Helper/Api";
 import CheckBox from "react-native-check-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
+import { colorCodes } from "../ColorCodes/Colors";
 
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -32,6 +34,7 @@ function Login({ navigation }) {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const dispatch = useDispatch();
+  const toast = useToast();
 
   console.log(latitude, longitude, "????????????????????");
 
@@ -95,10 +98,6 @@ function Login({ navigation }) {
     loadRememberedData();
   }, []);
 
-  function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  }
-
   const errors = {};
   const validation = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -151,7 +150,7 @@ function Login({ navigation }) {
           setIsLoading(false);
           setDisabledBtn(false);
           if (res?.status) {
-            showToast(res?.message);
+            toast.show(res?.message, { type: "sucess" });
             saveLocationApi();
             dispatch(setAuthToken(res?.authorization?.token));
             await AsyncStorage.setItem("token", res?.authorization?.token);
@@ -164,15 +163,13 @@ function Login({ navigation }) {
             }
             navigation.navigate("Dashboard");
           } else {
-            showToast(res?.message);
-            // setIsLoading(false);
+            toast.show(res?.message, { type: "warning" });
           }
         })
         .catch((err) => {
           console.log(err, "error from api");
-          showToast(err.message);
+          toast.show(err.message, { type: "warning" });
           setIsLoading(false);
-          // setDisabledBtn(false);
         });
     }
   };
@@ -210,15 +207,20 @@ function Login({ navigation }) {
             </View>
 
             <View style={{ marginTop: 20 }}>
-              <Text style={styles.heading}>Login</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  toast.show("hello", { type: "warning" });
+                }}
+              >
+                <Text style={styles.heading}>Login</Text>
+              </TouchableOpacity>
               <View>
                 <TextInput
                   value={email}
                   onChangeText={(text) => setEmail(text)}
                   placeholder="Email or Username"
-                  placeholderTextColor="#656263"
+                  placeholderTextColor={colorCodes.placeholder}
                   style={styles.email}
-                  // autoComplete={true}
                 />
                 {validationError.email && (
                   <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
@@ -231,9 +233,8 @@ function Login({ navigation }) {
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   placeholder="Password"
-                  placeholderTextColor="#656263"
+                  placeholderTextColor={colorCodes.placeholder}
                   style={styles.password}
-                  // autoComplete={true}
                 />
                 {validationError.password && (
                   <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
@@ -304,7 +305,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 28,
     textAlign: "center",
-    color: "#5EC2C6",
+    color: colorCodes.heading,
     fontFamily: "Roboto",
     fontWeight: "700",
     lineHeight: 32.81,
@@ -315,7 +316,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: "auto",
     borderRadius: 18,
-    borderColor: "#2198C9",
+    borderColor: colorCodes.borderColor,
     paddingLeft: 20,
     fontSize: 14,
     marginTop: "7%",
@@ -327,7 +328,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: "auto",
     borderRadius: 18,
-    borderColor: "#2198C9",
+    borderColor: colorCodes.borderColor,
     paddingLeft: 20,
     fontSize: 14,
     marginTop: "4%",
@@ -344,16 +345,16 @@ const styles = StyleSheet.create({
   },
   remember: {
     fontWeight: "light",
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "700",
     lineHeight: 16.41,
     fontFamily: "Roboto",
   },
   forgot: {
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "700",
     lineHeight: 16.41,
     fontFamily: "Roboto",
   },
@@ -363,24 +364,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  loginBtn: {
-    height: 50,
-    width: 150,
-    margin: "auto",
-    marginTop: 40,
-    borderRadius: 8,
-    backgroundColor: "#ff770065",
-  },
-  loginTxt: {
-    textAlign: "center",
-    fontSize: 18,
-    paddingTop: 10,
-    height: 50,
-    color: "white",
-  },
   submitBtn: {
     alignSelf: "center",
-    backgroundColor: "#FF8902",
+    backgroundColor: colorCodes.submitButtonEnabled,
     paddingVertical: 14,
     borderRadius: 8,
     marginTop: 30,
@@ -392,7 +378,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily: "Roboto",
     lineHeight: 21.09,
-    color: "#FFFFFF",
+    color: colorCodes.white,
   },
 });
 

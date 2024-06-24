@@ -1,11 +1,14 @@
 export const colorCodes = {
-    submitButtonDisabled:"#ff770065",
-    submitButtonEnabled :"#FF8902",
-    tealColorTheme:"#5EC2C6",
-    navyBlueButton:"#104F9C",
-    statusPast:"#C53636",
-    statusToday:"#FFB604",
-    bgLightGrey:"#F2F2F2", 
-    borderTextLightBlue:""
-    
-}
+  submitButtonDisabled: "#ff770065",
+  submitButtonEnabled: "#FF8902",
+  white: "#ffffff",
+  tealColorTheme: "#5EC2C6",
+  navyBlueButton: "#104F9C",
+  statusPast: "#C53636",
+  statusToday: "#FFB604",
+  bgLightGrey: "#F2F2F2",
+  heading: "#5EC2C6",
+  borderColor: "#2198C9",
+  yaleBlue: "#104F9C",
+  placeholder: "#656263",
+};
