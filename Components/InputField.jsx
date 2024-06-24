@@ -7,7 +7,7 @@ import {
   Animated,
   Easing,
 } from "react-native";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, Fontisto, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const InputField = (props) => {
 
@@ -28,6 +28,9 @@ const InputField = (props) => {
     setIsFocused(false);
     if (!props.value) {
       animatePlaceholder(16);
+    }
+    if (props.isemail) {
+        props.validateEmail()
     }
   };
 
@@ -56,13 +59,14 @@ const InputField = (props) => {
         placeholder={!isFocused && !props.value ? props.placeholderValue : ""}
         placeholderTextColor="#656263"
         style={[styles.inputfield, isFocused && styles.inputfieldFocused]}
-        secureTextEntry={!showCurrentPass} 
+        secureTextEntry={props.ispassword && !showCurrentPass} 
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChangeText={(text) => props.setValue(text)}
         value={props.value}
       />
-      <TouchableOpacity
+      {props.ispassword && (
+        <TouchableOpacity
         onPress={() => setShowCurrentPass(!showCurrentPass)}
         style={styles.eyeIcon}
       >
@@ -76,6 +80,10 @@ const InputField = (props) => {
           />
         )}
       </TouchableOpacity>
+      )}
+       {props.isemail && (
+        <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
+       )}
     </View>
   );
 };

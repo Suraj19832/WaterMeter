@@ -140,18 +140,21 @@ function ChangePassword({ navigation }) {
                 setValue={setCurrentPassword}
                 value={currentPassword}
                 placeholderValue="Current Password"
+                ispassword={true}
               />
 
               <InputField
                 setValue={setNewPassword}
                 value={newPassword}
                 placeholderValue="Enter New Password"
+                ispassword={true}
               />
 
               <InputField
                 setValue={setConfirmPassword}
                 value={confirmPassword}
                 placeholderValue="Confirm Password"
+                ispassword={true}
               />
 
             

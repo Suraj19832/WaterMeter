@@ -20,6 +20,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Feather, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import appApi from "../Helper/Api";
+import InputField from "../Components/InputField";
 
 function VarifyEmail({ navigation }) {
   const [email, setEmail] = useState("");
@@ -121,19 +122,15 @@ function VarifyEmail({ navigation }) {
             <Text style={styles.heading}>Enter Your Email Id</Text>
 
             <View style={styles.fields_main}>
-              <View style={styles.input_box}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Your Email"
-                  placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                  onChangeText={handleEmailChange}
-                  onBlur={validateEmail}
-                  value={email}
-                />
-
-                <Fontisto name="email" size={14} color="rgba(101, 98, 99, 1)" />
-              </View>
+            <InputField
+             setValue={handleEmailChange}
+             value={email}
+             placeholderValue="Enter Your Email"
+             isemail={true}
+             validateEmail={validateEmail}
+            />
             </View>
+          
             {emailError ? (
               <Text style={{ color: "red" }}>{emailError}</Text>
             ) : null}
