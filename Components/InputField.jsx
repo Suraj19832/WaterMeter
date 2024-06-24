@@ -10,7 +10,7 @@ import {
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const InputField = (props) => {
-  // const [currentPassword, setCurrentPassword] = useState("");
+
 
   const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -56,7 +56,7 @@ const InputField = (props) => {
         placeholder={!isFocused && !props.value ? props.placeholderValue : ""}
         placeholderTextColor="#656263"
         style={[styles.inputfield, isFocused && styles.inputfieldFocused]}
-        secureTextEntry={!showCurrentPass} // Assuming you want secure entry by default
+        secureTextEntry={!showCurrentPass} 
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChangeText={(text) => props.setValue(text)}
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 17,
-    position: "relative", // Ensure relative positioning for absolute children
+    position: "relative", 
   },
 
   inputfield: {
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   inputfieldFocused: {
-    fontSize: 12, // Adjust font size when focused
-    color: "#333", // Change text color when focused
+    fontSize: 12, 
+    color: "#333", 
   },
   placeholder: {
     position: "absolute",
@@ -116,13 +116,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   placeholderFocused: {
-    top: -10, // Move placeholder up when focused
-    fontSize: 12, // Adjust font size when focused
+    top: -10,
+    fontSize: 12, 
     color: "#A6A6A6",
     backgroundColor: "#f3f1f1",
-    // backgroundColor:"rgb(243,241,239)"
   },
-  // efeded
+ 
   eyeIcon: {
     position: "absolute",
     right: 17,
