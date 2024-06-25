@@ -238,7 +238,7 @@ fetchData()
       </View>
 
       <View style={styles.fields_main}>
-        <Text style={styles.selectheading}>Meterr :</Text>
+        <Text style={styles.selectheading}>Meter :</Text>
         <TouchableOpacity onPress={toggleDropDownMeter}>
           <View style={styles.input_box}>
             <TextInput
