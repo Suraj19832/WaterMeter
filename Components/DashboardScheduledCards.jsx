@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ImageBackground,
   Dimensions,
+  Modal,
+  Image,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -21,6 +23,7 @@ function DashboardScheduledCards({
   navigation,
 }) {
   console.log(items, "<<<<<<<<<<schedule");
+  const [modalVisible, setModalVisible] = useState(false);
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
     for (let i = 0; i < words?.length; i++) {
@@ -117,11 +120,7 @@ function DashboardScheduledCards({
               </Text>
             </View>
             <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
-            <TouchableOpacity
-              onPress={() => {
-                alert("Image pressed");
-              }}
-            >
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
               <ImageBackground
                 source={require("../assets/Background 1.png")}
                 resizeMode="cover"
@@ -259,7 +258,9 @@ function DashboardScheduledCards({
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
-              onPress={() => navigation.navigate("MeterScreen" ,{PopertyId :items?.id})}
+              onPress={() =>
+                navigation.navigate("MeterScreen", { PopertyId: items?.id })
+              }
             >
               <SubmitButton
                 textSize={14}
@@ -270,12 +271,62 @@ function DashboardScheduledCards({
           </View>
         </View>
       ) : null}
+
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Image
+              source={
+                items?.image !== null
+                  ? { uri: items?.image }
+                  : require("../assets/icons/no-image.jpg")
+              }
+              style={styles.modalImage}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Image
+                source={require("../assets/icons/close.png")}
+                style={{ height: 20, width: 20 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 export default DashboardScheduledCards;
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: Dimensions.get("window").width * 1,
+    borderRadius: 10,
+    padding: 20,
+    alignItems: "center",
+  },
+  modalImage: {
+    width: "100%",
+    height: Dimensions.get("window").height * 0.3,
+    marginBottom: 20,
+  },
+  closeButton: {
+    position: "absolute",
+    right: 20,
+    top: -15,
+  },
   propertyCards: {
     borderWidth: 1,
     borderRadius: 10,
