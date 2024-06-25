@@ -43,6 +43,10 @@ const appApi = {
     const url = `${baseURL}/api/dashboard`;
     return sendAuthorizeGetRequest(url, data);
   },
+  metersection: function(data) {
+    const url = `${baseURL}/api/meter-list`;
+    return sendAuthorizeGetRequest(url, data);
+  },
   saveLocationApi: function(data){
     const url = `${baseURL}/api/current-location`;
     return sendAuthorizePostFormData(url,data)

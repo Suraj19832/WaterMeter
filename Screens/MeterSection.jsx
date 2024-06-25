@@ -9,6 +9,7 @@ import {
   Button,
   ToastAndroid,
   TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
@@ -16,11 +17,26 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-
+import { useRoute } from "@react-navigation/native";
+import appApi from "../Helper/Api";
 const MeterSection = ({ navigation }) => {
+  
+  const [meterMake, setmeterMake] = useState({})
+  const route = useRoute();
+  const {
+    PopertyId
+  } = route.params;
+  const [name, setname] = useState()
+  const [id, setid] = useState()
+  const [meterDataByApi, setmeterDataByApi] = useState([])
+  const [pendingMeterCount, setpendingMeterCount] = useState()
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
+  const getNameById = (id) => {
+    const item = meterDataByApi.find((obj) => obj.id === id);
+    return item ? { make: item?.make, meterNote: item?.note } : { make: 'Not Found', meterNote: 'Not Found' };
+  };
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
   const [meterData, setmeterData] = useState("");
@@ -36,6 +52,9 @@ const MeterSection = ({ navigation }) => {
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
+   const  meterMakevalue =getNameById(option)
+   console.log(meterMakevalue ,"kwkwkwkwkw")
+     setmeterMake(getNameById(option))
   };
 
   const toggleDropDownMeterReading = () => {
@@ -51,9 +70,11 @@ const MeterSection = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalValue, setisModalValue] = useState("");
 
-  //for picture
+  //for picture 
 
   const toggleModalVisibility = () => {
+    setisModalValue(meterMake?.meterNote)
+   
     setIsModalVisible(!isModalVisible);
     setisModalValue("");
     setisImage();
@@ -80,10 +101,7 @@ const MeterSection = ({ navigation }) => {
   };
 
 
-  // fffffff
 
-    
-  // Image Upload
   const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
   const [errorMessageUploadImage, setErrorMessageUploadImage] = useState(null);
   const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] = useState(
@@ -159,8 +177,32 @@ const MeterSection = ({ navigation }) => {
     }
   };
 
-
+useEffect(() => {
+const fetchData =async()=>{
+const data ={
+  propertyId :PopertyId
+}
+try {
+  const res = await appApi.metersection(data)
+  if (res?.status) {
+    setname(res?.data?.name)
+    setid(res?.data?.id)
+    setmeterDataByApi(res?.data?.meters)
+    setpendingMeterCount(res?.data?.pendingMeterReading)
+   
+  }
+} catch (error) {
   
+} 
+finally {
+  console.log("api call complete");
+
+}
+}
+fetchData()
+}, [PopertyId])
+
+
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -172,7 +214,7 @@ const MeterSection = ({ navigation }) => {
         </TouchableOpacity>
       </>
       <View style={styles.heading}>
-        <Text style={styles.headingText}>M01 | Masari Heights</Text>
+        <Text style={styles.headingText}>{id} | {name}</Text>
       </View>
 
       <View style={styles.fields_main}>
@@ -200,19 +242,27 @@ const MeterSection = ({ navigation }) => {
 
       {isDropdownMeter && (
         <View style={styles.dropdownContainer}>
-          <TouchableOpacity
-            style={styles.dropdownOption}
-            onPress={() => handleSelectionOptionMeter("A10")}
-          >
-            <Text style={styles.input}>A10</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.dropdownOption}
-            onPress={() => handleSelectionOptionMeter("A20")}
-          >
-            <Text style={styles.input}>A20</Text>
-          </TouchableOpacity>
+              <ScrollView
+              nestedScrollEnabled={true}
+              style={{ maxHeight: 150 }}
+            >
+          {meterDataByApi?.length >0 && meterDataByApi.map((meterid)=>{
+            return(
+          
+  <TouchableOpacity
+              style={styles.dropdownOption}
+              onPress={() => handleSelectionOptionMeter(meterid?.id)}
+            >
+              <Text style={styles.input}>{meterid?.id}</Text>
+            </TouchableOpacity>
+
+            
+            
+            )
+          })}
+        </ScrollView>
         </View>
+        
       )}
       <Modal
         visible={isModalVisible || isModalInformation || isModalImage}
@@ -402,7 +452,7 @@ const MeterSection = ({ navigation }) => {
                 fontSize: 18,
               }}
             >
-              YongXi
+    {meterMake?.make}
             </Text>
           </View>
           <View>
@@ -484,7 +534,7 @@ const MeterSection = ({ navigation }) => {
           }}
         >
           <Text style={{ color: "white", fontWeight: 700 }}>
-            99 Meters Pending
+          {pendingMeterCount} Meters Pending
           </Text>
         </TouchableOpacity>
       </View>
