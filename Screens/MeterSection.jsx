@@ -219,7 +219,7 @@ fetchData()
           size={"large"}
           color={"#00367E"}
           style={styles.loader}
-        />
+        /> 
       </View>
     );
   }
@@ -238,7 +238,7 @@ fetchData()
       </View>
 
       <View style={styles.fields_main}>
-        <Text style={styles.selectheading}>Meter :</Text>
+        <Text style={styles.selectheading}>Meterr :</Text>
         <TouchableOpacity onPress={toggleDropDownMeter}>
           <View style={styles.input_box}>
             <TextInput
