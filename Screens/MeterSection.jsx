@@ -10,6 +10,7 @@ import {
   ToastAndroid,
   TouchableWithoutFeedback,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
@@ -21,6 +22,10 @@ import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 const MeterSection = ({ navigation }) => {
   
+
+
+
+
   const [meterMake, setmeterMake] = useState({})
   const route = useRoute();
   const {
@@ -35,11 +40,12 @@ const MeterSection = ({ navigation }) => {
   }
   const getNameById = (id) => {
     const item = meterDataByApi.find((obj) => obj.id === id);
-    return item ? { make: item?.make, meterNote: item?.note } : { make: 'Not Found', meterNote: 'Not Found' };
+    return item ? { make: item?.make, meterNote: item?.note ,image:item?.image } : { make: 'Not Found', meterNote: 'Not Found',image:"Upload Image" };
   };
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
   const [meterData, setmeterData] = useState("");
+  const [loading, setloading] = useState(true)
 
   const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
@@ -96,6 +102,7 @@ const MeterSection = ({ navigation }) => {
   const [isImage, setisImage] = useState();
 
   const toggleModalVisibilityImage = () => {
+    setisImage(meterMake?.image)
     setIsModalImage(!isModalImage);
 
   };
@@ -189,20 +196,33 @@ try {
     setid(res?.data?.id)
     setmeterDataByApi(res?.data?.meters)
     setpendingMeterCount(res?.data?.pendingMeterReading)
+  
    
   }
 } catch (error) {
-  
+  console.log(error)
+  setloading(false)
 } 
 finally {
   console.log("api call complete");
-
+  setloading(false)
 }
 }
 fetchData()
 }, [PopertyId])
 
+ if (loading) {
+    return (
+      <View>
 
+        <ActivityIndicator
+          size={"large"}
+          color={"#00367E"}
+          style={styles.loader}
+        />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -760,5 +780,13 @@ const styles = StyleSheet.create({
   modalOptionText: {
     fontSize: 18,
     textAlign: "center",
+  },
+  // loader 
+  loader: {
+    height: "100%",
+    // width: Dimensions.get("window").width * 0.7,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
 });
