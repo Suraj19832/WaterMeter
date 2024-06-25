@@ -259,7 +259,7 @@ function DashboardScheduledCards({
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
-              onPress={() => navigation.navigate("MeterScreen")}
+              onPress={() => navigation.navigate("MeterScreen" ,{PopertyId :items?.id})}
             >
               <SubmitButton
                 textSize={14}

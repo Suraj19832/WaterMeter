@@ -32,7 +32,6 @@ const InputField = (props) => {
     }
   };
 
-  console.log("66666666666", props.value, props.setValue);
 
   const animatePlaceholder = (topValue) => {
     Animated.timing(animatedPlaceholderPosition, {
