@@ -219,7 +219,7 @@ fetchData()
           size={"large"}
           color={"#00367E"}
           style={styles.loader}
-        />
+        /> 
       </View>
     );
   }
@@ -266,12 +266,13 @@ fetchData()
               nestedScrollEnabled={true}
               style={{ maxHeight: 150 }}
             >
-          {meterDataByApi?.length >0 && meterDataByApi.map((meterid)=>{
+          {meterDataByApi?.length >0 && meterDataByApi.map((meterid ,index)=>{
             return(
           
   <TouchableOpacity
               style={styles.dropdownOption}
               onPress={() => handleSelectionOptionMeter(meterid?.id)}
+              key={index}
             >
               <Text style={styles.input}>{meterid?.id}</Text>
             </TouchableOpacity>
