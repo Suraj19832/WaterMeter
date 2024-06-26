@@ -1,8 +1,16 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Modal,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function MeterReadingScanner({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
@@ -46,7 +54,7 @@ function MeterReadingScanner({ navigation }) {
           borderColor: "#2198C9",
           paddingHorizontal: 10,
           borderRadius: 15,
-          paddingVertical: 15,
+          paddingVertical: 13,
           marginTop: 10,
         }}
       >
@@ -73,25 +81,74 @@ function MeterReadingScanner({ navigation }) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          marginTop: 25,
         }}
       >
-        <View>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image
             source={require("../assets/Group (7).png")}
-            style={{ height: 60, width: 60 }}
+            style={{ height: 30, width: 30 }}
           />
-        </View>
+        </TouchableOpacity>
         <View>
-          <TouchableOpacity>
-            <Text>Submit Reading</Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#FF8902",
+              paddingHorizontal: 15,
+              paddingVertical: 12,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
+              Submit Reading
+            </Text>
           </TouchableOpacity>
         </View>
         <View>
           <Image
             source={require("../assets/Group (6).png")}
-            style={{ height: 60, width: 60 }}
+            style={{ height: 30, width: 30 }}
           />
         </View>
+      </View>
+      <View style={{ position: "relative" }}>
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={{ color: "#989898" }}>
+                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  Last Reading :
+                </Text>{" "}
+                91627 OCR
+              </Text>
+              <Text style={{ color: "#989898" }}>
+                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  Last Reading Date :
+                </Text>{" "}
+                Sun May 19th,2024
+              </Text>
+              <Text style={{ color: "#989898" }}>
+                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  Avg Usage :
+                </Text>{" "}
+                2425/mth
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.closeBtn}
+              onPress={() => setModalVisible(false)}
+            >
+              <Image
+                source={require("../assets/icons/close.png")}
+                style={{ height: 20, width: 20 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -100,6 +157,25 @@ function MeterReadingScanner({ navigation }) {
 export default MeterReadingScanner;
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    position: "absolute",
+    width: "88%",
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 30,
+    gap: 10,
+  },
+  closeBtn: {
+    bottom: 90,
+    left: 140,
+  },
   container: {
     marginHorizontal: 20,
   },
