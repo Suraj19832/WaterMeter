@@ -4,13 +4,10 @@ import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-import bgLogin2 from "../assets/bgLogin2.jpg";
-import CheckBox from "react-native-check-box";
 import { ScrollView } from "react-native-gesture-handler";
-import { Feather, FontAwesome5 } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
-import { useSelector } from 'react-redux';
-import { selectAuthToken } from '../redux/slices/Authslice';
+import { useSelector } from "react-redux";
+import { selectAuthToken } from "../redux/slices/Authslice";
 import appApi from "../Helper/Api";
 import { ToastAndroid } from "react-native";
 import InputField from "../Components/InputField";
@@ -18,56 +15,42 @@ function EditProfile({ navigation }) {
   const [checked, setChecked] = useState(true);
   const authToken = useSelector(selectAuthToken);
   const [loading, setloading] = useState(false);
-  console.log(authToken ,"redux setup")
-  // const handleLogin = () => {
-  //   alert("Logged in successfully");
-  // };
-
-  // const handleCheckBoxToggle = () => {
-  //   setChecked(!checked);
-  // };
+  console.log(authToken, "redux setup");
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   useEffect(() => {
     const fetchData = async () => {
-      console.log("pppp[pppppppppppppppppppppp")
-      
+      console.log("pppp[pppppppppppppppppppppp");
+
       try {
         const res = await appApi.profile();
         if (res?.status) {
-          setEmail(res?.data?.email)
-          
+          setEmail(res?.data?.email);
         }
       } catch (err) {
         console.log(err);
-        showToast("Login again")
+        showToast("Login again");
         Alert.alert(
           "Token Expire",
           "Login Again",
           [
             {
               text: "Login",
-              onPress: () => navigation.navigate('Login') // Navigate to the login screen
-            }
+              onPress: () => navigation.navigate("Login"), // Navigate to the login screen
+            },
           ],
           { cancelable: false }
         );
-      } 
+      }
     };
 
     fetchData();
-  }, [])
-  
-  // const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  // const [isNewPassword, setIsNewPassword] = useState("");
+  }, []);
+
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
-  const [firstname, setfirstname] = useState()
-  // const [lastname, setlastname] = useState()
-
-  // const passwordsMatch = isNewPassword && email && emailError===null ;
-  
+  const [firstname, setfirstname] = useState();
   const handleEmailChange = (text) => {
     setEmail(text);
     if (text.trim()) {
@@ -75,7 +58,6 @@ function EditProfile({ navigation }) {
     }
   };
   const validateEmail = () => {
-    // Regular expression pattern to validate email format
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) {
@@ -87,32 +69,29 @@ function EditProfile({ navigation }) {
       setEmailError(null);
     }
   };
-  const handleEdit = async()=>{
+  const handleEdit = async () => {
     try {
-      setloading(true)
-      const data ={
-        name:firstname
+      setloading(true);
+      const data = {
+        name: firstname,
+      };
+      const res = await appApi.editProfile(data);
+      if (res?.status) {
+        showToast(res?.message);
+        navigation.navigate("Dashboard");
+      } else {
+        showToast("Login Agian");
       }
-     const res = await appApi.editProfile(data)
-     if (res?.status) {
-     
-      showToast(res?.message)
-      navigation.navigate("Dashboard")
-     }else{
-      showToast("Login Agian")
-     }
     } catch (error) {
-      console.log(error)
-      setloading(false)
-      showToast("Login again")
-    }
-    finally {
+      console.log(error);
+      setloading(false);
+      showToast("Login again");
+    } finally {
       console.log("api call complete");
       // setloading(false)
-      setloading(false)
+      setloading(false);
     }
-
-  }
+  };
   return (
     <SafeAreaView>
       <ScrollView style={{ height: "auto" }}>
@@ -123,24 +102,24 @@ function EditProfile({ navigation }) {
         />
 
         <View style={{ position: "absolute" }}>
-          <View style={{position:'absolute' ,zIndex:2}}>
-          <TouchableOpacity
-            onPress={navigation.goBack}
-            style={{ position: "absolute" }}
-          >
-            <Image
-              source={require("../assets/left-arrow.png")}
-              style={{
-                height: 22,
-                width: 12,
-                position: "absolute",
-                top: 30,
-                left: 20,
-              }}
-            />
-          </TouchableOpacity>
+          <View style={{ position: "absolute", zIndex: 2 }}>
+            <TouchableOpacity
+              onPress={navigation.goBack}
+              style={{ position: "absolute" }}
+            >
+              <Image
+                source={require("../assets/left-arrow.png")}
+                style={{
+                  height: 22,
+                  width: 12,
+                  position: "absolute",
+                  top: 30,
+                  left: 20,
+                }}
+              />
+            </TouchableOpacity>
           </View>
-          
+
           <Image
             source={require("../assets/Rectangle 11.png")}
             style={{
@@ -149,7 +128,7 @@ function EditProfile({ navigation }) {
               zIndex: 1,
             }}
           />
-          
+
           <View
             style={{
               position: "absolute",
@@ -168,45 +147,41 @@ function EditProfile({ navigation }) {
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text style={styles.heading}>Edit Profile</Text>
 
-      
+            <InputField
+              setValue={setfirstname}
+              value={firstname}
+              placeholderValue="Name"
+              ispassword={false}
+            />
 
-<InputField
-                setValue={setfirstname}
-                value={firstname}
-                placeholderValue="Name"
-                ispassword={false}
-              />
-   
-
-<InputField
-                setValue={handleEmailChange}
-                value={email}
-                placeholderValue="Enter your Email id"
-                ispassword={false}
-              />
+            <InputField
+              setValue={handleEmailChange}
+              value={email}
+              placeholderValue="Enter your Email id"
+              ispassword={false}
+            />
             {emailError ? (
-                <Text style={{ color: "red" }}>{emailError}</Text>
-              ) : null}
-         
-
-          
+              <Text style={{ color: "red" }}>{emailError}</Text>
+            ) : null}
 
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
-              <TouchableOpacity disabled={!email || emailError !=null || !firstname || loading} onPress={handleEdit}>
-              <SubmitButton
-                text="Edit Profile"
-                bgColor={
-                  email && emailError ==null && firstname && !loading
-                    ? "rgba(255, 137, 2, 1)"
-                    : "rgba(255, 137, 2, 0.5)"
-                }
-                height={47}
-                width={139}
-                textSize={18}
-                loading={loading}
-              />
+              <TouchableOpacity
+                disabled={!email || emailError != null || !firstname || loading}
+                onPress={handleEdit}
+              >
+                <SubmitButton
+                  text="Edit Profile"
+                  bgColor={
+                    email && emailError == null && firstname && !loading
+                      ? "rgba(255, 137, 2, 1)"
+                      : "rgba(255, 137, 2, 0.5)"
+                  }
+                  height={47}
+                  width={139}
+                  textSize={18}
+                  loading={loading}
+                />
               </TouchableOpacity>
-              
             </View>
           </View>
         </View>

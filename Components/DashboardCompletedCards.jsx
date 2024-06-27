@@ -47,7 +47,7 @@ export default function DashboardCompletedCards({
       height: 45,
       width: "24%",
       borderRadius: 10,
-      borderColor: "#FF6900",
+      borderColor: colorCodes.buttonBorder,
       display: "flex",
       flexDirection: "row",
       justifyContent: "center",
@@ -58,11 +58,11 @@ export default function DashboardCompletedCards({
       height: 45,
       width: "46%",
       borderRadius: 10,
-      backgroundColor: "#104F9C",
-      color: "white",
+      backgroundColor: colorCodes.yaleBlue,
+      color: colorCodes.white,
     },
     prevNextTxt: {
-      color: "#104F9C",
+      color: colorCodes.yaleBlue,
       fontSize: 16,
       textAlign: "center",
       paddingBottom: 5,
@@ -70,7 +70,7 @@ export default function DashboardCompletedCards({
       fontWeight: "500",
     },
     dateTxt: {
-      color: "white",
+      color: colorCodes.white,
       textAlign: "center",
       fontSize: 17,
       paddingTop: 8,
@@ -79,7 +79,7 @@ export default function DashboardCompletedCards({
     propertyCards: {
       borderWidth: 1,
       borderRadius: 10,
-      borderColor: "#2198C9",
+      borderColor: colorCodes.borderColor,
       marginBottom: 20,
     },
     cardsMain: {
@@ -104,7 +104,7 @@ export default function DashboardCompletedCards({
     propertyTxt: {
       fontSize: 15,
       height: 30,
-      color: "#104F9C",
+      color: colorCodes.yaleBlue,
       fontWeight: "500",
     },
     scrollView: {
@@ -114,13 +114,13 @@ export default function DashboardCompletedCards({
       fontSize: 15,
       height: 30,
       fontWeight: "500",
-      color: "#595959",
+      color: colorCodes.lightGray,
     },
     contentDateTxt: {
       fontSize: 10,
       height: 25,
       fontWeight: "500",
-      color: "#989898",
+      color: colorCodes.secondaryLightGray,
     },
     belowContentMain: {
       display: "flex",
@@ -142,7 +142,7 @@ export default function DashboardCompletedCards({
       height: 30,
       width: 80,
       borderRadius: 100,
-      backgroundColor: "#C53636",
+      backgroundColor: colorCodes.statusPast,
     },
     statusTxt: {
       color: "white",

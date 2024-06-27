@@ -21,6 +21,7 @@ import { Feather, FontAwesome5, Fontisto } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import appApi from "../Helper/Api";
 import InputField from "../Components/InputField";
+import { colorCodes } from "../ColorCodes/Colors";
 
 function VarifyEmail({ navigation }) {
   const [email, setEmail] = useState("");
@@ -122,17 +123,17 @@ function VarifyEmail({ navigation }) {
             <Text style={styles.heading}>Enter Your Email Id</Text>
 
             <View style={styles.fields_main}>
-            <InputField
-             setValue={handleEmailChange}
-             value={email}
-             placeholderValue="Enter Your Email"
-             isemail={true}
-             validateEmail={validateEmail}
-            />
+              <InputField
+                setValue={handleEmailChange}
+                value={email}
+                placeholderValue="Enter Your Email"
+                isemail={true}
+                validateEmail={validateEmail}
+              />
             </View>
-          
+
             {emailError ? (
-              <Text style={{ color: "red" }}>{emailError}</Text>
+              <Text style={{ color: colorCodes.error }}>{emailError}</Text>
             ) : null}
 
             <View style={{ marginVertical: 20, marginBottom: 20 }}>
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 32,
     marginTop: 30,
-    color: "#5EC2C6",
+    color: colorCodes.heading,
     marginBottom: 20,
   },
 
@@ -188,26 +189,6 @@ const styles = StyleSheet.create({
   fields_main: {
     marginTop: 17,
     width: "85%",
-  },
-  inputHeading: {
-    fontWeight: "500",
-    fontSize: 18,
-    lineHeight: 27,
-    color: "rgba(0, 54, 126, 1)",
-    paddingBottom: 10,
-  },
-  input_box: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 12,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-    gap: 8,
-    borderWidth: 1,
-    borderColor: "#2198C9",
-    fontSize: 14,
-
-    height: 60,
   },
   input: {
     position: "relative",

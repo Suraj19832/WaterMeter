@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   propertyCards: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: "#2198C9",
+    borderColor: colorCodes.borderColor,
     marginBottom: 20,
     paddingHorizontal: 13,
   },
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   propertyTxt: {
     fontSize: 15,
     height: 30,
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontWeight: "500",
   },
   scrollView: {
@@ -360,13 +360,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     height: 30,
     fontWeight: "500",
-    color: "#595959",
+    color: colorCodes.lightGray,
   },
   contentDateTxt: {
     fontSize: 11,
     height: 25,
     fontWeight: "500",
-    color: "#989898",
+    color: colorCodes.secondaryLightGray,
   },
   belowContentMain: {
     flexDirection: "row",
@@ -380,20 +380,20 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   status: {
-    backgroundColor: "#C53636",
+    backgroundColor: colorCodes.statusPast,
     paddingVertical: 5,
     paddingHorizontal: 12,
     borderRadius: 20,
   },
   statusTxt: {
-    color: "white",
+    color: colorCodes.white,
     textAlign: "center",
     fontSize: 10,
     fontWeight: "500",
     lineHeight: 16,
   },
   daysTxt: {
-    color: "#C53636",
+    color: colorCodes.statusPast,
     height: 20,
     fontWeight: "500",
   },
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 100,
-    borderColor: "#FE8700",
+    borderColor: colorCodes.expandBorder,
     shadowColor: "black",
   },
   image: {
@@ -435,26 +435,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   expandHeadingFTxt: {
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontWeight: "500",
     fontSize: 16,
-    //   paddingLeft: 10,
-    //   paddingTop: 15,/
-    //   height: 45,
   },
   expandHeadingSTxt: {
     fontWeight: "500",
     fontSize: 16,
     paddingLeft: 10,
-    //   paddingTop: 15,
-    //   height: 45,
   },
   expandContentFTxt: {
     color: "#0099ff",
     fontWeight: "400",
     fontSize: 12,
     height: 30,
-    //   paddingLeft: 10,
   },
   expandContentSTxt: {
     color: "grey",
@@ -467,14 +461,11 @@ const styles = StyleSheet.create({
     height: 37,
     width: 110,
     borderRadius: 10,
-    //   backgroundColor: "#FF8902",
-    //   marginLeft: 20,
   },
   completedNextDate: {
     color: "#0099ff",
     fontWeight: "400",
     fontSize: 14,
-    //   height: 20,
   },
   belowContentCompleted: {
     display: "flex",
@@ -482,26 +473,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 90,
-    //   marginTop: 8,
-    //   marginBottom: 15,
   },
   expandContentCompletedButton: {
     height: 37,
     width: 150,
-    //   borderRadius: 10,/
-    //   backgroundColor: "#FF8902",
     marginLeft: 155,
   },
   expandContentCompleted: {
     height: 255,
-    //   width: "90%",
     margin: "auto",
-    //   marginBottom: 20,
-    //   borderRadius: 15,
-    //   backgroundColor: "#e7e7e7",
   },
   expandContentBottomPart: {
-    //   display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

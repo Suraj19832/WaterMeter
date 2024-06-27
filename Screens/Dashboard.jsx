@@ -226,7 +226,7 @@ function Dashboard({ navigation }) {
   }, [toggleScheduleCompleted]); // Add toggleScheduleCompleted to the dependency array
 
   return (
-    <SafeAreaView style={{ backgroundColor: "white", paddingHorizontal: 20 }}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.topToggle}>
         <TouchableOpacity
           onPress={() => setToggleScheduleCompleted(false)}
@@ -343,6 +343,10 @@ function Dashboard({ navigation }) {
 }
 export default Dashboard;
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colorCodes.white,
+    paddingHorizontal: 20,
+  },
   topToggle: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -350,7 +354,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   scheduleBtn: {
-    borderColor: "#5EC2C6",
+    borderColor: colorCodes.heading,
     paddingVertical: 17,
     paddingHorizontal: 25,
     borderRadius: 10,
@@ -362,7 +366,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   completedBtn: {
-    borderColor: "#5EC2C6",
+    borderColor: colorCodes.heading,
     paddingVertical: 17,
     paddingHorizontal: 25,
     borderRadius: 10,
@@ -382,7 +386,7 @@ const styles = StyleSheet.create({
   prevBtn: {
     borderWidth: 1.5,
     borderRadius: 10,
-    borderColor: "#FF6900",
+    borderColor: colorCodes.buttonBorder,
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 9,
@@ -407,13 +411,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignItems: "center",
     fontSize: 16,
-    // lineHeight: 16,
-    color: "#fff",
+    color: colorCodes.white,
   },
   propertyCards: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: "#2198C9",
+    borderColor: colorCodes.borderColor,
     marginBottom: 20,
   },
   cardsMain: {
@@ -437,7 +440,7 @@ const styles = StyleSheet.create({
   propertyTxt: {
     fontSize: 15,
     height: 30,
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontWeight: "500",
   },
   scrollView: {
@@ -448,13 +451,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     height: 30,
     fontWeight: "500",
-    color: "#595959",
+    color: colorCodes.lightGray,
   },
   contentDateTxt: {
     fontSize: 12,
     height: 25,
     fontWeight: "500",
-    color: "#989898",
+    color: colorCodes.secondaryLightGray,
   },
   belowContentMain: {
     display: "flex",
@@ -479,13 +482,13 @@ const styles = StyleSheet.create({
     backgroundColor: colorCodes.navyBlueButton,
   },
   statusTxt: {
-    color: "white",
+    color: colorCodes.white,
     textAlign: "center",
     paddingTop: 4,
     height: 30,
   },
   daysTxt: {
-    color: "#C53636",
+    color: colorCodes.statusPast,
     height: 20,
     fontWeight: "500",
   },
@@ -510,7 +513,7 @@ const styles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 100,
-    borderColor: "#FE8700",
+    borderColor: colorCodes.expandBorder,
     shadowColor: "black",
   },
   image: {
@@ -533,7 +536,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   expandHeadingFTxt: {
-    color: "#104F9C",
+    color: colorCodes.yaleBlue,
     fontWeight: "500",
     fontSize: 16,
     paddingLeft: 10,
@@ -565,7 +568,7 @@ const styles = StyleSheet.create({
     height: 37,
     width: 110,
     borderRadius: 10,
-    backgroundColor: "#FF8902",
+    backgroundColor: colorCodes.submitButtonEnabled,
     marginLeft: 20,
   },
   completedNextDate: {
@@ -587,7 +590,7 @@ const styles = StyleSheet.create({
     height: 37,
     width: 150,
     borderRadius: 10,
-    backgroundColor: "#FF8902",
+    backgroundColor: colorCodes.submitButtonEnabled,
     marginLeft: 155,
   },
   expandContentCompleted: {

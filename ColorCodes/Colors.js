@@ -2,6 +2,7 @@ export const colorCodes = {
   submitButtonDisabled: "#ff770065",
   submitButtonEnabled: "#FF8902",
   white: "#ffffff",
+  neutralBlue: "#0B9ED2",
   tealColorTheme: "#5EC2C6",
   navyBlueButton: "#104F9C",
   statusPast: "#C53636",
@@ -13,4 +14,8 @@ export const colorCodes = {
   placeholder: "#AAAAAA",
   placeholderFill: "#656263",
   error: "#FF0000",
+  secondaryLightGray: "#989898",
+  lightGray:"#595959",
+  buttonBorder: "#FF6900",
+  expandBorder:"#FE8700"
 };
