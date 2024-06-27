@@ -6,151 +6,224 @@ import {
   StyleSheet,
   Image,
   Modal,
+  Alert,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform, // Import Alert for showing errors
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as ImagePicker from "expo-image-picker";
+import { useRoute } from "@react-navigation/native";
+import { colorCodes } from "../ColorCodes/Colors";
 
 function MeterReadingScanner({ navigation }) {
+  const route = useRoute();
+  const { id, name, lastReading, lastReadingDate, avgUsage, totalDigit } =
+    route.params ?? {};
   const [modalVisible, setModalVisible] = useState(false);
-  return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
-        <Image
-          source={require("../assets/left-arrow (1).png")}
-          style={{ height: 22, width: 12 }}
-        />
-      </TouchableOpacity>
+  const [scannedMeter, setScannedMeter] = useState(null);
+  const [modalInfo, setModalInfo] = useState(false);
+  const [otp, setOtp] = useState(Array(totalDigit).fill(""));
 
-      <View style={styles.heading}>
-        <Text style={styles.headingText}>M01 | Masari Heights</Text>
-      </View>
-      <View style={styles.scannerView}></View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginVertical: 20,
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.scannerHeading}>
-          <Text style={{ color: "#0B9ED2" }}>Meter :</Text> A10
-        </Text>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#FF8902",
-            paddingVertical: 10,
-            paddingHorizontal: 30,
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
-            Scan
-          </Text>
+  const handleInputChange = (value, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+  };
+
+  const handleScan = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        setModalVisible(true);
+        setScannedMeter(result.assets[0].uri);
+      } else {
+        Alert.alert("Scan Cancelled", "You cancelled the scan.");
+      }
+    } catch (error) {
+      console.log("Error while scanning:", error);
+      Alert.alert("Error", "Failed to launch the camera.");
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView>
+        <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
+          <Image
+            source={require("../assets/left-arrow (1).png")}
+            style={{ height: 22, width: 12 }}
+          />
         </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          borderWidth: 1,
-          borderColor: "#2198C9",
-          paddingHorizontal: 10,
-          borderRadius: 15,
-          paddingVertical: 13,
-          marginTop: 10,
-        }}
-      >
-        <Text style={{ color: "#0F77AF", fontWeight: "700", fontSize: 18 }}>
-          Meter Reading :
-        </Text>
+        <View style={styles.heading}>
+          <Text style={styles.headingText}>
+            {id} | {name}
+          </Text>
+        </View>
+        <View style={styles.scannerView}>
+          {scannedMeter && (
+            <Image
+              source={{ uri: scannedMeter }}
+              style={styles.scannedImage}
+              resizeMode="cover"
+            />
+          )}
+        </View>
         <View
           style={{
             flexDirection: "row",
-            gap: 12,
-            alignSelf: "center",
+            justifyContent: "space-between",
             marginVertical: 20,
+            alignItems: "center",
           }}
         >
-          <View style={styles.otpBox}></View>
-          <View style={styles.otpBox}></View>
-          <View style={styles.otpBox}></View>
-          <View style={styles.otpBox}></View>
-          <View style={styles.otpBox}></View>
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 25,
-        }}
-      >
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Image
-            source={require("../assets/Group (7).png")}
-            style={{ height: 30, width: 30 }}
-          />
-        </TouchableOpacity>
-        <View>
+          <Text style={styles.scannerHeading}>
+            <Text style={{ color: "#0B9ED2" }}>Meter :</Text> {id}
+          </Text>
           <TouchableOpacity
             style={{
               backgroundColor: "#FF8902",
-              paddingHorizontal: 15,
-              paddingVertical: 12,
+              paddingVertical: 10,
+              paddingHorizontal: 30,
               borderRadius: 8,
             }}
+            onPress={handleScan}
           >
-            <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
-              Submit Reading
+            <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
+              Scan
             </Text>
           </TouchableOpacity>
         </View>
-        <View>
-          <Image
-            source={require("../assets/Group (6).png")}
-            style={{ height: 30, width: 30 }}
-          />
-        </View>
-      </View>
-      <View style={{ position: "relative" }}>
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: "#2198C9",
+            paddingHorizontal: 10,
+            borderRadius: 15,
+            paddingVertical: 13,
+            marginTop: 10,
+          }}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={{ color: "#989898" }}>
-                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
-                  Last Reading :
-                </Text>{" "}
-                91627 OCR
-              </Text>
-              <Text style={{ color: "#989898" }}>
-                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
-                  Last Reading Date :
-                </Text>{" "}
-                Sun May 19th,2024
-              </Text>
-              <Text style={{ color: "#989898" }}>
-                <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
-                  Avg Usage :
-                </Text>{" "}
-                2425/mth
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={() => setModalVisible(false)}
+          <Text style={{ color: "#0F77AF", fontWeight: "700", fontSize: 18 }}>
+            Meter Reading :
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 12,
+              alignSelf: "center",
+              marginVertical: 20,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+                textAlign: "center",
+                alignItems: "center",
+              }}
             >
-              <Image
-                source={require("../assets/icons/close.png")}
-                style={{ height: 20, width: 20 }}
-              />
+              {Array.from({ length: 5 }).map((_, index) => (
+                <TextInput
+                  key={index}
+                  style={styles.otpBox}
+                  maxLength={1}
+                  keyboardType="numeric"
+                  value={otp[index]}
+                  onChangeText={(value) => handleInputChange(value, index)}
+                />
+              ))}
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 25,
+          }}
+        >
+          <TouchableOpacity onPress={() => setModalInfo(true)}>
+            <Image
+              source={require("../assets/Group (7).png")}
+              style={{ height: 30, width: 30 }}
+            />
+          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#FF8902",
+                paddingHorizontal: 15,
+                paddingVertical: 12,
+                borderRadius: 8,
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
+                Submit Reading
+              </Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
-    </SafeAreaView>
+          <View>
+            <Image
+              source={require("../assets/Group (6).png")}
+              style={{ height: 30, width: 30 }}
+            />
+          </View>
+        </View>
+        <View style={{ position: "relative" }}>
+          <Modal
+            transparent={true}
+            visible={modalInfo}
+            onRequestClose={() => setModalInfo(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={{ color: "#989898" }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                    Last Reading :
+                  </Text>{" "}
+                  {lastReading}
+                </Text>
+                <Text style={{ color: "#989898" }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                    Last Reading Date :
+                  </Text>{" "}
+                  {lastReadingDate}
+                </Text>
+                <Text style={{ color: "#989898" }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                    Avg Usage :
+                  </Text>{" "}
+                  {avgUsage}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.closeBtn}
+                onPress={() => setModalInfo(false)}
+              >
+                <Image
+                  source={require("../assets/icons/close.png")}
+                  style={{ height: 20, width: 20 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -176,18 +249,31 @@ const styles = StyleSheet.create({
     bottom: 90,
     left: 140,
   },
+  otpBox: {
+    height: 50,
+    width: "auto",
+    borderWidth: 1,
+    borderColor: "#0B9ED2",
+    borderRadius: 10,
+    // paddingLeft: 14,
+    paddingHorizontal: 8,
+    fontSize: 24,
+    fontWeight: "700",
+    color: colorCodes.heading,
+  },
   container: {
     marginHorizontal: 20,
+    flex: 1,
+    marginTop: 40,
   },
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
-    // Adding shadow properties
     shadowColor: "#2198C9",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.7,
     shadowRadius: 8,
-    elevation: 7, // For Android shadow
+    elevation: 7,
     borderRadius: 10,
   },
   headingText: {
@@ -202,18 +288,18 @@ const styles = StyleSheet.create({
   scannerView: {
     marginVertical: 5,
     backgroundColor: "#414141",
-    height: 130,
+    height: 200, // Adjust height as needed
+    alignItems: "center",
+    justifyContent: "center",
   },
   scannerHeading: {
     fontSize: 24,
     fontWeight: "700",
     color: "#989898",
   },
-  otpBox: {
-    height: 50,
-    width: 50,
-    borderWidth: 1,
-    borderColor: "#0B9ED2",
-    borderRadius: 10,
+  scannedImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
 });

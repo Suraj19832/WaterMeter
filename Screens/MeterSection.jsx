@@ -30,15 +30,21 @@ const MeterSection = ({ navigation }) => {
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
   const [pendingMeterCount, setpendingMeterCount] = useState();
+  const [lastReading, setLastReading] = useState("");
+  const [lastReadingDate, setLastReadingDate] = useState("");
+  const [avgUsage, setAvgUsage] = useState("");
+  const totalDigit = 3;
   // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalValue, setisModalValue] = useState("");
+  console.log(isModalValue);
   //For Image
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
 
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
+  console.log(inputValuemeter);
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
 
@@ -46,12 +52,12 @@ const MeterSection = ({ navigation }) => {
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
   const [meterReadingData, setmeterReadingData] = useState("");
 
-  const [noteLoading, setnoteLoading] = useState(false)
+  const [noteLoading, setnoteLoading] = useState(false);
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const toast = useToast();
-  const getNameById = (all_data,id) => {
+  const getNameById = (all_data, id) => {
     const item = all_data.find((obj) => obj.id === id);
     return item
       ? { make: item?.make, meterNote: item?.note, image: item?.image }
@@ -61,13 +67,13 @@ const MeterSection = ({ navigation }) => {
   const toggleDropDownMeter = () => {
     setisDropdownMeter(!isDropdownMeter);
   };
-  const handleSelectionOptionMeter = (all_data,option) => {
+  const handleSelectionOptionMeter = (all_data, option) => {
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
-    const meterMakevalue = getNameById(all_data,option);
-    console.log(meterMakevalue, "kwkwkwkwkw");
-    setmeterMake(getNameById(all_data,option));
+    const meterMakevalue = getNameById(all_data, option);
+    // console.log(meterMakevalue, "kwkwkwkwkw");
+    setmeterMake(getNameById(all_data, option));
   };
 
   const toggleDropDownMeterReading = () => {
@@ -95,8 +101,7 @@ const MeterSection = ({ navigation }) => {
     setIsModalVisible(false);
   };
   const meternotesubmit = () => {
-
-    setnoteLoading(true)
+    setnoteLoading(true);
     toast.show("wait while updating", { type: "sucess" });
     const fetchSubmitData = async () => {
       const data = {
@@ -106,19 +111,18 @@ const MeterSection = ({ navigation }) => {
       };
       try {
         const res = await appApi.meternote(data);
-      
-        console.log(res?.status, "JJJJJJJJJJJ))))((((((((");
+
+        // console.log(res?.status, "JJJJJJJJJJJ))))((((((((");
         if (res?.status) {
-          setnoteLoading(false)
+          setnoteLoading(false);
           toast.show(res?.message, { type: "sucess" });
         }
       } catch (error) {
-        setnoteLoading(false)
+        setnoteLoading(false);
         toast.show("Unexpected Error Occur", { type: "sucess" });
       } finally {
         fetchData();
-        setnoteLoading(false)
-        
+        setnoteLoading(false);
       }
     };
     fetchSubmitData();
@@ -156,7 +160,7 @@ const MeterSection = ({ navigation }) => {
   };
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
-      console.log("Document picking in progress");
+      // console.log("Document picking in progress");
       return;
     }
 
@@ -168,7 +172,7 @@ const MeterSection = ({ navigation }) => {
         type: "*/*",
       });
 
-      console.log("File picker result:", result);
+      // console.log("File picker result:", result);
 
       if (
         !result.canceled &&
@@ -181,13 +185,13 @@ const MeterSection = ({ navigation }) => {
         setisImage(result.assets[0].uri);
         showToast("Uploaded Successfully");
       } else if (result.canceled) {
-        console.log("File picking cancelled");
+        // console.log("File picking cancelled");
       } else {
-        console.log("File picking failed");
+        // console.log("File picking failed");
         setErrorMessageUploadImage("File picking failed");
       }
     } catch (error) {
-      console.error("Error picking file:", error);
+      // console.error("Error picking file:", error);
       setErrorMessageUploadImage("Error picking file");
     } finally {
       setIsPickingFilePassPortPhoto(false);
@@ -203,13 +207,13 @@ const MeterSection = ({ navigation }) => {
 
     try {
       const imageResult = await ImagePicker.launchCameraAsync();
-      console.log("sdkfpf", imageResult);
+      // console.log("sdkfpf", imageResult);
       if (imageResult.assets[0].uri !== null) {
         setModalVisibleUploadImage(false);
         setisImage(imageResult.assets[0].uri);
       }
     } catch (error) {
-      console.error("Error taking picture:", error);
+      // console.error("Error taking picture:", error);
       showToast("Error Occur");
       // Handle error
     }
@@ -226,15 +230,18 @@ const MeterSection = ({ navigation }) => {
         setid(res?.data?.id);
         setmeterDataByApi(res?.data?.meters);
         setpendingMeterCount(res?.data?.pendingMeterReading);
-        if(inputValuemeter != ""){
-            handleSelectionOptionMeter(res?.data?.meters,inputValuemeter)
+        setLastReading(res?.data?.last_reading);
+        setLastReadingDate(res?.data?.last_reading_date);
+        setAvgUsage(res?.data?.avg_usage);
+        if (inputValuemeter != "") {
+          handleSelectionOptionMeter(res?.data?.meters, inputValuemeter);
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setloading(false);
     } finally {
-      console.log("api call complete");
+      // console.log("api call complete");
       setloading(false);
     }
   };
@@ -257,7 +264,7 @@ const MeterSection = ({ navigation }) => {
   //   return(
   //     <LoaderComponent loading={noteLoading}/>
   //   )
-  
+
   // }
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
@@ -283,7 +290,9 @@ const MeterSection = ({ navigation }) => {
               style={styles.input}
               placeholder="Select"
               value={inputValuemeter}
-              onBlur={() => handleSelectionOptionMeter(meterDataByApi,inputValuemeter)}
+              onBlur={() =>
+                handleSelectionOptionMeter(meterDataByApi, inputValuemeter)
+              }
               editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
@@ -303,10 +312,13 @@ const MeterSection = ({ navigation }) => {
           <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
             {meterDataByApi?.length > 0 &&
               meterDataByApi.map((meterid, index) => {
+                console.log(meterid.make, ">>>>>>>>>>>>>>>>33333333333");
                 return (
                   <TouchableOpacity
                     style={styles.dropdownOption}
-                    onPress={() => handleSelectionOptionMeter(meterDataByApi,meterid?.id)}
+                    onPress={() =>
+                      handleSelectionOptionMeter(meterDataByApi, meterid?.id)
+                    }
                     key={index}
                   >
                     <Text style={styles.input}>{meterid?.id}</Text>
@@ -526,7 +538,10 @@ const MeterSection = ({ navigation }) => {
             <Text style={[styles.selectheading, { fontSize: 20 }]}>
               Meter Notes :
             </Text>
-            <TouchableOpacity onPress={toggleModalVisibility} disabled={noteLoading}>
+            <TouchableOpacity
+              onPress={toggleModalVisibility}
+              disabled={noteLoading}
+            >
               <Image
                 source={require("../assets/Group (6).png")}
                 style={{ height: 20, width: 20 }}
@@ -542,7 +557,12 @@ const MeterSection = ({ navigation }) => {
               style={styles.input}
               placeholder="Select"
               value={inputValuemeterReading}
-              onBlur={() => handleSelectionOptionMeter(meterDataByApi,inputValuemeterReading)}
+              onBlur={() =>
+                handleSelectionOptionMeter(
+                  meterDataByApi,
+                  inputValuemeterReading
+                )
+              }
               editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
@@ -611,6 +631,16 @@ const MeterSection = ({ navigation }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onPress={() =>
+            navigation.navigate("meterReadingScanner", {
+              id,
+              name,
+              lastReading,
+              lastReadingDate,
+              avgUsage,
+              totalDigit,
+            })
+          }
         >
           <Text style={{ fontWeight: "700", color: "white" }}>
             Select Meter
@@ -642,7 +672,7 @@ const MeterSection = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-      {noteLoading && <LoaderComponent loading={noteLoading}/>}
+      {noteLoading && <LoaderComponent loading={noteLoading} />}
     </SafeAreaView>
   );
 };
@@ -823,6 +853,5 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
-
 
 //
