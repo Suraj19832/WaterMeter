@@ -101,51 +101,51 @@ const MainStack = () => {
       initialRouteName={"Dashboard"}
       screenOptions={{ headerShown: false }}
     >
+      <Stack.Screen
+        name="Dashboard"
+        component={DrawerNav}
+        options={{ headerShown: false }}
+      />
+         <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ headerShown: false }}
+      />
+        <Stack.Screen
+        name="SummaryScreen"
+        component={SummaryScreen}
+        options={{ headerShown: false }}
+      />
        <Stack.Screen
-          name="Dashboard"
-          component={DrawerNav}
-          options={{ headerShown: false }}
-        />
+        name="MeterScreen"
+        component={MeterSection}
+        options={{ headerShown: false }}
+      />
+           <Stack.Screen
+        name="OcrCaptured"
+        component={OcrCaptured}
+        options={{ headerShown: false }}
+      />
         <Stack.Screen
-          name="EditProfile"
-          component={EditProfile}
-          options={{ headerShown: false }}
-        />
+        name="MeterReading"
+        component={MeterReading}
+        options={{ headerShown: false }}
+      />
         <Stack.Screen
-          name="SummaryScreen"
-          component={SummaryScreen}
-          options={{ headerShown: false }}
-        />
+        name="meterReadingScanner"
+        component={MeterReadingScanner}
+        options={{ headerShown: false }}
+      />
+         <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
+        options={{ headerShown: false }}
+      />
         <Stack.Screen
-          name="MeterScreen"
-          component={MeterSection}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="OcrCaptured"
-          component={OcrCaptured}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MeterReading"
-          component={MeterReading}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MeterReadingScanner"
-          component={MeterReadingScanner}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ChangePassword"
-          component={ChangePassword}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="DrawerNav"
-          component={DrawerNavigation}
-          options={{ headerShown: false }}
-        />
+        name="DrawerNav"
+        component={DrawerNavigation}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
     ) :(
       <Stack.Navigator
@@ -162,21 +162,21 @@ const MainStack = () => {
           component={Login}
           options={{ headerShown: false }}
         />
+         <Stack.Screen
+        name="VerifyOTP"
+        component={VerifyOTP}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="VerifyEmail"
+        component={VerifyEmail}
+        options={{ headerShown: false }}
+      />
         <Stack.Screen
-          name="VerifyOTP"
-          component={VerifyOTP}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="VerifyEmail"
-          component={VerifyEmail}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ForgotPassword"
-          component={ForgotPassword}
-          options={{ headerShown: false }}
-        />
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
     )}
         </>

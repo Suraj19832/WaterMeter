@@ -56,6 +56,9 @@ const DrawerNavigation = ({ navigation }) => {
     } catch (error) {
       // navigation.navigate("Login");
     console.log(error ,"hihi")
+    showToast("Logout Successfully");
+        await AsyncStorage.removeItem("token");
+  dispatch(setAuthToken(null));
     } finally{
     }
   
