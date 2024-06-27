@@ -31,6 +31,10 @@ const appApi = {
     const url = `${baseURL}/api/profile`;
     return sendAuthorizePostFormData(url, data);
   },
+  meternote: function(data) {
+    const url = `${baseURL}/api/update/meter/note`;
+    return sendAuthorizePostFormData(url, data);
+  },
   profile: function(data) {
     const url = `${baseURL}/api/profile`;
     return sendAuthorizeGetRequest(url);

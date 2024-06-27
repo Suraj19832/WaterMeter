@@ -15,52 +15,59 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { AntDesign, Entypo } from "@expo/vector-icons";
-
+import { ToastProvider, useToast } from "react-native-toast-notifications";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
+import LoaderComponent from "../Components/LoaderComponent";
+
 const MeterSection = ({ navigation }) => {
-  
-
-
-
-
-  const [meterMake, setmeterMake] = useState({})
+  const [meterMake, setmeterMake] = useState({});
   const route = useRoute();
-  const {
-    PopertyId
-  } = route.params;
-  const [name, setname] = useState()
-  const [id, setid] = useState()
-  const [meterDataByApi, setmeterDataByApi] = useState([])
-  const [pendingMeterCount, setpendingMeterCount] = useState()
-  function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  }
-  const getNameById = (id) => {
-    const item = meterDataByApi.find((obj) => obj.id === id);
-    return item ? { make: item?.make, meterNote: item?.note ,image:item?.image } : { make: 'Not Found', meterNote: 'Not Found',image:"Upload Image" };
-  };
+  const { PopertyId } = route.params;
+  const [name, setname] = useState();
+  const [id, setid] = useState();
+  const [meterDataByApi, setmeterDataByApi] = useState([]);
+  const [pendingMeterCount, setpendingMeterCount] = useState();
+  // For edit
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalValue, setisModalValue] = useState("");
+  //For Image
+  const [isModalImage, setIsModalImage] = useState(false);
+  const [isImage, setisImage] = useState();
+
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
   const [meterData, setmeterData] = useState("");
-  const [loading, setloading] = useState(true)
+  const [loading, setloading] = useState(true);
 
   const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
   const [meterReadingData, setmeterReadingData] = useState("");
 
+  const [noteLoading, setnoteLoading] = useState(false)
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+  const toast = useToast();
+  const getNameById = (all_data,id) => {
+    const item = all_data.find((obj) => obj.id === id);
+    return item
+      ? { make: item?.make, meterNote: item?.note, image: item?.image }
+      : { make: "Not Found", meterNote: "Not Found", image: "Upload Image" };
+  };
+
   const toggleDropDownMeter = () => {
     setisDropdownMeter(!isDropdownMeter);
   };
-  const handleSelectionOptionMeter = (option) => {
+  const handleSelectionOptionMeter = (all_data,option) => {
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
-   const  meterMakevalue =getNameById(option)
-   console.log(meterMakevalue ,"kwkwkwkwkw")
-     setmeterMake(getNameById(option))
+    const meterMakevalue = getNameById(all_data,option);
+    console.log(meterMakevalue, "kwkwkwkwkw");
+    setmeterMake(getNameById(all_data,option));
   };
 
   const toggleDropDownMeterReading = () => {
@@ -71,24 +78,52 @@ const MeterSection = ({ navigation }) => {
     setmeterReadingData(option);
     setisDropdownMeterReading(false);
   };
-// fffff
-  // For edit
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalValue, setisModalValue] = useState("");
+  // fffff
 
-  //for picture 
+  //for picture
 
   const toggleModalVisibility = () => {
-    setisModalValue(meterMake?.meterNote)
-   
+    setisModalValue(meterMake?.meterNote);
+
     setIsModalVisible(!isModalVisible);
-    setisModalValue("");
+    // setisModalValue("");
     setisImage();
+
     // setModalVisibleUploadImage(true)
   };
-  const toggleModalVisibilitySubmit =()=>{
-    setIsModalVisible(false)
-  }
+  const toggleModalVisibilitySubmit = () => {
+    setIsModalVisible(false);
+  };
+  const meternotesubmit = () => {
+
+    setnoteLoading(true)
+    toast.show("wait while updating", { type: "sucess" });
+    const fetchSubmitData = async () => {
+      const data = {
+        propertyId: PopertyId,
+        meter_id: inputValuemeter,
+        note: isModalValue,
+      };
+      try {
+        const res = await appApi.meternote(data);
+      
+        console.log(res?.status, "JJJJJJJJJJJ))))((((((((");
+        if (res?.status) {
+          setnoteLoading(false)
+          toast.show(res?.message, { type: "sucess" });
+        }
+      } catch (error) {
+        setnoteLoading(false)
+        toast.show("Unexpected Error Occur", { type: "sucess" });
+      } finally {
+        fetchData();
+        setnoteLoading(false)
+        
+      }
+    };
+    fetchSubmitData();
+    setIsModalVisible(!isModalVisible);
+  };
   // For Information
   const [isModalInformation, setIsModalInformation] = useState(false);
 
@@ -97,17 +132,13 @@ const MeterSection = ({ navigation }) => {
     setIsModalVisible(false);
   };
 
-  //For Image
-  const [isModalImage, setIsModalImage] = useState(false);
-  const [isImage, setisImage] = useState();
-
   const toggleModalVisibilityImage = () => {
-    setisImage(meterMake?.image)
+    if (meterMake?.image) {
+      setisImage(meterMake?.image);
+    }
+
     setIsModalImage(!isModalImage);
-
   };
-
-
 
   const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
   const [errorMessageUploadImage, setErrorMessageUploadImage] = useState(null);
@@ -184,45 +215,50 @@ const MeterSection = ({ navigation }) => {
     }
   };
 
-useEffect(() => {
-const fetchData =async()=>{
-const data ={
-  propertyId :PopertyId
-}
-try {
-  const res = await appApi.metersection(data)
-  if (res?.status) {
-    setname(res?.data?.name)
-    setid(res?.data?.id)
-    setmeterDataByApi(res?.data?.meters)
-    setpendingMeterCount(res?.data?.pendingMeterReading)
-  
-   
-  }
-} catch (error) {
-  console.log(error)
-  setloading(false)
-} 
-finally {
-  console.log("api call complete");
-  setloading(false)
-}
-}
-fetchData()
-}, [PopertyId])
+  const fetchData = async () => {
+    const data = {
+      propertyId: PopertyId,
+    };
+    try {
+      const res = await appApi.metersection(data);
+      if (res?.status) {
+        setname(res?.data?.name);
+        setid(res?.data?.id);
+        setmeterDataByApi(res?.data?.meters);
+        setpendingMeterCount(res?.data?.pendingMeterReading);
+        if(inputValuemeter != ""){
+            handleSelectionOptionMeter(res?.data?.meters,inputValuemeter)
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setloading(false);
+    } finally {
+      console.log("api call complete");
+      setloading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [PopertyId]);
 
- if (loading) {
+  if (loading) {
     return (
       <View>
-
         <ActivityIndicator
           size={"large"}
           color={"#00367E"}
           style={styles.loader}
-        /> 
+        />
       </View>
     );
   }
+  // if (noteLoading) {
+  //   return(
+  //     <LoaderComponent loading={noteLoading}/>
+  //   )
+  
+  // }
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -234,7 +270,9 @@ fetchData()
         </TouchableOpacity>
       </>
       <View style={styles.heading}>
-        <Text style={styles.headingText}>{id} | {name}</Text>
+        <Text style={styles.headingText}>
+          {id} | {name}
+        </Text>
       </View>
 
       <View style={styles.fields_main}>
@@ -245,7 +283,7 @@ fetchData()
               style={styles.input}
               placeholder="Select"
               value={inputValuemeter}
-              onBlur={() => handleSelectionOptionMeter(inputValuemeter)}
+              onBlur={() => handleSelectionOptionMeter(meterDataByApi,inputValuemeter)}
               editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
@@ -262,28 +300,21 @@ fetchData()
 
       {isDropdownMeter && (
         <View style={styles.dropdownContainer}>
-              <ScrollView
-              nestedScrollEnabled={true}
-              style={{ maxHeight: 150 }}
-            >
-          {meterDataByApi?.length >0 && meterDataByApi.map((meterid ,index)=>{
-            return(
-          
-  <TouchableOpacity
-              style={styles.dropdownOption}
-              onPress={() => handleSelectionOptionMeter(meterid?.id)}
-              key={index}
-            >
-              <Text style={styles.input}>{meterid?.id}</Text>
-            </TouchableOpacity>
-
-            
-            
-            )
-          })}
-        </ScrollView>
+          <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
+            {meterDataByApi?.length > 0 &&
+              meterDataByApi.map((meterid, index) => {
+                return (
+                  <TouchableOpacity
+                    style={styles.dropdownOption}
+                    onPress={() => handleSelectionOptionMeter(meterDataByApi,meterid?.id)}
+                    key={index}
+                  >
+                    <Text style={styles.input}>{meterid?.id}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+          </ScrollView>
         </View>
-        
       )}
       <Modal
         visible={isModalVisible || isModalInformation || isModalImage}
@@ -291,9 +322,7 @@ fetchData()
         animationType="slide"
         onRequestClose={toggleModalVisibility}
       >
-       
         <View style={styles.modalBackground}>
-      
           {isModalInformation && (
             <View style={{ width: "90%", alignItems: "flex-end" }}>
               <TouchableOpacity onPress={toggleModalVisibilityInformation}>
@@ -396,12 +425,17 @@ fetchData()
             <View style={styles.modalContainer}>
               {isModalVisible && (
                 <>
-                <View style={{width:'100%' }}>
-                <TouchableOpacity onPress={toggleModalVisibilitySubmit}>
-                    <Entypo style={{alignSelf:'flex-end'}} name="cross" size={24} color="#197AB6" />
-                  </TouchableOpacity>
-                </View>
-                
+                  <View style={{ width: "100%" }}>
+                    <TouchableOpacity onPress={toggleModalVisibilitySubmit}>
+                      <Entypo
+                        style={{ alignSelf: "flex-end" }}
+                        name="cross"
+                        size={24}
+                        color="#197AB6"
+                      />
+                    </TouchableOpacity>
+                  </View>
+
                   <TextInput
                     style={styles.modalInput}
                     placeholder="Enter your notes here"
@@ -419,7 +453,7 @@ fetchData()
                         borderRadius: 8,
                         justifyContent: "center",
                       }}
-                      onPress={toggleModalVisibility}
+                      onPress={meternotesubmit}
                     >
                       <Text style={styles.closeButton}>Submit</Text>
                     </TouchableOpacity>
@@ -449,12 +483,7 @@ fetchData()
               )}
             </View>
           )}
-
-
-          
         </View>
-   
-       
       </Modal>
       {inputValuemeter && (
         <View
@@ -473,7 +502,7 @@ fetchData()
                 fontSize: 18,
               }}
             >
-    {meterMake?.make}
+              {meterMake?.make}
             </Text>
           </View>
           <View>
@@ -492,18 +521,20 @@ fetchData()
       )}
 
       <View style={styles.fields_main}>
-        <View style={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
-          <Text style={[styles.selectheading, { fontSize: 20 }]}>
-            Meter Notes :
-          </Text>
-          <TouchableOpacity onPress={toggleModalVisibility}>
-            <Image
-              source={require("../assets/Group (6).png")}
-              style={{ height: 20, width: 20 }}
-              resizeMode="center"
-            />
-          </TouchableOpacity>
-        </View>
+        {inputValuemeter && (
+          <View style={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
+            <Text style={[styles.selectheading, { fontSize: 20 }]}>
+              Meter Notes :
+            </Text>
+            <TouchableOpacity onPress={toggleModalVisibility} disabled={noteLoading}>
+              <Image
+                source={require("../assets/Group (6).png")}
+                style={{ height: 20, width: 20 }}
+                resizeMode="center"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <TouchableOpacity onPress={toggleDropDownMeterReading}>
           <View style={styles.input_box}>
@@ -511,7 +542,7 @@ fetchData()
               style={styles.input}
               placeholder="Select"
               value={inputValuemeterReading}
-              onBlur={() => handleSelectionOptionMeter(inputValuemeterReading)}
+              onBlur={() => handleSelectionOptionMeter(meterDataByApi,inputValuemeterReading)}
               editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
@@ -555,7 +586,7 @@ fetchData()
           }}
         >
           <Text style={{ color: "white", fontWeight: 700 }}>
-          {pendingMeterCount} Meters Pending
+            {pendingMeterCount} Meters Pending
           </Text>
         </TouchableOpacity>
       </View>
@@ -611,6 +642,7 @@ fetchData()
           </View>
         </View>
       </Modal>
+      {noteLoading && <LoaderComponent loading={noteLoading}/>}
     </SafeAreaView>
   );
 };
@@ -706,7 +738,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 8,
     color: "black",
-    marginTop:2
+    marginTop: 2,
   },
   dropdownOption: {
     paddingVertical: 8,
@@ -782,7 +814,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
-  // loader 
+  // loader
   loader: {
     height: "100%",
     // width: Dimensions.get("window").width * 0.7,
@@ -791,3 +823,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
+
+
+//

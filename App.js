@@ -3,8 +3,12 @@ import NavigationComponent from "./Navigation/Navigation";
 import store from "./redux/reduxstore";
 import { Provider } from "react-redux";
 import { ToastProvider } from "react-native-toast-notifications";
+import { useDispatch } from "react-redux";
+import { setAuthToken } from "./redux/slices/Authslice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const App = () => {
+
   return (
     <Provider store={store}>
       <ToastProvider
