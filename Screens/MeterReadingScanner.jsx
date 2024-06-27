@@ -17,12 +17,14 @@ import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
+import { getFileData } from "../Helper/Helper";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
   const { id, name, lastReading, lastReadingDate, avgUsage, totalDigit } =
     route.params ?? {};
   const [scannedMeter, setScannedMeter] = useState(null);
+  const [meterValue, setMeterValue] = useState(null);
   console.log(scannedMeter, "<<<<<<<<<<<<<<<<<<<<<");
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
@@ -48,18 +50,18 @@ function MeterReadingScanner({ navigation }) {
     return otp.every((totalDigit) => totalDigit !== "");
   };
 
-  const verifyNumber = () => {
-    // const data = {
-    //   file: scannedMeter,
-    // };
-    // appApi
-    //   .meterScanner(data)
-    //   .then((res) => {
-    //     console.log(res, "hello");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err, "erorr ");
-    //   });
+  const verifyNumber = async (imageFile) => {
+    try {
+      const data = {
+        file: imageFile,
+      };
+      const res = await appApi.meterScanner(data);
+      console.log(res, "Response from API");
+      setMeterValue(res?.ocrReading);
+      alert(res?.ocrReading);
+    } catch (err) {
+      console.error(err, "Error while uploading image");
+    }
   };
 
   const handleScan = async () => {
@@ -73,13 +75,14 @@ function MeterReadingScanner({ navigation }) {
 
       if (!result.cancelled) {
         setScannedMeter(result.assets[0].uri);
-        verifyNumber();
+        const fileData = getFileData(result);
+        await verifyNumber(fileData);
       } else {
         Alert.alert("Scan Cancelled", "You cancelled the scan.");
       }
     } catch (error) {
       console.log("Error while scanning:", error);
-      // Alert.alert("Error", "Failed to launch the camera.");
+      Alert.alert("Error", "Failed to launch the camera.");
     }
   };
 

@@ -55,9 +55,13 @@ const appApi = {
     const url = `${baseURL}/api/meter-list`;
     return sendAuthorizeGetRequest(url, data);
   },
-  saveLocationApi: function(data){
+  saveLocationApi: function(data) {
     const url = `${baseURL}/api/current-location`;
-    return sendAuthorizePostFormData(url,data)
-  }
+    return sendAuthorizePostFormData(url, data);
+  },
+  meterScanner: function(data) {
+    const url = `${baseURL}/api/detectOcr`;
+    return sendAuthorizePostFormData(url, data);
+  },
 };
 export default appApi;
