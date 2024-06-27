@@ -21,9 +21,14 @@ import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
+import { getFileData } from "../Helper/Helper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setAuthToken } from "../redux/slices/Authslice";
+import { useDispatch } from "react-redux";
 
 const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
+  const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId } = route.params;
   const [name, setname] = useState();
@@ -51,6 +56,9 @@ const MeterSection = ({ navigation }) => {
   const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
   const [meterReadingData, setmeterReadingData] = useState("");
+
+  // for user selected image 
+  const [userSelectedImage, setUserSelectedImage] = useState(null);
 
   const [noteLoading, setnoteLoading] = useState(false);
   function showToast(message) {
@@ -93,7 +101,7 @@ const MeterSection = ({ navigation }) => {
 
     setIsModalVisible(!isModalVisible);
     // setisModalValue("");
-    setisImage();
+    // setisImage();
 
     // setModalVisibleUploadImage(true)
   };
@@ -137,7 +145,9 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibilityImage = () => {
-    if (meterMake?.image) {
+    if (userSelectedImage) {
+      setisImage(userSelectedImage);
+    } else if (meterMake?.image){
       setisImage(meterMake?.image);
     }
 
@@ -158,6 +168,38 @@ const MeterSection = ({ navigation }) => {
   const closeModal = () => {
     setModalVisibleUploadImage(false);
   };
+
+  const ImageUpload = async (result)=>{
+    // function call 
+    console.log("function call")
+    setnoteLoading(true);
+    const newtry =  getFileData(result);
+    console.log(newtry,"<=================");
+    const postData ={
+      propertyId : PopertyId ,
+      meter_id : inputValuemeter,
+      file : newtry
+    }
+    console.log(postData ,"new image upload ")
+    console.log("data set")
+    try {
+      const res = await appApi.meterimage(postData);
+      console.log(res?.status, "JJJJJJJJJJJ))))((((((((");
+      if (res?.status) {
+        setnoteLoading(false);
+        toast.show(res?.message, { type: "sucess" });
+      }
+    } catch (error) {
+      setnoteLoading(false);
+      toast.show("Unexpected Error Occur", { type: "sucess" });
+    } finally {
+      fetchData();
+      setnoteLoading(false);
+      
+    }
+
+
+  }
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
       // console.log("Document picking in progress");
@@ -172,7 +214,7 @@ const MeterSection = ({ navigation }) => {
         type: "*/*",
       });
 
-      // console.log("File picker result:", result);
+      console.log("File picker result:", result);
 
       if (
         !result.canceled &&
@@ -182,7 +224,11 @@ const MeterSection = ({ navigation }) => {
       ) {
         // console.log("File picked:", result.assets[0].uri);
 
-        setisImage(result.assets[0].uri);
+        // setisImage(result.assets[0].uri);
+        ImageUpload(result)
+        setUserSelectedImage(result.assets[0].uri)
+        
+        // console.log(result.assets[0].uri ,"jjjjjj")
         showToast("Uploaded Successfully");
       } else if (result.canceled) {
         // console.log("File picking cancelled");
@@ -210,7 +256,10 @@ const MeterSection = ({ navigation }) => {
       // console.log("sdkfpf", imageResult);
       if (imageResult.assets[0].uri !== null) {
         setModalVisibleUploadImage(false);
-        setisImage(imageResult.assets[0].uri);
+        // setisImage(imageResult.assets[0].uri);
+        ImageUpload(imageResult)
+        setUserSelectedImage(imageResult.assets[0].uri)
+
       }
     } catch (error) {
       // console.error("Error taking picture:", error);
@@ -240,6 +289,11 @@ const MeterSection = ({ navigation }) => {
     } catch (error) {
       // console.log(error);
       setloading(false);
+      console.log(error ,"hihi")
+      showToast("Token Expire");
+          await AsyncStorage.removeItem("token");
+    dispatch(setAuthToken(null));
+
     } finally {
       // console.log("api call complete");
       setloading(false);

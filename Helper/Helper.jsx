@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as mime from "react-native-mime-types";
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -240,6 +240,7 @@ export async function sendDeleteURLencoded(url, obj) {
 }
 
 export async function sendAuthorizePostFormData(url, obj) {
+  console.log(url ,obj)
   try {
     let token = await AsyncStorage.getItem("token");
     console.log(token, "<=====================");
@@ -249,19 +250,20 @@ export async function sendAuthorizePostFormData(url, obj) {
     }
 
     let response = await fetch(url, {
+      
       method: "POST",
-      body: JSON.stringify(obj), // Converting the object to JSON string
+      body: prepareFormDataFromObject(obj), // Converting the object to JSON string
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
 
     let data = await response.json();
 
-    if (!response.ok) {
-      throw new ValidationError(data.message, data.errors);
-    }
+    // if (!response.ok) {
+    //   throw new ValidationError(data.message, data.errors);
+    // }
 
     return data;
   } catch (error) {
@@ -319,3 +321,24 @@ export class ValidationError extends Error {
     this.errors = errors;
   }
 }
+export const getFileData = (obj = {}) => {
+  let uri = obj?.assets ? obj?.assets[0]?.uri : obj?.uri;
+
+  let arr = uri.split("/");
+  let fileName = arr[arr.length - 1];
+
+  return {
+    uri: uri,
+    name: fileName,
+    type: mime.lookup(fileName),
+  };
+  
+};
+// export function prepareFormDataFromObject(obj) {
+//   let formdata = new FormData();
+//   for (let key in obj) {
+//       formdata.append(key, obj[key]);
+//   }
+
+//   return formdata;
+// }
