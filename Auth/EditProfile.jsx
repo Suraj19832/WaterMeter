@@ -7,11 +7,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import SubmitButton from "../Components/SubmitButton";
 import { useSelector } from "react-redux";
-import { selectAuthToken } from "../redux/slices/Authslice";
+import { selectAuthToken ,setAuthToken } from "../redux/slices/Authslice";
 import appApi from "../Helper/Api";
 import { ToastAndroid } from "react-native";
 import InputField from "../Components/InputField";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { setAuthToken } from "../redux/slices/Authslice";
+import { useDispatch } from "react-redux";
 function EditProfile({ navigation }) {
+  const dispatch = useDispatch();
   const [checked, setChecked] = useState(true);
   const authToken = useSelector(selectAuthToken);
   const [loading, setloading] = useState(false);
@@ -31,13 +35,19 @@ function EditProfile({ navigation }) {
       } catch (err) {
         console.log(err);
         showToast("Login again");
+        async function handleLoginPress () {
+          // showToast("Login again");
+        await AsyncStorage.removeItem("token");
+  dispatch(setAuthToken(null));
+          navigation.navigate("Login"); // Navigate to the login screen
+        }
         Alert.alert(
           "Token Expire",
           "Login Again",
           [
             {
               text: "Login",
-              onPress: () => navigation.navigate("Login"), // Navigate to the login screen
+              onPress: handleLoginPress, // Navigate to the login screen
             },
           ],
           { cancelable: false }

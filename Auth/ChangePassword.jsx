@@ -19,6 +19,7 @@ import {
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import appApi from "../Helper/Api";
 import InputField from "../Components/InputField";
+import { DoLogout } from "../Helper/Helper";
 
 function ChangePassword({ navigation }) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -67,6 +68,7 @@ function ChangePassword({ navigation }) {
         })
         .catch((err) => {
           console.log(err, "error form chnge password");
+          DoLogout()
           setIsLoading(false);
           setDisabledBtn(false);
         });

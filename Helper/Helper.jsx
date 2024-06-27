@@ -1,5 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as mime from "react-native-mime-types";
+import * as mime from "react-native-mime-types"
+import { setAuthToken } from "../redux/slices/Authslice";
+import { useDispatch } from "react-redux";
+import {  useToast } from "react-native-toast-notifications";
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -334,6 +337,13 @@ export const getFileData = (obj = {}) => {
   };
   
 };
+export async function DoLogout () {
+  const toast = useToast();
+  toast.show("Token Expire", { type: "sucess" });
+  const dispatch = useDispatch();
+  await AsyncStorage.removeItem("token");
+  dispatch(setAuthToken(null));
+}
 // export function prepareFormDataFromObject(obj) {
 //   let formdata = new FormData();
 //   for (let key in obj) {

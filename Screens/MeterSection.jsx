@@ -80,6 +80,11 @@ const MeterSection = ({ navigation }) => {
     setmeterData(option);
     setisDropdownMeter(false);
     const meterMakevalue = getNameById(all_data, option);
+    if (userSelectedImage) {
+      setisImage(userSelectedImage);
+    } else if (meterMakevalue?.image){
+      setisImage(meterMakevalue?.image);
+    }
     // console.log(meterMakevalue, "kwkwkwkwkw");
     setmeterMake(getNameById(all_data, option));
   };
@@ -229,7 +234,7 @@ const MeterSection = ({ navigation }) => {
         setUserSelectedImage(result.assets[0].uri)
         
         // console.log(result.assets[0].uri ,"jjjjjj")
-        showToast("Uploaded Successfully");
+        showToast("Uploading");
       } else if (result.canceled) {
         // console.log("File picking cancelled");
       } else {
@@ -263,7 +268,7 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       // console.error("Error taking picture:", error);
-      showToast("Error Occur");
+      showToast("Capture Failed");
       // Handle error
     }
   };
@@ -529,8 +534,9 @@ const MeterSection = ({ navigation }) => {
               {isModalInformation && (
                 <View style={{ width: "100%", gap: 10 }}>
                   <View style={{ flexDirection: "row" }}>
+               
                     <Text style={styles.modalKeyText}>Last Reading :</Text>
-                    <Text style={styles.modalValueText}> 91627 OCR</Text>
+                    <Text style={styles.modalValueText}>{lastReading}</Text>
                   </View>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={styles.modalKeyText}>
@@ -538,12 +544,12 @@ const MeterSection = ({ navigation }) => {
                     </Text>
                     <Text style={styles.modalValueText}>
                       {" "}
-                      Sun May 19th,2024
+                      {lastReadingDate}
                     </Text>
                   </View>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={styles.modalKeyText}>Avg Usage : </Text>
-                    <Text style={styles.modalValueText}> 2425/mth</Text>
+                    <Text style={styles.modalValueText}> {avgUsage}</Text>
                   </View>
                 </View>
               )}
@@ -677,8 +683,9 @@ const MeterSection = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+        disabled={inputValuemeter ?false:true}
           style={{
-            backgroundColor: "#FF8902",
+            backgroundColor: inputValuemeter ? "rgba(255, 137, 2, 1)" :"rgba(255, 137, 2, 0.5)",
             borderRadius: 8,
             height: 40,
             width: 120,
