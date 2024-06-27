@@ -149,11 +149,17 @@ function Login({ navigation }) {
         .then(async (res) => {
           setIsLoading(false);
           setDisabledBtn(false);
+          console.log(res?.status ,"status ")
           if (res?.status) {
+            
             toast.show(res?.message, { type: "sucess" });
-            saveLocationApi();
-            dispatch(setAuthToken(res?.authorization?.token));
             await AsyncStorage.setItem("token", res?.authorization?.token);
+            dispatch(setAuthToken(res?.authorization?.token));
+            // dispatch(setAuthToken(null));
+        
+            const savedEmail = await AsyncStorage.getItem("token")
+   console.log(savedEmail,"flflflflflflflflflflflflfl")
+            saveLocationApi();
             if (checked) {
               await AsyncStorage.setItem("email", email);
               await AsyncStorage.setItem("password", password);
@@ -161,7 +167,7 @@ function Login({ navigation }) {
               await AsyncStorage.removeItem("email");
               await AsyncStorage.removeItem("password");
             }
-            navigation.navigate("Dashboard");
+            // navigation.navigate("Dashboard");
           } else {
             toast.show(res?.message, { type: "warning" });
           }

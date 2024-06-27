@@ -19,9 +19,11 @@ import {
 import { colorCodes } from "../ColorCodes/Colors";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { setAuthToken } from "../redux/slices/Authslice";
+import { useDispatch } from "react-redux";
 const DrawerNavigation = ({ navigation }) => {
   const [modal, setModal] = useState(false);
+  const dispatch = useDispatch();
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
@@ -29,18 +31,30 @@ const DrawerNavigation = ({ navigation }) => {
   //  await AsyncStorage.removeItem("token");
   //  const savedEmail = await AsyncStorage.getItem("token")
   //  console.log(savedEmail,"flflflflflflflflflflflflfl")
+  // console.log("token start removeing")
+  // await AsyncStorage.removeItem("token");
+  // dispatch(setAuthToken(null));
+  // console.log("token remove successfully ") 
+  // // navigation.navigate("Login");
+  // const token = await AsyncStorage.getItem('token');
+  //       console.log(token ,"in drawer navigation before funcrion call ")
     try {
       setModal(false);
       showToast("Wait a Second")
       const res =await appApi.logout()
+      console.log(res?.status ,"mxmxmxmxmxm")
       if (res?.status) {
-        showToast("Logout Successfully")
-      
-       navigation.navigate("Login");
+        showToast("Logout Successfully");
+        await AsyncStorage.removeItem("token");
+  dispatch(setAuthToken(null));
+        // await AsyncStorage.removeItem("token");
+        // const token = await AsyncStorage.getItem('token');
+        // console.log(token ,"in drawer navigation")
+        // dispatch(setAuthToken(null));
       }
     
     } catch (error) {
-      navigation.navigate("Login");
+      // navigation.navigate("Login");
     console.log(error ,"hihi")
     } finally{
     }

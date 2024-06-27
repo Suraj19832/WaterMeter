@@ -19,6 +19,10 @@ import VerifyOTP from "./../Auth/VerifyOTP";
 import VerifyEmail from "./../Auth/VarifyEmail";
 import MeterReading from "../Screens/MeterReading";
 import MeterReadingScanner from "../Screens/MeterReadingScanner";
+import { useSelector } from "react-redux";
+import { selectAuthToken } from "../redux/slices/Authslice";
+// import { useEffect } from "react";
+import { useNavigation } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 const Bottom = createBottomTabNavigator();
@@ -86,81 +90,97 @@ const DrawerNav = () => (
   </Drawer.Navigator>
 );
 const MainStack = () => {
+  const authToken = useSelector(selectAuthToken);
+  
   return (
-    <Stack.Navigator initialRouteName="Login" headerShown={false}>
-      <Stack.Screen
-        name="SplashScreen"
-        component={SplashScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Dashboard"
-        component={DrawerNav}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="VerifyOTP"
-        component={VerifyOTP}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="VerifyEmail"
-        component={VerifyEmail}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="MeterScreen"
-        component={MeterSection}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfile}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SummaryScreen"
-        component={SummaryScreen}
-        options={{ headerShown: false }}
-      />
+  
+    <>
 
-      <Stack.Screen
-        name="ForgotPassword"
-        component={ForgotPassword}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="OcrCaptured"
-        component={OcrCaptured}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="MeterReading"
-        component={MeterReading}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="meterReadingScanner"
-        component={MeterReadingScanner}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ChangePassword"
-        component={ChangePassword}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="DrawerNav"
-        component={DrawerNavigation}
-        options={{ headerShown: false }}
-      />
+    {authToken !== null  ? (
+      <Stack.Navigator
+      initialRouteName={"Dashboard"}
+      screenOptions={{ headerShown: false }}
+    >
+       <Stack.Screen
+          name="Dashboard"
+          component={DrawerNav}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SummaryScreen"
+          component={SummaryScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MeterScreen"
+          component={MeterSection}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OcrCaptured"
+          component={OcrCaptured}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MeterReading"
+          component={MeterReading}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MeterReadingScanner"
+          component={MeterReadingScanner}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="DrawerNav"
+          component={DrawerNavigation}
+          options={{ headerShown: false }}
+        />
     </Stack.Navigator>
+    ) :(
+      <Stack.Navigator
+      initialRouteName={"Login"}
+      screenOptions={{ headerShown: false }}
+    >
+       <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VerifyOTP"
+          component={VerifyOTP}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VerifyEmail"
+          component={VerifyEmail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{ headerShown: false }}
+        />
+    </Stack.Navigator>
+    )}
+        </>
+  
   );
 };
 
