@@ -33,7 +33,7 @@ const MeterSection = ({ navigation }) => {
   const [lastReading, setLastReading] = useState("");
   const [lastReadingDate, setLastReadingDate] = useState("");
   const [avgUsage, setAvgUsage] = useState("");
-  const totalDigit = 3;
+  // const totalDigit = 3;
   // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalValue, setisModalValue] = useState("");
@@ -60,8 +60,8 @@ const MeterSection = ({ navigation }) => {
   const getNameById = (all_data, id) => {
     const item = all_data.find((obj) => obj.id === id);
     return item
-      ? { make: item?.make, meterNote: item?.note, image: item?.image }
-      : { make: "Not Found", meterNote: "Not Found", image: "Upload Image" };
+      ? { make: item?.make, meterNote: item?.note, image: item?.image ,totalDigit:item?.total_number_of_digit }
+      : { make: "Not Found", meterNote: "Not Found", image: "Upload Image" ,totalDigit:"not found" };
   };
 
   const toggleDropDownMeter = () => {
@@ -638,7 +638,7 @@ const MeterSection = ({ navigation }) => {
               lastReading,
               lastReadingDate,
               avgUsage,
-              totalDigit,
+              totalDigit :meterMake?.totalDigit
             })
           }
         >
