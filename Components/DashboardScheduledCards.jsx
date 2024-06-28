@@ -119,7 +119,14 @@ function DashboardScheduledCards({
               {firstCapitalize(items?.status?.name)}
             </Text>
           </View>
-          <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
+          {items?.status?.days < 1 ? (
+            ""
+          ) : (
+            <Text style={[styles.daysTxt, { color: items?.status?.colorCode }]}>
+              {items?.status?.days} Days
+            </Text>
+          )}
+
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <ImageBackground
               source={require("../assets/Background 1.png")}
@@ -380,7 +387,7 @@ const styles = StyleSheet.create({
   status: {
     backgroundColor: colorCodes.statusPast,
     paddingVertical: 5,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     borderRadius: 20,
   },
   statusTxt: {
@@ -392,7 +399,6 @@ const styles = StyleSheet.create({
     width: 60,
   },
   daysTxt: {
-    color: colorCodes.statusPast,
     height: 20,
     fontWeight: "500",
   },

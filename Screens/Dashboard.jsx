@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Dimensions,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
@@ -73,7 +74,7 @@ function Dashboard({ navigation }) {
       .dashboard(params)
       .then((res) => {
         setData(res?.data);
-        console.log(res, "<<<<<<<<<<<<<<<<<<<<???????????????");
+        console.log(res.data, "<<<<<<<<<<<<<<<<<<<<???????????????");
       })
       .catch((err) => {
         console.error(err, "<<<<<<<<<<<<<<<<<error");
@@ -160,36 +161,38 @@ function Dashboard({ navigation }) {
       <ScrollView style={styles.scrollView}>
         {toggleScheduleCompleted ? (
           <View>
-            {Array.isArray(data) &&
-              data?.map((items, index) => {
-                return (
-                  <View key={index} style={{}}>
-                    <DashboardCompletedCards
-                      expandCompleted={expandCompleted}
-                      onPress={setExpandCompleted}
-                      index={index}
-                      items={items}
-                    />
-                  </View>
-                );
-              })}
+            {data.length === 0 ? (
+              <Text style={styles.noDataText}>No completed visits</Text>
+            ) : (
+              data.map((items, index) => (
+                <View key={index}>
+                  <DashboardCompletedCards
+                    expandCompleted={expandCompleted}
+                    onPress={setExpandCompleted}
+                    index={index}
+                    items={items}
+                  />
+                </View>
+              ))
+            )}
           </View>
         ) : (
           <View>
-            {Array.isArray(data) &&
-              data?.map((items, index) => {
-                return (
-                  <View key={index}>
-                    <DashboardScheduledCards
-                      expandSchedule={expandSchedule}
-                      onPress={setExpandSchedule}
-                      index={index}
-                      items={items}
-                      navigation={navigation}
-                    />
-                  </View>
-                );
-              })}
+            {data.length === 0 ? (
+              <Text style={styles.noDataText}>No scheduled visits</Text>
+            ) : (
+              data.map((items, index) => (
+                <View key={index}>
+                  <DashboardScheduledCards
+                    expandSchedule={expandSchedule}
+                    onPress={setExpandSchedule}
+                    index={index}
+                    items={items}
+                    navigation={navigation}
+                  />
+                </View>
+              ))
+            )}
           </View>
         )}
       </ScrollView>
@@ -199,8 +202,15 @@ function Dashboard({ navigation }) {
 export default Dashboard;
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colorCodes.white,
+    // backgroundColor: colorCodes.white,
     paddingHorizontal: 20,
+  },
+  noDataText: {
+    alignSelf: "center",
+    marginTop: 200,
+    fontWeight: "600",
+    fontSize: 24,
+    color: colorCodes.heading,
   },
   topToggle: {
     flexDirection: "row",

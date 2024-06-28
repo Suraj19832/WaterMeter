@@ -14,8 +14,8 @@ export default function SubmitButton({
     submitButton: {
       height: height,
       width: width,
-      paddingVertical:10,
-      paddingHorizontal:7,
+      paddingVertical: 8,
+      paddingHorizontal: 9,
       borderRadius: 10,
       backgroundColor: bgColor,
       justifyContent: "center",

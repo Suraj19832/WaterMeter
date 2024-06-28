@@ -37,6 +37,7 @@ function MeterReadingScanner({ navigation }) {
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
+  const [editMeter, setEditMeter] = useState(false);
   const toast = useToast();
 
   const otpFields = useRef(
@@ -188,6 +189,7 @@ function MeterReadingScanner({ navigation }) {
                 onChangeText={(value) => handleOTPChange(index, value)}
                 value={totalDigit}
                 ref={otpFields.current[index]}
+                editable={editMeter}
               />
             ))}
           </View>
@@ -231,7 +233,7 @@ function MeterReadingScanner({ navigation }) {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setEditMeter(!editMeter)}>
             <Image
               source={require("../assets/Group (6).png")}
               style={{ height: 30, width: 30 }}
