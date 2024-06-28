@@ -14,7 +14,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
-
+import { useDispatch } from 'react-redux';
+import { setBooleanValue, setStringValue } from '../redux/slices/UniqueSlice';
 function DashboardScheduledCards({
   items,
   index,
@@ -22,6 +23,7 @@ function DashboardScheduledCards({
   expandSchedule,
   navigation,
 }) {
+  const dispatch = useDispatch();
   console.log(items, "<<<<<<<<<<schedule");
   const [modalVisible, setModalVisible] = useState(false);
   const firstCapitalize = (text) => {
@@ -263,9 +265,11 @@ function DashboardScheduledCards({
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
-              onPress={() =>
+              onPress={() =>{
+                dispatch(setBooleanValue(true));
+                dispatch(setStringValue('Hello, Redux!'));
                 navigation.navigate("MeterScreen", { PopertyId: items?.id })
-              }
+              }}
             >
               <SubmitButton
                 textSize={14}

@@ -25,12 +25,18 @@ import activescheduleIcon from "../assets/Group (2).png";
 import activecenterIcon from "../assets/outline-OuterYellowBlue-InnerBlue.png";
 import activecameraIcon from "../assets/Group (4).png";
 import { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import {setBooleanValue, selectBooleanValue, selectStringValue } from '../redux/slices/UniqueSlice';
 
 const Tab = createBottomTabNavigator();
 
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
   const [activeIcon, setActiveIcon] = useState(null);
   const drawerNavigation = useNavigation();
+  const booleanValue = useSelector(selectBooleanValue);
+  const stringValue = useSelector(selectStringValue);
+  console.log(booleanValue,"fff")
+  const dispatch = useDispatch();
   return (
     <View style={{ backgroundColor: "white" }}>
       <Image
@@ -48,12 +54,14 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
           if (route.name === "Dashboard") {
             iconName = camera;
             activeIconName = activecameraIcon;
+            dispatch(setBooleanValue(false));
           } else if (route.name === "Completion") {
             iconName = scheduled;
             activeIconName = activescheduleIcon;
           } else if (route.name === "MeterSelection") {
             iconName = centerIcon;
             activeIconName = activecenterIcon;
+            dispatch(setBooleanValue(true));
           } else if (route.name === "SummaryScreen") {
             iconName = listIcon;
             activeIconName = activelistIcon;
@@ -61,7 +69,33 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
             iconName = userIcon;
           }
 
-          const onPress = () => {
+        //   const onPress = () => {
+        //     // if (route.name === "MeterReadingScanner") {
+        //     //     navigation.openDrawer(); // Open drawer for the last icon
+        //     //   } else {
+        //     //     setActiveIcon(route.name); // Otherwise, update the active icon
+        //     //   }
+        //     // console.log(`Navigating to ${route.name}`);
+        //     // const event = navigation.emit({
+        //     //     type: "tabPress",
+        //     //     target: route.key,
+        //     // });
+
+        //     // if (!isFocused && !event.defaultPrevented) {
+        //     //     navigation.navigate(route.name);
+        //     // }
+
+        //     if (route.name === "MeterScreen") {
+        //       drawerNavigation.openDrawer(); // Open drawer for the last icon
+        //     } else {
+        //       setActiveIcon(route.name); // Otherwise, update the active icon
+        //       if (!isFocused) {
+        //         navigation.navigate(route.name);
+        //       }
+        //     }
+        //   };
+
+        const onPress = () => {
             // if (route.name === "MeterReadingScanner") {
             //     navigation.openDrawer(); // Open drawer for the last icon
             //   } else {
@@ -80,7 +114,14 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
             if (route.name === "MeterScreen") {
               drawerNavigation.openDrawer(); // Open drawer for the last icon
             } else {
-              setActiveIcon(route.name); // Otherwise, update the active icon
+                if (booleanValue) {     
+                    setActiveIcon("MeterSelection")
+                } 
+                
+                if (route.name != "MeterSelection") {
+                    setActiveIcon(route.name);
+                }
+            //   setActiveIcon(route.name); // Otherwise, update the active icon
               if (!isFocused) {
                 navigation.navigate(route.name);
               }
