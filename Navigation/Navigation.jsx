@@ -56,7 +56,7 @@ const TabNavigator = () => {
       <Bottom.Screen
         name="Completion"
         options={{ headerShown: false }}
-        component={Completion}
+        component={Dashboard}
       />
       <Bottom.Screen
         name="MeterSelection"
