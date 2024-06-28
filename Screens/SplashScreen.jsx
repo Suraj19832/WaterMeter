@@ -9,7 +9,7 @@ function SplashScreen({ navigation }) {
     <SafeAreaView>
       <View>
         <ImageBackground
-          // source={require('../assets/splash2.jpg')}
+          source={require("../assets/splash.jpg")}
           resizeMode="cover"
           style={styles.image}
         ></ImageBackground>

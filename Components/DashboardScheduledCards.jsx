@@ -106,63 +106,61 @@ function DashboardScheduledCards({
         </View>
       </View>
 
-      {items?.status?.name == "past due" ? (
-        <View style={styles.belowContentMain}>
-          <View style={styles.belowFirst}>
-            <View
-              style={[
-                styles.status,
-                { backgroundColor: items?.status?.colorCode },
-              ]}
-            >
-              <Text style={styles.statusTxt}>
-                {firstCapitalize(items?.status?.name)}
-              </Text>
-            </View>
-            <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <ImageBackground
-                source={require("../assets/Background 1.png")}
-                resizeMode="cover"
-                style={styles.image}
-              ></ImageBackground>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>
-              {items?.meter?.total} meters
+      {/* {items?.status?.name == "past due" ? ( */}
+      <View style={styles.belowContentMain}>
+        <View style={styles.belowFirst}>
+          <View
+            style={[
+              styles.status,
+              { backgroundColor: items?.status?.colorCode },
+            ]}
+          >
+            <Text style={styles.statusTxt}>
+              {firstCapitalize(items?.status?.name)}
             </Text>
-            <TouchableOpacity
-              onPress={() => {
-                if (expandSchedule == index) {
-                  onPress(null);
-                } else {
-                  onPress(index);
-                }
-              }}
-              style={styles.expandBtn}
-            >
-              {index == expandSchedule ? (
-                <FontAwesome
-                  style={{ marginLeft: 5.6, marginTop: 0 }}
-                  name="angle-up"
-                  size={20}
-                  color="#FE8700"
-                />
-              ) : (
-                <FontAwesome
-                  style={{ marginLeft: 5.6, marginTop: 2 }}
-                  name="angle-down"
-                  size={20}
-                  color="#FE8700"
-                />
-              )}
-            </TouchableOpacity>
           </View>
+          <Text style={styles.daysTxt}>{items?.status?.days} Days</Text>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <ImageBackground
+              source={require("../assets/Background 1.png")}
+              resizeMode="cover"
+              style={styles.image}
+            ></ImageBackground>
+          </TouchableOpacity>
         </View>
-      ) : (
-        <View style={styles.belowContentMainNotPast}>
+
+        <View style={styles.belowSecond}>
+          <Text style={{ fontWeight: 500 }}>{items?.meter?.total} meters</Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (expandSchedule == index) {
+                onPress(null);
+              } else {
+                onPress(index);
+              }
+            }}
+            style={styles.expandBtn}
+          >
+            {index == expandSchedule ? (
+              <FontAwesome
+                style={{ marginLeft: 5.6, marginTop: 0 }}
+                name="angle-up"
+                size={20}
+                color="#FE8700"
+              />
+            ) : (
+              <FontAwesome
+                style={{ marginLeft: 5.6, marginTop: 2 }}
+                name="angle-down"
+                size={20}
+                color="#FE8700"
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* ) : ( */}
+      {/* <View style={styles.belowContentMainNotPast}>
           <View
             style={[
               styles.status,
@@ -211,8 +209,8 @@ function DashboardScheduledCards({
               )}
             </TouchableOpacity>
           </View>
-        </View>
-      )}
+        </View> */}
+      {/* )} */}
 
       {index == expandSchedule ? (
         <View style={styles.expandContent}>
@@ -391,6 +389,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "500",
     lineHeight: 16,
+    width: 60,
   },
   daysTxt: {
     color: colorCodes.statusPast,
