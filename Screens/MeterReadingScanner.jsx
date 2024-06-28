@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform, // Import Alert for showing errors
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
@@ -18,16 +19,25 @@ import { useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
 import { getFileData } from "../Helper/Helper";
+import { useToast } from "react-native-toast-notifications";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
-  const { id, name, lastReading, lastReadingDate, avgUsage, totalDigit } =
-    route.params ?? {};
+  const {
+    id,
+    name,
+    lastReading,
+    lastReadingDate,
+    avgUsage,
+    totalDigit,
+    meterName,
+  } = route.params ?? {};
   const [scannedMeter, setScannedMeter] = useState(null);
   const [meterValue, setMeterValue] = useState(null);
-  console.log(scannedMeter, "<<<<<<<<<<<<<<<<<<<<<");
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const otpFields = useRef(
     Array(totalDigit)
@@ -58,9 +68,15 @@ function MeterReadingScanner({ navigation }) {
       const res = await appApi.meterScanner(data);
       console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
-      alert(res?.ocrReading);
+      toast.show(res?.ocrReading, { type: "sucess" });
+      if (res?.ocrReading) {
+        const newOTP = res.ocrReading.split("").slice(0, totalDigit);
+        setOTP(newOTP);
+      }
     } catch (err) {
       console.error(err, "Error while uploading image");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,15 +90,19 @@ function MeterReadingScanner({ navigation }) {
       });
 
       if (!result.cancelled) {
+        setLoading(true);
         setScannedMeter(result.assets[0].uri);
         const fileData = getFileData(result);
         await verifyNumber(fileData);
       } else {
-        Alert.alert("Scan Cancelled", "You cancelled the scan.");
+        // Alert.alert("Scan Cancelled", "You cancelled the scan.");
+        toast.show("Scan Cancelled", { type: "sucess" });
       }
     } catch (error) {
+      setLoading(false);
       console.log("Error while scanning:", error);
-      Alert.alert("Error", "Failed to launch the camera.");
+      // Alert.alert("Error", "Failed to launch the camera.");
+      toast.show("Failed to launch the camera", { type: "sucess" });
     }
   };
 
@@ -106,12 +126,16 @@ function MeterReadingScanner({ navigation }) {
         </View>
         {/* scanner meter image display */}
         <View style={styles.scannerView}>
-          {scannedMeter && (
-            <Image
-              source={{ uri: scannedMeter }}
-              style={styles.scannedImage}
-              resizeMode="cover"
-            />
+          {loading ? (
+            <ActivityIndicator size={"large"} />
+          ) : (
+            scannedMeter && (
+              <Image
+                source={{ uri: scannedMeter }}
+                style={styles.scannedImage}
+                resizeMode="cover"
+              />
+            )
           )}
         </View>
         {/* scan button */}
@@ -124,19 +148,22 @@ function MeterReadingScanner({ navigation }) {
           }}
         >
           <Text style={styles.scannerHeading}>
-            <Text style={{ color: "#0B9ED2" }}>Meter :</Text> {id}
+            <Text style={{ color: "#0B9ED2" }}>Meter :</Text> {meterName}
           </Text>
           <TouchableOpacity
             style={{
-              backgroundColor: "#FF8902",
+              backgroundColor: loading
+                ? colorCodes.submitButtonDisabled
+                : colorCodes.submitButtonEnabled,
               paddingVertical: 10,
-              paddingHorizontal: 30,
+              paddingHorizontal: 25,
               borderRadius: 8,
             }}
             onPress={handleScan}
+            disabled={loading}
           >
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
-              Scan
+              {loading ? "Scanning...." : scannedMeter ? "Rescan" : "Scan"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -185,8 +212,9 @@ function MeterReadingScanner({ navigation }) {
           <TouchableOpacity
             onPress={() => {
               if (isOTPComplete()) {
-                alert(otp.join(""));
+                toast.show(otp.join(""), { type: "sucess", duration: 3000 });
               }
+              navigation.navigate("OcrCaptured", { meterName });
             }}
             style={{
               backgroundColor: isOTPComplete()
@@ -203,12 +231,12 @@ function MeterReadingScanner({ navigation }) {
             </Text>
           </TouchableOpacity>
 
-          <View>
+          <TouchableOpacity>
             <Image
               source={require("../assets/Group (6).png")}
               style={{ height: 30, width: 30 }}
             />
-          </View>
+          </TouchableOpacity>
         </View>
         {/* info modal  */}
         <View style={{ position: "relative" }}>
@@ -293,9 +321,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#0B9ED2",
     borderRadius: 10,
-    // paddingLeft: 14,
+    paddingLeft: 14,
     paddingHorizontal: 8,
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "700",
     color: colorCodes.heading,
   },
