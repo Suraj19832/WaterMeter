@@ -643,13 +643,13 @@ const MeterSection = ({ navigation }) => {
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeterReading("A10")}
           >
-            <Text style={styles.input}>A10</Text>
+            {/* <Text style={styles.input}>A10</Text> */}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.dropdownOption}
             onPress={() => handleSelectionOptionMeterReading("A20")}
           >
-            <Text style={styles.input}>A20</Text>
+            {/* <Text style={styles.input}>A20</Text> */}
           </TouchableOpacity>
         </View>
       )}
@@ -699,7 +699,8 @@ const MeterSection = ({ navigation }) => {
               lastReading,
               lastReadingDate,
               avgUsage,
-              totalDigit :meterMake?.totalDigit
+              totalDigit :meterMake?.totalDigit,
+              meterName: inputValuemeter
             })
           }
         >
