@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Text,
@@ -35,13 +35,13 @@ function Dashboard({ navigation }) {
   const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
   const [expandSchedule, setExpandSchedule] = useState(999999999);
   const [expandCompleted, setExpandCompleted] = useState(999999999);
-  const [monthIndex, setMonthIndex] = useState(7);
+  const [monthIndex, setMonthIndex] = useState(4);
   const [month, setMonth] = useState(monthArr[monthIndex]);
   const [year, setYear] = useState(2024);
   const navigate = useNavigation();
 
-  const nextDate = () => {
-    if (month == "December") {
+  const nextDate = useCallback(() => {
+    if (month === "December") {
       setMonth(monthArr[0]);
       setMonthIndex(0);
       setYear(year + 1);
@@ -49,10 +49,10 @@ function Dashboard({ navigation }) {
       setMonth(monthArr[monthIndex + 1]);
       setMonthIndex(monthIndex + 1);
     }
-  };
+  }, [month, monthArr, monthIndex, year]);
 
-  const previous = () => {
-    if (month == "January") {
+  const previous = useCallback(() => {
+    if (month === "January") {
       setMonth(monthArr[11]);
       setMonthIndex(11);
       setYear(year - 1);
@@ -60,154 +60,7 @@ function Dashboard({ navigation }) {
       setMonth(monthArr[monthIndex - 1]);
       setMonthIndex(monthIndex - 1);
     }
-  };
-
-  let cardsArr = [
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Past Due",
-      no_of_days: "22 days",
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#C53636",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Past Due",
-      no_of_days: "22 days",
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#C53636",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "In Process",
-      no_of_days: "22 days",
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#104F9C",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "In Process",
-      no_of_days: 22,
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#104F9C",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Today",
-      no_of_days: 22,
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#FFB604",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Today",
-      no_of_days: 22,
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#FFB604",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Today",
-      no_of_days: 22,
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#FFB604",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-    {
-      property: "XXX",
-      name: "Krupa",
-      date: "Sat May 25th, 2024",
-      status: "Today",
-      no_of_days: 22,
-      meters: 18,
-      address: "Joggo Condos Karen Rd ",
-      totalMeters: 15,
-      totalMetersPending: 10,
-      nextReadingDate: "Thu Jun 6th, 2024 ",
-      lastReadingDate: "Sun May 10th, 2024 ",
-      estimateTime: "2hr 32mins",
-      colorCode: "#FFB604",
-      dateCompleted: "Fri May 10th, 2024",
-      taskCompletedIn: "1hr 22 mins",
-      nameBelow: "Koushik",
-    },
-  ];
+  }, [month, monthArr, monthIndex, year]);
 
   const [data, setData] = useState([]);
 
@@ -220,12 +73,12 @@ function Dashboard({ navigation }) {
       .dashboard(params)
       .then((res) => {
         setData(res?.data);
+        console.log(res, "<<<<<<<<<<<<<<<<<<<<???????????????");
       })
       .catch((err) => {
         console.error(err, "<<<<<<<<<<<<<<<<<error");
-      
       });
-  }, [toggleScheduleCompleted]); // Add toggleScheduleCompleted to the dependency array
+  }, [toggleScheduleCompleted, monthIndex, year]); // Add toggleScheduleCompleted to the dependency array
 
   return (
     <SafeAreaView style={styles.container}>
@@ -604,3 +457,150 @@ const styles = StyleSheet.create({
     backgroundColor: "#e7e7e7",
   },
 });
+
+let cardsArr = [
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Past Due",
+    no_of_days: "22 days",
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#C53636",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Past Due",
+    no_of_days: "22 days",
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#C53636",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "In Process",
+    no_of_days: "22 days",
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#104F9C",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "In Process",
+    no_of_days: 22,
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#104F9C",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Today",
+    no_of_days: 22,
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#FFB604",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Today",
+    no_of_days: 22,
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#FFB604",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Today",
+    no_of_days: 22,
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#FFB604",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+  {
+    property: "XXX",
+    name: "Krupa",
+    date: "Sat May 25th, 2024",
+    status: "Today",
+    no_of_days: 22,
+    meters: 18,
+    address: "Joggo Condos Karen Rd ",
+    totalMeters: 15,
+    totalMetersPending: 10,
+    nextReadingDate: "Thu Jun 6th, 2024 ",
+    lastReadingDate: "Sun May 10th, 2024 ",
+    estimateTime: "2hr 32mins",
+    colorCode: "#FFB604",
+    dateCompleted: "Fri May 10th, 2024",
+    taskCompletedIn: "1hr 22 mins",
+    nameBelow: "Koushik",
+  },
+];
