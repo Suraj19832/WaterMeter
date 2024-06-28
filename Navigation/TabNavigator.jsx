@@ -46,11 +46,11 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                     } else if (route.name === "MeterSelection") {
                         iconName = centerIcon;
                         activeIconName =activecenterIcon
-                    } else if (route.name === "MeterReading") {
+                    } else if (route.name === "SummaryScreen") {
                         iconName = listIcon;
                         activeIconName =activelistIcon;
                         
-                    } else if (route.name === "MeterReadingScanner") {
+                    } else if (route.name === "MeterScreen") {
                         iconName = userIcon;
                     }
 
@@ -70,7 +70,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                         //     navigation.navigate(route.name);
                         // }
 
-                        if (route.name === 'MeterReadingScanner') {
+                        if (route.name === 'MeterScreen') {
                             drawerNavigation.openDrawer(); // Open drawer for the last icon
                         } else {
                             setActiveIcon(route.name); // Otherwise, update the active icon
