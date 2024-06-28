@@ -27,7 +27,21 @@ import { useNavigation } from "@react-navigation/native";
 const Stack = createStackNavigator();
 const Bottom = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
+// DashboardStack to handle navigation within the Dashboard tab
+const DashboardStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Dashboard" component={Dashboard} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="SummaryScreen" component={SummaryScreen} />
+      <Stack.Screen name="MeterScreen" component={MeterSection} />
+      <Stack.Screen name="OcrCaptured" component={OcrCaptured} />
+      <Stack.Screen name="MeterReading" component={MeterReading} />
+      <Stack.Screen name="meterReadingScanner" component={MeterReadingScanner} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+    </Stack.Navigator>
+  );
+};
 const TabNavigator = () => {
   return (
     <Bottom.Navigator
@@ -42,7 +56,7 @@ const TabNavigator = () => {
       <Bottom.Screen
         name="Completion"
         options={{ headerShown: false }}
-        component={Dashboard}
+        component={Completion}
       />
       <Bottom.Screen
         name="MeterSelection"
@@ -50,15 +64,16 @@ const TabNavigator = () => {
         component={MeterSelection}
       />
       <Bottom.Screen
-        name="MeterReading"
+        name="SummaryScreen"
         options={{ headerShown: false }}
         component={SummaryScreen}
       />
       <Bottom.Screen
-        name="MeterReadingScanner"
+        name="MeterScreen"
         options={{ headerShown: false }}
         component={MeterSection}
       />
+      
     </Bottom.Navigator>
   );
 };
