@@ -14,6 +14,7 @@ import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 import { useNavigation } from "@react-navigation/native";
 import appApi from "../Helper/Api";
+import { DoLogout } from "../Helper/Helper";
 
 function Dashboard({ navigation }) {
   let monthArr = [
@@ -222,6 +223,7 @@ function Dashboard({ navigation }) {
       })
       .catch((err) => {
         console.error(err, "<<<<<<<<<<<<<<<<<error");
+      
       });
   }, [toggleScheduleCompleted]); // Add toggleScheduleCompleted to the dependency array
 

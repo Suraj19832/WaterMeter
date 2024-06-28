@@ -1,40 +1,38 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavigationComponent from "./Navigation/Navigation";
 import store from "./redux/reduxstore";
 import { Provider, useDispatch } from "react-redux";
 import { ToastProvider } from "react-native-toast-notifications";
 import { setAuthToken } from "./redux/slices/Authslice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator, View } from "react-native";
+import SkeletonLoader from "./Components/SkeletonLoader";
 
 
-// const AppInner = () => { 
-//   const dispatch = useDispatch();
 
-//   useEffect(() => {
-  
-//     const getAuthToken = async () => {
-//       const token = await AsyncStorage.getItem('token');
- 
-//       // console.log(token ,"ccc")
-//       dispatch(setAuthToken(token));
-//     };
-
-//     getAuthToken();
-//   }, []);
- 
-//   return <NavigationComponent />;
-// };
 
 const App = () => {
+  const [loading, setloading] = useState(true)
   useEffect(() => {
   
     const getAuthToken = async () => {
       const token = await AsyncStorage.getItem('token');
       store.dispatch(setAuthToken(token));
+      setloading(false)
     };
 
     getAuthToken();
   }, []);
+
+  if (loading) {
+    return(
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+      // <SkeletonL/>oader/>
+    )
+  }
+
  
   return (
     <Provider store={store}>
