@@ -37,7 +37,10 @@ const DashboardStack = () => {
       <Stack.Screen name="MeterScreen" component={MeterSection} />
       <Stack.Screen name="OcrCaptured" component={OcrCaptured} />
       <Stack.Screen name="MeterReading" component={MeterReading} />
-      <Stack.Screen name="meterReadingScanner" component={MeterReadingScanner} />
+      <Stack.Screen
+        name="meterReadingScanner"
+        component={MeterReadingScanner}
+      />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
     </Stack.Navigator>
   );
@@ -73,7 +76,6 @@ const TabNavigator = () => {
         options={{ headerShown: false }}
         component={MeterSection}
       />
-      
     </Bottom.Navigator>
   );
 };
@@ -165,11 +167,11 @@ const MainStack = () => {
           initialRouteName={"Login"}
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen
+          {/* <Stack.Screen
             name="SplashScreen"
             component={SplashScreen}
             options={{ headerShown: false }}
-          />
+          /> */}
           <Stack.Screen
             name="Login"
             component={Login}

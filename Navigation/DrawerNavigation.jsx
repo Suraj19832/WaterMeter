@@ -9,7 +9,7 @@ import {
   Modal,
 } from "react-native";
 import logo from "../assets/HYRA REAL ESTATE LOGO 1.png";
-import appApi from "../Helper/Api"
+import appApi from "../Helper/Api";
 import {
   AntDesign,
   FontAwesome6,
@@ -27,55 +27,53 @@ const DrawerNavigation = ({ navigation }) => {
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
-  const handleYesLogout = async ()=>{
-  //  await AsyncStorage.removeItem("token");
-  //  const savedEmail = await AsyncStorage.getItem("token")
-  //  console.log(savedEmail,"flflflflflflflflflflflflfl")
-  // console.log("token start removeing")
-  // await AsyncStorage.removeItem("token");
-  // dispatch(setAuthToken(null));
-  // console.log("token remove successfully ") 
-  // // navigation.navigate("Login");
-  // const token = await AsyncStorage.getItem('token');
-  //       console.log(token ,"in drawer navigation before funcrion call ")
+  const handleYesLogout = async () => {
+    //  await AsyncStorage.removeItem("token");
+    //  const savedEmail = await AsyncStorage.getItem("token")
+    //  console.log(savedEmail,"flflflflflflflflflflflflfl")
+    // console.log("token start removeing")
+    // await AsyncStorage.removeItem("token");
+    // dispatch(setAuthToken(null));
+    // console.log("token remove successfully ")
+    // // navigation.navigate("Login");
+    // const token = await AsyncStorage.getItem('token');
+    //       console.log(token ,"in drawer navigation before funcrion call ")
     try {
       setModal(false);
-      showToast("Wait a Second")
-      const res =await appApi.logout()
-      console.log(res?.status ,"mxmxmxmxmxm")
+      showToast("Wait a Second");
+      const res = await appApi.logout();
+      console.log(res?.status, "mxmxmxmxmxm");
       if (res?.status) {
         showToast("Logout Successfully");
         await AsyncStorage.removeItem("token");
-  dispatch(setAuthToken(null));
+        dispatch(setAuthToken(null));
         // await AsyncStorage.removeItem("token");
         // const token = await AsyncStorage.getItem('token');
         // console.log(token ,"in drawer navigation")
         // dispatch(setAuthToken(null));
       }
-    
     } catch (error) {
       // navigation.navigate("Login");
-    console.log(error ,"hihi")
-    showToast("Logout Successfully");
-        await AsyncStorage.removeItem("token");
-  dispatch(setAuthToken(null));
-    } finally{
+      console.log(error, "hihi");
+      showToast("Logout Successfully");
+      await AsyncStorage.removeItem("token");
+      dispatch(setAuthToken(null));
+    } finally {
     }
-  
-  }
+  };
 
   // const handleYesLogout = async () => {
   //   await AsyncStorage.removeItem("token");
   //   const savedEmail = await AsyncStorage.getItem("token");
   //   console.log(savedEmail, "flflflflflflflflflflflflfl");
-  
+
   //   try {
   //     setModal(false);
   //     showToast("Wait a Second");
-  
+
   //     const res = await appApi.logout();
   //     console.log(res, "??????????????????????????");
-  
+
   //     if (res?.status) {
   //       showToast("Logout Successfully");
   //       navigation.navigate("Login");
@@ -85,10 +83,10 @@ const DrawerNavigation = ({ navigation }) => {
   //     }
   //   } catch (error) {
   //     let errorMessage = "An unexpected error occurred";
-  
+
   //     if (error.response) {
   //       const { response } = error;
-        
+
   //       // Check if the response data is a string that starts with "<"
   //       if (typeof response.data === 'string' && response.data.trim().startsWith('<')) {
   //         errorMessage = "Received an HTML response from the server.";
@@ -112,17 +110,13 @@ const DrawerNavigation = ({ navigation }) => {
   //       // Something happened in setting up the request that triggered an error
   //       errorMessage = error.message;
   //     }
-  
+
   //     showToast(errorMessage);
   //     console.log(errorMessage, "hihi333333333333");
   //   } finally {
   //     // Any cleanup operations
   //   }
   // };
-  
-  
-  
-  
 
   const styles = StyleSheet.create({
     mainView: {
@@ -267,7 +261,7 @@ const DrawerNavigation = ({ navigation }) => {
       </Modal>
       <TouchableOpacity
         onPress={() => {
-         navigation.navigate("EditProfile")
+          navigation.navigate("EditProfile");
         }}
         style={styles.changePass}
       >
