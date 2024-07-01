@@ -107,11 +107,14 @@ function MeterReadingScanner({ navigation }) {
     try {
       const data = {
         file: imageFile,
+        property_id: id,
+        meter_id: meterName,
       };
       const res = await appApi.meterScanner(data);
       console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
-      toast.show(res?.ocrReading, { type: "sucess" });
+      setEditMeter(true);
+      toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
         const newOTP = res.ocrReading.split("").slice(0, totalDigit);
         setOTP(newOTP);

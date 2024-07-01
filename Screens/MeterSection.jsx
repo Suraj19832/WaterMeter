@@ -47,7 +47,7 @@ const MeterSection = ({ navigation }) => {
 
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
-  console.log(inputValuemeter, "IIIIIIIIIIIIIIIIIIIIIIIIII");
+  console.log(inputValuemeter, "press button");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
 
