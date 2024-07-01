@@ -269,7 +269,7 @@ function MeterReadingScanner({ navigation }) {
               if (isOTPComplete()) {
                 toast.show(otp.join(""), { type: "sucess", duration: 3000 });
               }
-              navigation.navigate("OcrCaptured", { meterName });
+              navigation.navigate("OcrCaptured", { meterName, id, name,otp:otp.join("") });
             }}
             style={{
               backgroundColor: isOTPComplete()

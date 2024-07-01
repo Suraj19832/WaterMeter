@@ -11,7 +11,7 @@ export default function OcrCaptured({ navigation }) {
   const [selectMeter, setSelectMeter] = useState(false);
 
   const route = useRoute();
-  const { meterName } = route.params;
+  const { meterName, id, name, otp } = route.params;
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -81,8 +81,8 @@ export default function OcrCaptured({ navigation }) {
         </View>
         <View style={{ gap: 80 }}>
           <View style={styles.propertyName}>
-            <Text style={styles.propertyNameFTxt}>M01 |</Text>
-            <Text style={styles.propertyNameSTxt}> Masari Heights</Text>
+            <Text style={styles.propertyNameFTxt}>{id} |</Text>
+            <Text style={styles.propertyNameSTxt}> {name}</Text>
           </View>
           <View
             style={{
@@ -105,7 +105,7 @@ export default function OcrCaptured({ navigation }) {
                 fontWeight: 500,
               }}
             >
-              XXXXX OCR Captured
+              {otp} OCR Captured
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Text
@@ -130,13 +130,17 @@ export default function OcrCaptured({ navigation }) {
                 {meterName}
               </Text>
             </View>
-            <SubmitButton
-              text="Submit Another"
-              bgColor="rgba(255, 137, 2, 1)"
-              height={44}
-              width={154}
-              textSize={18}
-            ></SubmitButton>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SummaryScreen")}
+            >
+              <SubmitButton
+                text="Submit Another"
+                bgColor="rgba(255, 137, 2, 1)"
+                height={44}
+                width={154}
+                textSize={18}
+              />
+            </TouchableOpacity>
           </View>
           <View
             style={{
