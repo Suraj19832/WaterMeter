@@ -2,7 +2,10 @@
   "expo": {
     "name": "Water Meter",
     "slug": "water-meter",
-    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"],
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+    ],
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -33,7 +38,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "bd4a4a57-8dbd-475c-9377-abe349fa7be6"
+        "projectId": "a21bf8d9-86ce-435e-a332-10778e69c720"
       }
     }
   }

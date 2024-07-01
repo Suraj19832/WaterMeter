@@ -97,7 +97,6 @@ const MeterSection = ({ navigation }) => {
     setmeterReadingData(option);
     setisDropdownMeterReading(false);
   };
-  // fffff
 
   //for picture
 

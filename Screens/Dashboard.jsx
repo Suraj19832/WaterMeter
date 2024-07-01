@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
@@ -36,9 +37,10 @@ function Dashboard({ navigation }) {
   const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
   const [expandSchedule, setExpandSchedule] = useState(999999999);
   const [expandCompleted, setExpandCompleted] = useState(999999999);
-  const [monthIndex, setMonthIndex] = useState(4);
+  const [monthIndex, setMonthIndex] = useState(5);
   const [month, setMonth] = useState(monthArr[monthIndex]);
   const [year, setYear] = useState(2024);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigation();
 
   const nextDate = useCallback(() => {
@@ -66,6 +68,7 @@ function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     const params = {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
       date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
@@ -74,10 +77,12 @@ function Dashboard({ navigation }) {
       .dashboard(params)
       .then((res) => {
         setData(res?.data);
+        setLoading(false);
         console.log(res.data, "<<<<<<<<<<<<<<<<<<<<???????????????");
       })
       .catch((err) => {
         console.error(err, "<<<<<<<<<<<<<<<<<error");
+        setLoading(false);
       });
   }, [toggleScheduleCompleted, monthIndex, year]); // Add toggleScheduleCompleted to the dependency array
 
@@ -159,7 +164,13 @@ function Dashboard({ navigation }) {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {toggleScheduleCompleted ? (
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color={colorCodes.tealColorTheme}
+            style={{ marginTop: 200 }}
+          />
+        ) : toggleScheduleCompleted ? (
           <View>
             {data.length === 0 ? (
               <Text style={styles.noDataText}>No completed visits</Text>
