@@ -94,9 +94,9 @@ function MeterReadingScanner({ navigation }) {
     setOTP(newOTP);
 
     if (value !== "" && index < totalDigit - 1) {
-      otpFields.current[index + 1].current.focus();
+      otpFields.current[index + 1].current?.focus();
     } else if (value === "" && index > 0) {
-      otpFields.current[index - 1].current.focus();
+      otpFields.current[index - 1].current?.focus();
     }
   };
   const isOTPComplete = () => {
@@ -225,39 +225,18 @@ function MeterReadingScanner({ navigation }) {
         <View
           style={{
             borderWidth: 1,
-            borderColor: "rgba(33, 152, 201, 0.5)",
+            borderColor: colorCodes.borderColor,
             borderRadius: 15,
             paddingVertical: 16,
             paddingHorizontal: 15,
           }}
         >
-          <Text
-            style={[
-              styles.title,
-              {
-                color: editMeter
-                  ? "rgba(15, 119, 175, 1)"
-                  : "rgba(15, 119, 175, 0.5)",
-              },
-            ]}
-          >
-            Meter Reading :
-          </Text>
+          <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
             {otp.map((totalDigit, index) => (
               <TextInput
                 key={index}
-                style={[
-                  styles.otpBox,
-                  {
-                    color: editMeter
-                      ? "rgba(94, 194, 198, 1)"
-                      : "rgba(94, 194, 198, 0.5)",
-                    borderColor: editMeter
-                      ? "rgba(11, 158, 210, 0.5)"
-                      : "rgba(11, 158, 210, 0.3)",
-                  },
-                ]}
+                style={styles.otpBox}
                 keyboardType="numeric"
                 maxLength={1}
                 onChangeText={(value) => handleOTPChange(index, value)}
@@ -308,10 +287,17 @@ function MeterReadingScanner({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => setEditMeter(!editMeter)}>
-            <Image
-              source={require("../assets/Group (6).png")}
-              style={{ height: 30, width: 30 }}
-            />
+            {editMeter ? (
+              <Image
+                source={require("../assets/Group (6).png")}
+                style={{ height: 30, width: 30 }}
+              />
+            ) : (
+              <Image
+                source={require("../assets/edit.png")}
+                style={{ height: 30, width: 30 }}
+              />
+            )}
           </TouchableOpacity>
         </View>
         {/* info modal  */}
@@ -386,6 +372,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 10,
+    color: colorCodes.otptext,
   },
   otpBox: {
     height: 50,
@@ -396,6 +383,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontWeight: "700",
     fontSize: 30,
+    borderColor: colorCodes.otpbox,
+    color: colorCodes.otp,
   },
   container: {
     marginHorizontal: 20,

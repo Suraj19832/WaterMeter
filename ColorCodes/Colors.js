@@ -15,7 +15,10 @@ export const colorCodes = {
   placeholderFill: "#656263",
   error: "#FF0000",
   secondaryLightGray: "#989898",
-  lightGray:"#595959",
+  lightGray: "#595959",
   buttonBorder: "#FF6900",
-  expandBorder:"#FE8700"
+  expandBorder: "#FE8700",
+  otptext: "#0F77AF",
+  otpbox: "rgba(11, 158, 210, 1)",
+  otp: "rgba(11, 158, 210, 1)",
 };
