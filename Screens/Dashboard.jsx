@@ -66,6 +66,7 @@ function Dashboard({ navigation }) {
   }, [month, monthArr, monthIndex, year]);
 
   const [data, setData] = useState([]);
+  console.log(`${year}-${String(monthIndex + 1).padStart(2, "0")}-01`);
 
   useEffect(() => {
     setLoading(true);
@@ -73,6 +74,7 @@ function Dashboard({ navigation }) {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
       date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
     };
+    // console.log(date, "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
     appApi
       .dashboard(params)
       .then((res) => {
@@ -200,6 +202,10 @@ function Dashboard({ navigation }) {
                     index={index}
                     items={items}
                     navigation={navigation}
+                    date={`${year}-${String(monthIndex + 1).padStart(
+                      2,
+                      "0"
+                    )}-01`}
                   />
                 </View>
               ))

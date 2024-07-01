@@ -13,13 +13,13 @@ import {
   Platform, // Import Alert for showing errors
   ActivityIndicator,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
 import { getFileData } from "../Helper/Helper";
 import { useToast } from "react-native-toast-notifications";
+import * as ImageManipulator from "expo-image-manipulator";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
@@ -39,6 +39,48 @@ function MeterReadingScanner({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
   const toast = useToast();
+
+  function formatDate(inputDate) {
+    if (!inputDate) {
+      return "";
+    }
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    const dateParts = inputDate.split("-");
+    const year = dateParts[0];
+    const month = months[parseInt(dateParts[1], 10) - 1];
+    const day = parseInt(dateParts[2], 10); // Convert day to integer
+
+    const date = new Date(inputDate);
+    const dayOfWeek = days[date.getDay()];
+
+    const suffixes = ["th", "st", "nd", "rd"];
+    const daySuffix =
+      day % 10 === 1 && day !== 11
+        ? suffixes[1]
+        : day % 10 === 2 && day !== 12
+        ? suffixes[2]
+        : day % 10 === 3 && day !== 13
+        ? suffixes[3]
+        : suffixes[0];
+
+    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+  }
 
   const otpFields = useRef(
     Array(totalDigit)
@@ -73,6 +115,8 @@ function MeterReadingScanner({ navigation }) {
       if (res?.ocrReading) {
         const newOTP = res.ocrReading.split("").slice(0, totalDigit);
         setOTP(newOTP);
+      } else {
+        toast.show("Unable to read !!", { type: "sucess", duration: 3000 });
       }
     } catch (err) {
       console.error(err, "Error while uploading image");
@@ -93,17 +137,23 @@ function MeterReadingScanner({ navigation }) {
       if (!result.cancelled) {
         setLoading(true);
         setScannedMeter(result.assets[0].uri);
-        const fileData = getFileData(result);
+
+        // Resize image
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [{ resize: { width: 800 } }], // Adjust width as needed
+          { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+        );
+
+        const fileData = getFileData(resizedImage);
         await verifyNumber(fileData);
       } else {
-        // Alert.alert("Scan Cancelled", "You cancelled the scan.");
-        toast.show("Scan Cancelled", { type: "sucess" });
+        toast.show("Scan Cancelled", { type: "success" });
       }
     } catch (error) {
       setLoading(false);
       console.log("Error while scanning:", error);
-      // Alert.alert("Error", "Failed to launch the camera.");
-      toast.show("Failed to launch the camera", { type: "sucess" });
+      toast.show("Failed to launch the camera", { type: "success" });
     }
   };
 
@@ -172,18 +222,39 @@ function MeterReadingScanner({ navigation }) {
         <View
           style={{
             borderWidth: 1,
-            borderColor: "#2198C9",
+            borderColor: "rgba(33, 152, 201, 0.5)",
             borderRadius: 15,
             paddingVertical: 16,
             paddingHorizontal: 15,
           }}
         >
-          <Text style={styles.title}>Meter Reading :</Text>
+          <Text
+            style={[
+              styles.title,
+              {
+                color: editMeter
+                  ? "rgba(15, 119, 175, 1)"
+                  : "rgba(15, 119, 175, 0.5)",
+              },
+            ]}
+          >
+            Meter Reading :
+          </Text>
           <View style={styles.otp}>
             {otp.map((totalDigit, index) => (
               <TextInput
                 key={index}
-                style={styles.otpBox}
+                style={[
+                  styles.otpBox,
+                  {
+                    color: editMeter
+                      ? "rgba(94, 194, 198, 1)"
+                      : "rgba(94, 194, 198, 0.5)",
+                    borderColor: editMeter
+                      ? "rgba(11, 158, 210, 0.5)"
+                      : "rgba(11, 158, 210, 0.3)",
+                  },
+                ]}
                 keyboardType="numeric"
                 maxLength={1}
                 onChangeText={(value) => handleOTPChange(index, value)}
@@ -259,7 +330,7 @@ function MeterReadingScanner({ navigation }) {
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading Date :
                   </Text>{" "}
-                  {lastReadingDate}
+                  {formatDate(lastReadingDate)}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
@@ -284,9 +355,6 @@ function MeterReadingScanner({ navigation }) {
     </KeyboardAvoidingView>
   );
 }
-
-export default MeterReadingScanner;
-
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
@@ -312,30 +380,24 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   title: {
-    color: "#0F77AF",
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 10,
   },
   otpBox: {
-    height: 35,
-    width: 35,
-    // height: 50,
-    // width: "auto",
+    height: 50,
+    width: "auto",
     borderWidth: 1,
-    borderColor: "#0B9ED2",
     borderRadius: 10,
     paddingLeft: 14,
     paddingHorizontal: 8,
-    // fontSize: "auto",
     fontWeight: "700",
-    color: colorCodes.heading,
+    fontSize: 30,
   },
   container: {
     marginHorizontal: 20,
     flex: 1,
     marginTop: 40,
-    // backgroundColor: "red",
   },
   heading: {
     marginVertical: 20,
@@ -359,7 +421,7 @@ const styles = StyleSheet.create({
   scannerView: {
     marginVertical: 5,
     backgroundColor: "#414141",
-    height: 200, // Adjust height as needed
+    height: 200,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -374,3 +436,4 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
+export default MeterReadingScanner;
