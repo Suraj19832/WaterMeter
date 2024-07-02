@@ -235,17 +235,22 @@ import activescheduleIcon from "../assets/Group (2).png";
 import activecenterIcon from "../assets/outline-OuterYellowBlue-InnerBlue.png";
 import activecameraIcon from "../assets/Group (4).png";
 import { useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setBooleanValue, setStringValue ,selectBooleanValue, selectStringValue } from "../redux/slices/UniqueSlice";
 const Tab = createBottomTabNavigator();
 
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
+  const dispatch = useDispatch();
+  const booleanValue = useSelector(selectBooleanValue);
+ const stringValue = useSelector(selectStringValue);
   const [activeIcon, setActiveIcon] = useState(null);
   const drawerNavigation = useNavigation();
   return (
-    <View style={{ backgroundColor: "white" }}>
+    <View style={{ backgroundColor: "white" ,width:'100%' }}>
       <Image
         source={image12}
         style={{ width: "100%", height: 100, backgroundColor: "#fff" }}
+        resizeMode="cover"
       />
 
       <View style={styles.tabBar}>
@@ -271,6 +276,10 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
             iconName = userIcon;
           }
 
+//           if (stringValue ==="MeterSelection") {
+            
+//           }
+// console.log("jjwww")
           const onPress = () => {
             // if (route.name === "MeterReadingScanner") {
             //     navigation.openDrawer(); // Open drawer for the last icon
@@ -286,13 +295,16 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
             // if (!isFocused && !event.defaultPrevented) {
             //     navigation.navigate(route.name);
             // }
-
+            const active = stringValue ==='MeterSelection'? stringValue : route.name
+            console.log(active ,"jjjjjj")
             if (route.name === "MeterScreen") {
               drawerNavigation.openDrawer(); // Open drawer for the last icon
             } else {
-              setActiveIcon(route.name); // Otherwise, update the active icon
+              setActiveIcon(active); // Otherwise, update the active icon
               if (!isFocused) {
+                dispatch(setStringValue(""))
                 navigation.navigate(route.name);
+           
               }
             }
           };

@@ -268,7 +268,7 @@ function DashboardScheduledCards({
               style={{ marginLeft: 20, marginBottom: 6 }}
               onPress={() => {
                 dispatch(setBooleanValue(true));
-                dispatch(setStringValue("Hello, Redux!"));
+                dispatch(setStringValue("MeterSelection"));
                 navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
               }}
             >

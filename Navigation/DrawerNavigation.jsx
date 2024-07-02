@@ -21,12 +21,14 @@ import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
+import { ToastProvider, useToast } from "react-native-toast-notifications";
 const DrawerNavigation = ({ navigation }) => {
   const [modal, setModal] = useState(false);
   const dispatch = useDispatch();
-  function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  }
+  // function showToast(message) {
+  //   ToastAndroid.show(message, ToastAndroid.SHORT);
+  // }
+  const toast = useToast();
   const handleYesLogout = async () => {
     //  await AsyncStorage.removeItem("token");
     //  const savedEmail = await AsyncStorage.getItem("token")
@@ -40,11 +42,13 @@ const DrawerNavigation = ({ navigation }) => {
     //       console.log(token ,"in drawer navigation before funcrion call ")
     try {
       setModal(false);
-      showToast("Wait a Second");
+      // showToast("Wait a Second");
+      toast.show("Wait a Second", { type: "sucess" });
       const res = await appApi.logout();
       console.log(res?.status, "mxmxmxmxmxm");
       if (res?.status) {
-        showToast("Logout Successfully");
+        // showToast("Logout Successfully");
+        toast.show("Logout Successfully", { type: "sucess" });
         await AsyncStorage.removeItem("token");
         dispatch(setAuthToken(null));
         // await AsyncStorage.removeItem("token");
@@ -55,7 +59,8 @@ const DrawerNavigation = ({ navigation }) => {
     } catch (error) {
       // navigation.navigate("Login");
       console.log(error, "hihi");
-      showToast("Logout Successfully");
+      // showToast("Logout Successfully");
+      toast.show("Logout Successfully", { type: "sucess" });
       await AsyncStorage.removeItem("token");
       dispatch(setAuthToken(null));
     } finally {

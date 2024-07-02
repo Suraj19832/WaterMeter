@@ -21,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
+// import CropImage from "../Components/CropImage";
 import { getFileData } from "../Helper/Helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
@@ -672,8 +673,8 @@ const MeterSection = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ marginVertical: 15, flexDirection: "row", gap: 80 }}>
-        <TouchableOpacity onPress={toggleModalVisibilityInformation}>
+      <View style={{flexDirection:'row' ,alignItems:'center'}}>
+      <TouchableOpacity onPress={toggleModalVisibilityInformation}>
           <Image
             source={require("../assets/Group (7).png")}
             style={{
@@ -683,6 +684,8 @@ const MeterSection = ({ navigation }) => {
             resizeMode="center"
           />
         </TouchableOpacity>
+      <View style={{ marginVertical: 15, flexDirection: "row", gap: 80 ,alignItems:'center',width:'94%',justifyContent:'center' }}>
+        
 
         <TouchableOpacity
           disabled={inputValuemeter ? false : true}
@@ -713,6 +716,8 @@ const MeterSection = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
+      </View>
+
 
       {/* camera gallery modal */}
       <Modal
@@ -739,6 +744,7 @@ const MeterSection = ({ navigation }) => {
         </View>
       </Modal>
       {noteLoading && <LoaderComponent loading={noteLoading} />}
+      {/* <CropImage/> */}
     </SafeAreaView>
   );
 };
