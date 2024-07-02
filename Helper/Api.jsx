@@ -5,6 +5,7 @@ import {
   sendPostFormData,
 } from "./Helper";
 const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";
+// const baseURL = "https://test.ehostingguru.com/water-meter/api/public/";
 
 const appApi = {
   login: function(data) {
@@ -61,6 +62,10 @@ const appApi = {
   },
   meterScanner: function(data) {
     const url = `${baseURL}/api/detectOcr`;
+    return sendAuthorizePostFormData(url, data);
+  },
+  submitReading: function(data) {
+    const url = `${baseURL}/api/ocrFinal`;
     return sendAuthorizePostFormData(url, data);
   },
 };

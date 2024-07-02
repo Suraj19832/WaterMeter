@@ -38,6 +38,9 @@ function MeterReadingScanner({ navigation }) {
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
+  const [dataId, setDataId] = useState(null);
+  const [rescan, setRescan] = useState(false);
+  const [manual, setManual] = useState(false);
   const toast = useToast();
 
   function formatDate(inputDate) {
@@ -114,6 +117,7 @@ function MeterReadingScanner({ navigation }) {
       console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
       setEditMeter(true);
+      setDataId(res?.dataId);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
         const newOTP = res.ocrReading.split("").slice(0, totalDigit);
@@ -158,6 +162,38 @@ function MeterReadingScanner({ navigation }) {
       console.log("Error while scanning:", error);
       toast.show("Failed to launch the camera", { type: "success" });
     }
+  };
+
+  const handleSubmit = () => {
+    const data = {
+      property_id: id,
+      meter_id: meterName,
+      data_id: dataId,
+      rescan: rescan,
+      ocr_reading: meterValue,
+      is_manual: manual,
+      // note: "no",
+    };
+    appApi
+      .submitReading(data)
+      .then((res) => {
+        console.log(res, "submission form api");
+        if (res?.status) {
+          toast.show("Sucessfully Submitted", {
+            type: "sucess",
+            duration: 3000,
+          });
+          navigation.navigate("OcrCaptured", {
+            meterName,
+            id,
+            name,
+            otp: otp.join(""),
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -265,12 +301,13 @@ function MeterReadingScanner({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {
-              if (isOTPComplete()) {
-                toast.show(otp.join(""), { type: "sucess", duration: 3000 });
-              }
-              navigation.navigate("OcrCaptured", { meterName, id, name,otp:otp.join("") });
-            }}
+            onPress={handleSubmit}
+            // onPress={() => {
+            //   if (isOTPComplete()) {
+            //     toast.show(otp.join(""), { type: "sucess", duration: 3000 });
+            //   }
+            //   navigation.navigate("OcrCaptured", { meterName, id, name,otp:otp.join("") });
+            // }}
             style={{
               backgroundColor: isOTPComplete()
                 ? colorCodes.submitButtonEnabled
