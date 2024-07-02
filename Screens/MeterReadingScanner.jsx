@@ -168,13 +168,13 @@ function MeterReadingScanner({ navigation }) {
   const handleSubmit = () => {
     setSubmitLoading(true);
     const data = {
-      property_id: id,
-      meter_id: meterName,
-      data_id: dataId,
+      property_id: id, //done
+      meter_id: meterName, //done
+      data_id: dataId, //done
       rescan: rescan,
-      ocr_reading: meterValue,
+      ocr_reading: meterValue, //done
       is_manual: manual,
-      // note: "no",
+      note: "no",
     };
     appApi
       .submitReading(data)
@@ -233,14 +233,7 @@ function MeterReadingScanner({ navigation }) {
           )}
         </View>
         {/* scan button */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 20,
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.scanheading}>
           <Text style={styles.scannerHeading}>
             <Text style={{ color: "#0B9ED2" }}>Meter :</Text> {meterName}
           </Text>
@@ -288,15 +281,7 @@ function MeterReadingScanner({ navigation }) {
           </View>
         </View>
         {/* info ,submit button, manual typing button */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 25,
-            marginBottom: 50,
-          }}
-        >
+        <View style={styles.infoText}>
           <TouchableOpacity onPress={() => setModalInfo(true)}>
             <Image
               source={require("../assets/Group (7).png")}
@@ -306,12 +291,6 @@ function MeterReadingScanner({ navigation }) {
 
           <TouchableOpacity
             onPress={handleSubmit}
-            // onPress={() => {
-            //   if (isOTPComplete()) {
-            //     toast.show(otp.join(""), { type: "sucess", duration: 3000 });
-            //   }
-            //   navigation.navigate("OcrCaptured", { meterName, id, name,otp:otp.join("") });
-            // }}
             style={{
               backgroundColor: isOTPComplete()
                 ? colorCodes.submitButtonEnabled
@@ -420,6 +399,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: colorCodes.otptext,
   },
+  infoText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 25,
+    marginBottom: 50,
+  },
   otpBox: {
     height: 50,
     width: "auto",
@@ -462,6 +448,12 @@ const styles = StyleSheet.create({
     height: 200,
     alignItems: "center",
     justifyContent: "center",
+  },
+  scanheading: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 20,
+    alignItems: "center",
   },
   scannerHeading: {
     fontSize: 24,
