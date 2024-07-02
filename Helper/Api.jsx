@@ -4,8 +4,8 @@ import {
   sendGetRequest,
   sendPostFormData,
 } from "./Helper";
-const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";
-// const baseURL = "https://test.ehostingguru.com/water-meter/api/public/";
+// const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";
+const baseURL = "https://test.ehostingguru.com/water-meter/api/public";
 
 const appApi = {
   login: function(data) {

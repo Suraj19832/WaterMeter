@@ -37,6 +37,7 @@ function MeterReadingScanner({ navigation }) {
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
   const [dataId, setDataId] = useState(null);
   const [rescan, setRescan] = useState(false);
@@ -64,7 +65,7 @@ function MeterReadingScanner({ navigation }) {
     ];
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    const dateParts = inputDate.split("-");
+    const dateParts = inputDate?.split("-");
     const year = dateParts[0];
     const month = months[parseInt(dateParts[1], 10) - 1];
     const day = parseInt(dateParts[2], 10); // Convert day to integer
@@ -165,6 +166,7 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleSubmit = () => {
+    setSubmitLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
@@ -179,6 +181,7 @@ function MeterReadingScanner({ navigation }) {
       .then((res) => {
         console.log(res, "submission form api");
         if (res?.status) {
+          setSubmitLoading(false);
           toast.show("Sucessfully Submitted", {
             type: "sucess",
             duration: 3000,
@@ -193,6 +196,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
+        setSubmitLoading(false);
       });
   };
 
@@ -315,12 +319,17 @@ function MeterReadingScanner({ navigation }) {
               paddingHorizontal: 15,
               paddingVertical: 12,
               borderRadius: 8,
+              width: 150,
             }}
             disabled={!isOTPComplete()}
           >
-            <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
-              Submit Reading
-            </Text>
+            {submitLoading ? (
+              <ActivityIndicator size={"small"} />
+            ) : (
+              <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
+                Submit Reading
+              </Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => setEditMeter(!editMeter)}>

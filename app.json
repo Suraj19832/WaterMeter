@@ -2,15 +2,13 @@
   "expo": {
     "name": "Water Meter",
     "slug": "water-meter",
-    "plugins": [
-   
-    ],
+    "plugins": [],
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.jpg",
+      "image": "./assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#EBE7DA"
     },
