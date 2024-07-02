@@ -663,7 +663,7 @@ const MeterSection = ({ navigation }) => {
             backgroundColor: "#197AB6",
             paddingVertical: 6,
             borderRadius: 15,
-            width: "50%",
+            width: 160,
             alignSelf: "flex-end",
             paddingHorizontal: 16,
           }}
