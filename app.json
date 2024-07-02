@@ -3,8 +3,7 @@
     "name": "Water Meter",
     "slug": "water-meter",
     "plugins": [
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+   
     ],
     "version": "1.0.2",
     "orientation": "portrait",
