@@ -97,14 +97,17 @@ function DashboardScheduledCards({
       <View style={styles.cardContentTop}>
         <View style={styles.topFirst}>
           <Text style={styles.propertyTxt}>Property</Text>
+     
           <Text style={styles.besidePropertyTxt}>
             : {items?.id} {" | "} {items?.name}
           </Text>
+
+          
         </View>
 
-        <View>
+        <View style={{width:'20%'}}>
           <Text style={styles.contentDateTxt}>
-            {formatDate(items?.reading_date?.on)}
+            {formatDate(items?.reading_date?.on)} 
           </Text>
         </View>
       </View>
@@ -131,11 +134,12 @@ function DashboardScheduledCards({
           )}
 
           <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <ImageBackground
+            
+            <Image
               source={require("../assets/Background 1.png")}
               resizeMode="cover"
               style={styles.image}
-            ></ImageBackground>
+            ></Image>
           </TouchableOpacity>
         </View>
 
@@ -224,9 +228,9 @@ function DashboardScheduledCards({
 
       {index == expandSchedule ? (
         <View style={styles.expandContent}>
-          <View style={{ marginBottom: 10, flexDirection: "row" }}>
+          <View style={styles.expandContentHeading}>
             <Text style={styles.expandHeadingFTxt}>Address :</Text>
-            <Text style={styles.expandHeadingSTxt}>{items?.address}</Text>
+            <Text style={{fontWeight:'600' ,fontSize:14  ,width:'80%' ,color:'rgba(89, 89, 89, 1)' ,paddingLeft: 10,}}>{items?.address}</Text>
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
@@ -356,6 +360,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+
   },
   propertyTxt: {
     fontSize: 15,
@@ -430,8 +435,9 @@ const styles = StyleSheet.create({
     shadowColor: "black",
   },
   image: {
-    width: 23,
+    width: 21,
     height: 23,
+
   },
   expandContent: {
     marginBottom: 20,
@@ -447,7 +453,7 @@ const styles = StyleSheet.create({
   expandHeadingFTxt: {
     color: colorCodes.yaleBlue,
     fontWeight: "500",
-    fontSize: 16,
+    fontSize: 14,
   },
   expandHeadingSTxt: {
     fontWeight: "500",

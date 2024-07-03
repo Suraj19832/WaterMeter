@@ -22,7 +22,7 @@ import CheckBox from "react-native-check-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { colorCodes } from "../ColorCodes/Colors";
-
+import { Ionicons } from '@expo/vector-icons'; 
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +33,7 @@ function Login({ navigation }) {
   const [locationPermission, setLocationPermission] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); 
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -234,20 +235,49 @@ function Login({ navigation }) {
                   </Text>
                 )}
               </View>
-              <View>
+              <View style={styles.viewpass}>
                 <TextInput
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   placeholder="Password"
                   placeholderTextColor={colorCodes.placeholder}
                   style={styles.password}
+                  secureTextEntry={!showPassword}
                 />
+                  <TouchableOpacity
+        style={{paddingRight:20}}
+        onPress={() => setShowPassword(!showPassword)}
+      >
+        <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={16} color="rgba(101, 98, 99, 1)" />
+      </TouchableOpacity>
                 {validationError.password && (
                   <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
                     {validationError.password}
                   </Text>
                 )}
               </View>
+
+{/* <View>
+      <TextInput
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+        placeholder="Password"
+        placeholderTextColor={colorCodes.placeholder}
+        style={styles.password}
+        secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
+      />
+      <TouchableOpacity
+        style={{ position: 'absolute', right: 10, top: 12 }}
+        onPress={() => setShowPassword(!showPassword)}
+      >
+        <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
+      </TouchableOpacity>
+      {validationError.password && (
+        <Text style={{ color: 'red', fontWeight: '500', left: 45 }}>
+          {validationError.password}
+        </Text>
+      )}
+    </View> */}
 
               <View style={styles.RememberPassword}>
                 <View style={styles.rememberMain}>
@@ -256,6 +286,7 @@ function Login({ navigation }) {
                       <CheckBox
                         onClick={handleCheckBoxToggle}
                         isChecked={checked}
+                        checkBoxColor={colorCodes.yaleBlue}
                       />
                     </View>
                   </View>
@@ -329,18 +360,25 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: colorCodes.placeholderFill,
   },
-  password: {
+  viewpass:{
     height: 60,
     width: "85%",
     borderWidth: 1,
     margin: "auto",
     borderRadius: 18,
     borderColor: colorCodes.borderColor,
+    marginTop: "4%",
+    justifyContent:'space-between',
+    alignItems:'center',
+    flexDirection:'row'
+  },
+  password: {
+   
     paddingLeft: 20,
     fontSize: 14,
-    marginTop: "4%",
     fontWeight: "400",
     color: colorCodes.placeholderFill,
+     width: "85%"
   },
   RememberPassword: {
     display: "flex",

@@ -178,7 +178,7 @@ function ForgotPassword({ navigation }) {
 <InputField
                 setValue={setIsConfirmPassword}
                 value={isConfirmPassword}
-                placeholderValue="Enter New Password"
+                placeholderValue="Enter Confirm Password"
                 ispassword={true}
               />
             <View style={{ marginVertical: 20, marginBottom: 20 }}>

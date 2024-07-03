@@ -61,6 +61,7 @@ const InputField = (props) => {
         onBlur={handleBlur}
         onChangeText={(text) => props.setValue(text)}
         value={props.value}
+        editable={props.editable}
       />
       {props.ispassword && (
         <TouchableOpacity

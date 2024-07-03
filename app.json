@@ -28,7 +28,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.desun.medicalapp"
+      "package": "com.desun.watermeter"
     },
     "web": {
       "favicon": "./assets/favicon.png"

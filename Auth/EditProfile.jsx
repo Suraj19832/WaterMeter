@@ -169,6 +169,7 @@ function EditProfile({ navigation }) {
               value={email}
               placeholderValue="Enter your Email id"
               ispassword={false}
+              editable={false}
             />
             {emailError ? (
               <Text style={{ color: "red" }}>{emailError}</Text>

@@ -216,7 +216,7 @@ const DrawerNavigation = ({ navigation }) => {
             width: 170,
             objectFit: "contain",
             marginLeft: "20%",
-            marginTop: "17%",
+            marginTop: "10%",
           }}
         />
       </View>
@@ -276,6 +276,7 @@ const DrawerNavigation = ({ navigation }) => {
           size={24}
           color="#104F9C"
         />
+        
         <Text style={styles.changePassText}>Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity

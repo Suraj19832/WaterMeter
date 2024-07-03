@@ -225,7 +225,7 @@ import Completion from "./../Screens/Completion";
 import MeterSelection from "./../Screens/MeterSelection";
 import Login from "../Auth/Login";
 import MeterSection from "../Screens/MeterSection";
-import userIcon from "../assets/Frame (1).png";
+import userIcon from "../assets/Frame (3).png";
 import listIcon from "../assets/Frame (2).png";
 import centerIcon from "../assets/Filled-yellow-only.png";
 import scheduled from "../assets/Layer 2.png";
@@ -233,11 +233,22 @@ import camera from "../assets/camera.png";
 import activelistIcon from "../assets/Group (1).png";
 import activescheduleIcon from "../assets/Group (2).png";
 import activecenterIcon from "../assets/outline-OuterYellowBlue-InnerBlue.png";
-import activecameraIcon from "../assets/Group (4).png";
+import activecameraIcon from "../assets/Group (4).png"; 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBooleanValue, setStringValue ,selectBooleanValue, selectStringValue } from "../redux/slices/UniqueSlice";
 const Tab = createBottomTabNavigator();
+const TabNavigator = () => {
+  return (
+    <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
+      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="Completion" component={Completion} />
+      <Tab.Screen name="MeterSelection" component={MeterSelection} />
+      <Tab.Screen name="SummaryScreen" component={SummaryScreen} />
+      <Tab.Screen name="MeterScreen" component={MeterSection} />
+    </Tab.Navigator>
+  );
+};
 
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
   const dispatch = useDispatch();
@@ -275,7 +286,6 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
           } else if (route.name === "MeterScreen") {
             iconName = userIcon;
           }
-
 //           if (stringValue ==="MeterSelection") {
             
 //           }
@@ -323,7 +333,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                 <View
                   style={[
                     route.name === "MeterSelection" ? styles.middleTab : null,
-                    { zIndex: 10 },
+                    { zIndex: 10  },
                   ]}
                 >
                   <Image

@@ -198,7 +198,7 @@ function VerifyOTP({ navigation }) {
               <View
                 style={{ flexDirection: "row", gap: 4, alignSelf: "center" }}
               >
-                <Text style={styles.otpText}>to your</Text>
+                <Text style={[styles.otpText , { fontWeight: "600" }]}>to your Email Id</Text>
                 <Text style={[styles.otpText, { fontWeight: "600" }]}>
                   {email}
                 </Text>

@@ -205,7 +205,7 @@ function MeterReadingScanner({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}  showsVerticalScrollIndicator={false}>
         <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
           <Image
             source={require("../assets/left-arrow (1).png")}

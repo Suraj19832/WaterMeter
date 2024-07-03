@@ -33,7 +33,7 @@ function ChangePassword({ navigation }) {
 
   const validation = () => {
     if (newPassword !== confirmPassword) {
-      showToast("new and confirm password should be matched");
+      showToast("New and Confirm password should  match");
       return false;
     }
     if (currentPassword.length < 8) {

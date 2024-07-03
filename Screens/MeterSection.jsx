@@ -174,6 +174,7 @@ const MeterSection = ({ navigation }) => {
   };
 
   const ImageUpload = async (result) => {
+    // toast.show("Working on it...", { type: "sucess" });
     setnoteLoading(true);
     const newtry = getFileData(result);
     const postData = {
@@ -186,6 +187,7 @@ const MeterSection = ({ navigation }) => {
       if (res?.status) {
         setnoteLoading(false);
         toast.show(res?.message, { type: "sucess" });
+        console.log("res?.status:-" ,res?.status)
       }
     } catch (error) {
       setnoteLoading(false);
@@ -195,40 +197,77 @@ const MeterSection = ({ navigation }) => {
       setnoteLoading(false);
     }
   };
+  // const pickFilePassPortPhoto = async () => {
+  //   if (isPickingFilePassPortPhoto) {
+  //     // console.log("Document picking in progress");
+  //     return;
+  //   }
+
+  //   setIsPickingFilePassPortPhoto(true);
+  //   setErrorMessageUploadImage(null);
+
+  //   try {
+  //     const result = await DocumentPicker.getDocumentAsync({
+  //       type: "*/*",
+  //     });
+
+  //     console.log("File picker result:", result);
+
+  //     if (
+  //       !result.canceled &&
+  //       result.assets &&
+  //       result.assets.length > 0 &&
+  //       result.assets[0].uri
+  //     ) {
+  //       // console.log("File picked:", result.assets[0].uri);
+
+  //       // setisImage(result.assets[0].uri);
+  //       ImageUpload(result);
+  //       setUserSelectedImage(result.assets[0].uri);
+
+  //       // console.log(result.assets[0].uri ,"jjjjjj")
+  //       showToast("Uploading");
+  //     } else if (result.canceled) {
+  //       // console.log("File picking cancelled");
+  //     } else {
+  //       // console.log("File picking failed");
+  //       setErrorMessageUploadImage("File picking failed");
+  //     }
+  //   } catch (error) {
+  //     setErrorMessageUploadImage("Error picking file");
+  //   } finally {
+  //     setIsPickingFilePassPortPhoto(false);
+  //   }
+  //   closeModal();
+  // };
+
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
-      // console.log("Document picking in progress");
+      // Document picking in progress
       return;
     }
-
+  
     setIsPickingFilePassPortPhoto(true);
     setErrorMessageUploadImage(null);
-
+  
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
       });
-
+  
       console.log("File picker result:", result);
-
-      if (
-        !result.canceled &&
-        result.assets &&
-        result.assets.length > 0 &&
-        result.assets[0].uri
-      ) {
-        // console.log("File picked:", result.assets[0].uri);
-
-        // setisImage(result.assets[0].uri);
+  
+      if (!result.canceled && result.assets && result.assets.length > 0 && result.assets[0].uri) {
+        // File picked
         ImageUpload(result);
         setUserSelectedImage(result.assets[0].uri);
-
-        // console.log(result.assets[0].uri ,"jjjjjj")
         showToast("Uploading");
       } else if (result.canceled) {
-        // console.log("File picking cancelled");
+        // File picking cancelled
       } else {
-        // console.log("File picking failed");
         setErrorMessageUploadImage("File picking failed");
       }
     } catch (error) {
@@ -236,6 +275,7 @@ const MeterSection = ({ navigation }) => {
     } finally {
       setIsPickingFilePassPortPhoto(false);
     }
+  
     closeModal();
   };
   const takePicture = async () => {
@@ -244,18 +284,20 @@ const MeterSection = ({ navigation }) => {
       alert("Camera permission is required to take photos.");
       return;
     }
-
+  
     try {
-      const imageResult = await ImagePicker.launchCameraAsync();
-      // console.log("sdkfpf", imageResult);
-      if (imageResult.assets[0].uri !== null) {
+      const imageResult = await ImagePicker.launchCameraAsync({
+        allowsEditing: true, 
+        aspect: [4, 3], 
+        quality: 1, 
+      });
+  
+      if (imageResult.assets && imageResult.assets[0].uri !== null) {
         setModalVisibleUploadImage(false);
-        // setisImage(imageResult.assets[0].uri);
         ImageUpload(imageResult);
         setUserSelectedImage(imageResult.assets[0].uri);
       }
     } catch (error) {
-      // console.error("Error taking picture:", error);
       showToast("Capture Failed");
       // Handle error
     }

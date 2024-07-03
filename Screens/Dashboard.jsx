@@ -33,13 +33,14 @@ function Dashboard({ navigation }) {
     "November",
     "December",
   ];
-
+  const currentMonthIndex = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
   const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
   const [expandSchedule, setExpandSchedule] = useState(999999999);
   const [expandCompleted, setExpandCompleted] = useState(999999999);
-  const [monthIndex, setMonthIndex] = useState(5);
+  const [monthIndex, setMonthIndex] = useState(currentMonthIndex);
   const [month, setMonth] = useState(monthArr[monthIndex]);
-  const [year, setYear] = useState(2024);
+  const [year, setYear] = useState(currentYear);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigation();
 
@@ -190,11 +191,14 @@ function Dashboard({ navigation }) {
             )}
           </View>
         ) : (
-          <View>
+          <View style={{}}>
             {data.length === 0 ? (
               <Text style={styles.noDataText}>No scheduled visits</Text>
             ) : (
-              data.map((items, index) => (
+              <View style={{marginBottom:28}}>
+
+       
+              {data.map((items, index) => (
                 <View key={index}>
                   <DashboardScheduledCards
                     expandSchedule={expandSchedule}
@@ -208,7 +212,8 @@ function Dashboard({ navigation }) {
                     )}-01`}
                   />
                 </View>
-              ))
+              ))}
+                     </View>
             )}
           </View>
         )}
