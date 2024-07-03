@@ -252,10 +252,10 @@ const DashboardStack = () => (
 const TabNavigator = () => (
   <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
     <Bottom.Screen name="Dashboard" component={DashboardStack} options={{ headerShown: false }} />
-    <Bottom.Screen name="Completion" component={Completion} />
-    <Bottom.Screen name="MeterSelection" component={MeterSelection} />
-    <Bottom.Screen name="SummaryScreen" component={SummaryScreen} />
-    <Bottom.Screen name="MeterScreen" component={MeterSection} />
+    <Bottom.Screen name="Completion" component={Dashboard} options={{ headerShown: false }} />
+    <Bottom.Screen name="MeterSelection" component={MeterSelection} options={{ headerShown: false }}  />
+    <Bottom.Screen name="SummaryScreen" component={SummaryScreen} options={{ headerShown: false }}  />
+    <Bottom.Screen name="MeterScreen" component={MeterSection} options={{ headerShown: false }} />
   </Bottom.Navigator>
 );
 
