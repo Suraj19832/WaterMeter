@@ -24,6 +24,8 @@ import { useDispatch } from "react-redux";
 import { ToastProvider, useToast } from "react-native-toast-notifications";
 const DrawerNavigation = ({ navigation }) => {
   const [modal, setModal] = useState(false);
+  const [isYesPressed, setIsYesPressed] = useState(false);
+  const [isNoPressed, setIsNoPressed] = useState(false);
   const dispatch = useDispatch();
   // function showToast(message) {
   //   ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -171,9 +173,9 @@ const DrawerNavigation = ({ navigation }) => {
     yesBtn: {
       height: 40,
       width: "45%",
-
+      borderWidth: 1,
       borderRadius: 7,
-      backgroundColor: colorCodes.navyBlueButton,
+      borderColor: colorCodes.navyBlueButton,
     },
     noBtn: {
       height: 40,
@@ -246,17 +248,23 @@ const DrawerNavigation = ({ navigation }) => {
               //   setModal(false);
               //   navigation.navigate("Login");
               // }}
+              onPressIn={() => setIsYesPressed(true)}
+        onPressOut={() => setIsYesPressed(false)}
               onPress={handleYesLogout}
-              style={styles.yesBtn}
+              activeOpacity={1}
+              style={[styles.yesBtn , { backgroundColor: isYesPressed ?  colorCodes.navyBlueButton : 'transparent'} ]}
             >
-              <Text style={styles.yesNo}>Yes</Text>
+              <Text style={[styles.yesNo,{ color: isYesPressed? "white" : colorCodes.navyBlueButton }]}>Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity
+             onPressIn={() => setIsNoPressed(true)}
+             onPressOut={() => setIsNoPressed(false)}
               onPress={() => setModal(false)}
-              style={styles.noBtn}
+              style={[styles.noBtn , { backgroundColor: isNoPressed ?  colorCodes.navyBlueButton : 'transparent'}]}
+              activeOpacity={1}
             >
               <Text
-                style={[styles.yesNo, { color: colorCodes.navyBlueButton }]}
+                style={[styles.yesNo, { color: isNoPressed? "white" : colorCodes.navyBlueButton }]}
               >
                 No
               </Text>

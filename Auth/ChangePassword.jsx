@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   rectangleImg: {
-    height: Dimensions.get("window").height * 0.44,
+    height: Dimensions.get("window").height * 0.445,
     width: Dimensions.get("window").width,
   },
   diamondImg: {

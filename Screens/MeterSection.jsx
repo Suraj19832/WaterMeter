@@ -84,16 +84,20 @@ const MeterSection = ({ navigation }) => {
     setisDropdownMeter(!isDropdownMeter);
   };
   const handleSelectionOptionMeter = (all_data, option) => {
+    setUserSelectedImage(null)
+    console.log("option is clicked ")
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
+    setmeterMake(getNameById(all_data, option));
     const meterMakevalue = getNameById(all_data, option);
+    console.log(meterMakevalue?.image ,"imagee eb")
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
       setisImage(meterMakevalue?.image);
     }
-    setmeterMake(getNameById(all_data, option));
+
   };
 
   const toggleDropDownMeterReading = () => {
@@ -149,11 +153,15 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibilityImage = () => {
+
     if (userSelectedImage) {
       setisImage(userSelectedImage);
-    } else if (meterMake?.image) {
-      setisImage(meterMake?.image);
+      console.log(isImage ,":::::::::::::")
     }
+    //  else if (meterMake?.image) {
+    //   console.log("this will run")
+    //   setisImage(meterMake?.image);
+    // }
 
     setIsModalImage(!isModalImage);
   };
@@ -381,11 +389,11 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.input_box}>
             <TextInput
               style={styles.input}
-              placeholder="Select"
+              placeholder="Select Pending Meters"
               value={inputValuemeter}
-              onBlur={() =>
-                handleSelectionOptionMeter(meterDataByApi, inputValuemeter)
-              }
+              // onBlur={() =>
+              //   handleSelectionOptionMeter(meterDataByApi, inputValuemeter)
+              // }
               editable={false}
               placeholderTextColor={"rgba(166, 166, 166, 1)"}
             />
@@ -464,6 +472,8 @@ const MeterSection = ({ navigation }) => {
                 </View>
 
                 {isImage ? (
+
+                  
                   <Image
                     source={{ uri: isImage }}
                     style={{
@@ -650,7 +660,7 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.input_box}>
             <TextInput
               style={styles.input}
-              placeholder="Select"
+              placeholder="View Completed Meters"
               value={inputValuemeterReading}
               onBlur={() =>
                 handleSelectionOptionMeter(

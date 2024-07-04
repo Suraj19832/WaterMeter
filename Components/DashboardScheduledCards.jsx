@@ -133,12 +133,12 @@ function DashboardScheduledCards({
             </Text>
           )}
 
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <TouchableOpacity onPress={() => setModalVisible(true)} >
             
             <Image
               source={require("../assets/Background 1.png")}
               resizeMode="cover"
-              style={styles.image}
+              style={[styles.image ,{ height:23,width:21}]}
             ></Image>
           </TouchableOpacity>
         </View>
@@ -229,7 +229,7 @@ function DashboardScheduledCards({
       {index == expandSchedule ? (
         <View style={styles.expandContent}>
           <View style={styles.expandContentHeading}>
-            <Text style={styles.expandHeadingFTxt}>Address :</Text>
+            <Text style={[styles.expandHeadingFTxt ,{marginBottom:7}]}>Address :</Text>
             <Text style={{fontWeight:'600' ,fontSize:14  ,width:'80%' ,color:'rgba(89, 89, 89, 1)' ,paddingLeft: 10,}}>{items?.address}</Text>
           </View>
           <View style={styles.expandContentHeading}>

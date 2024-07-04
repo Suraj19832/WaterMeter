@@ -155,7 +155,7 @@ function VerifyOTP({ navigation }) {
           <Image
             source={require("../assets/Rectangle 11.png")}
             style={{
-              height: Dimensions.get("window").height * 0.44,
+              height: Dimensions.get("window").height * 0.445,
               width: Dimensions.get("window").width,
             }}
           />
