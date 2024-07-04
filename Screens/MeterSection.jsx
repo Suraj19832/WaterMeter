@@ -176,7 +176,7 @@ const MeterSection = ({ navigation }) => {
     setModalVisibleUploadImage(true);
   };
   const color = isModalImage ? "#0F77AF" : "#FFFFFF";
-  // camera and ducument picker fuctionality
+  // camera and ducument picker fuctionalitys
   const closeModal = () => {
     setModalVisibleUploadImage(false);
   };
