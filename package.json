@@ -36,7 +36,6 @@
     "react-native": "0.74.3",
     "react-native-check-box": "^2.1.7",
     "react-native-gesture-handler": "~2.16.1",
-    "react-native-image-crop-picker": "^0.41.2",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-mime-types": "^2.5.0",
     "react-native-reanimated": "~3.10.1",
