@@ -273,7 +273,10 @@ function DashboardScheduledCards({
               onPress={() => {
                 dispatch(setBooleanValue(true));
                 dispatch(setStringValue("MeterSelection"));
-                navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
+                // navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
+                navigation.jumpTo('MeterScreen', { PopertyId: items?.id, date});
+
+
               }}
             >
               <SubmitButton

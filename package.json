@@ -25,6 +25,7 @@
     "@reduxjs/toolkit": "^2.2.6",
     "axios": "^1.7.2",
     "expo": "^51.0.17",
+    "expo-dev-client": "~4.0.19",
     "expo-document-picker": "~12.0.2",
     "expo-image-manipulator": "^12.0.5",
     "expo-image-picker": "~15.0.7",

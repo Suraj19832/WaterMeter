@@ -92,6 +92,7 @@ const MeterSection = ({ navigation }) => {
     setmeterMake(getNameById(all_data, option));
     const meterMakevalue = getNameById(all_data, option);
     console.log(meterMakevalue?.image ,"imagee eb")
+    console.log(userSelectedImage ,"user ")
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
@@ -123,7 +124,7 @@ const MeterSection = ({ navigation }) => {
     toast.show("wait while updating", { type: "sucess" });
     const fetchSubmitData = async () => {
       const data = {
-        propertyId: PopertyId,
+        propertyId: PopertyId ,
         meter_id: inputValuemeter,
         note: isModalValue,
       };
@@ -974,7 +975,7 @@ const styles = StyleSheet.create({
     // width: Dimensions.get("window").width * 0.7,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "rgba(242, 242, 242, 1)",
   },
 });
 
