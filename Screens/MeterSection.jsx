@@ -26,6 +26,7 @@ import { getFileData } from "../Helper/Helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
+import { setStringValue } from "../redux/slices/UniqueSlice";
 
 const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
@@ -752,8 +753,9 @@ const MeterSection = ({ navigation }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          onPress={() =>
-            navigation.navigate("meterReadingScanner", {
+          onPress={() =>{
+            dispatch(setStringValue("Completion"));
+            navigation.jumpTo("meterReadingScanner", {
               id,
               name,
               lastReading,
@@ -763,6 +765,8 @@ const MeterSection = ({ navigation }) => {
               meterName: inputValuemeter,
             })
           }
+          }
+           
         >
           <Text style={{ fontWeight: "700", color: "white" }}>
             Select Meter
