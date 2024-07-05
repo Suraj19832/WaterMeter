@@ -70,7 +70,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
           let iconName, activeIconName;
 
           switch (route.name) {
-            case 'Completion':
+            case 'meterReadingScanner':
               iconName = camera;
               activeIconName = activecameraIcon;
               break;
