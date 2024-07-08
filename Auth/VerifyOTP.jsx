@@ -193,13 +193,20 @@ function VerifyOTP({ navigation }) {
             <Text style={styles.heading}>OTP Verification</Text>
             <View>
               <Text style={styles.otpText}>
-                Please Enter Verification code sent{" "}
+                Please Enter Verification code sent to your{" "}
               </Text>
               <View
                 style={{ flexDirection: "row", gap: 4, alignSelf: "center" }}
               >
-                <Text style={[styles.otpText , { fontWeight: "600" }]}>to your Email Id</Text>
                 <Text style={[styles.otpText, { fontWeight: "600" }]}>
+                  Email Id
+                </Text>
+                <Text
+                  style={[
+                    styles.otpText,
+                    { fontWeight: "600", color: "rgba(101, 98, 99, 1)" },
+                  ]}
+                >
                   {email}
                 </Text>
               </View>

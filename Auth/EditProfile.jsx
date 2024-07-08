@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import SubmitButton from "../Components/SubmitButton";
 import { useSelector } from "react-redux";
-import { selectAuthToken ,setAuthToken } from "../redux/slices/Authslice";
+import { selectAuthToken, setAuthToken } from "../redux/slices/Authslice";
 import appApi from "../Helper/Api";
 import { ToastAndroid } from "react-native";
 import InputField from "../Components/InputField";
@@ -19,48 +19,47 @@ function EditProfile({ navigation }) {
   const [checked, setChecked] = useState(true);
   const authToken = useSelector(selectAuthToken);
   const [loading, setloading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(null);
+  const [firstname, setfirstname] = useState();
   console.log(authToken, "redux setup");
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("pppp[pppppppppppppppppppppp");
-
-      try {
-        const res = await appApi.profile();
-        if (res?.status) {
-          setEmail(res?.data?.email);
-        }
-      } catch (err) {
-        console.log(err);
-        showToast("Login again");
-        async function handleLoginPress () {
-          // showToast("Login again");
-        await AsyncStorage.removeItem("token");
-  dispatch(setAuthToken(null));
-          navigation.navigate("Login"); // Navigate to the login screen
-        }
-        Alert.alert(
-          "Token Expire",
-          "Login Again",
-          [
-            {
-              text: "Login",
-              onPress: handleLoginPress, // Navigate to the login screen
-            },
-          ],
-          { cancelable: false }
-        );
+  const fetchData = async () => {
+    try {
+      const res = await appApi.profile();
+      console.log(res);
+      if (res?.status) {
+        setEmail(res?.data?.email);
+        setfirstname(res?.data?.name);
       }
-    };
-
+    } catch (err) {
+      console.log(err);
+      showToast("Login again");
+      async function handleLoginPress() {
+        // showToast("Login again");
+        await AsyncStorage.removeItem("token");
+        dispatch(setAuthToken(null));
+        navigation.navigate("Login"); // Navigate to the login screen
+      }
+      Alert.alert(
+        "Token Expire",
+        "Login Again",
+        [
+          {
+            text: "Login",
+            onPress: handleLoginPress, // Navigate to the login screen
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, []);
 
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(null);
-  const [firstname, setfirstname] = useState();
   const handleEmailChange = (text) => {
     setEmail(text);
     if (text.trim()) {
