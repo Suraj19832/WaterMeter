@@ -363,7 +363,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-
   },
   propertyTxt: {
     fontSize: 15,
@@ -382,7 +381,6 @@ const styles = StyleSheet.create({
   },
   contentDateTxt: {
     fontSize: 11,
-    height: 25,
     fontWeight: "500",
     color: colorCodes.secondaryLightGray,
   },

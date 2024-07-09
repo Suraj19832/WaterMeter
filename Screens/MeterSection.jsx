@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
@@ -61,12 +62,13 @@ const MeterSection = ({ navigation }) => {
   const [userSelectedImage, setUserSelectedImage] = useState(null);
 
   const [noteLoading, setnoteLoading] = useState(false);
+  const [refreshing,setRefreshing] = useState(false)
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const toast = useToast();
   const getNameById = (all_data, id) => {
-    const item = all_data.find((obj) => obj.id === id);
+    const item = all_data?.find((obj) => obj?.id === id);
     return item
       ? {
           make: item?.make,
@@ -157,13 +159,7 @@ const MeterSection = ({ navigation }) => {
   const toggleModalVisibilityImage = () => {
     if (userSelectedImage) {
       setisImage(userSelectedImage);
-      console.log(isImage, ":::::::::::::");
     }
-    //  else if (meterMake?.image) {
-    //   console.log("this will run")
-    //   setisImage(meterMake?.image);
-    // }
-
     setIsModalImage(!isModalImage);
   };
 
@@ -364,6 +360,14 @@ const MeterSection = ({ navigation }) => {
     fetchData();
   }, [PopertyId]);
 
+  const refreshApp = () =>{
+    setRefreshing(true);
+    handleSelectionOptionMeter();
+    fetchData()
+    getNameById();
+    setRefreshing(false)
+  }
+
   if (loading) {
     return (
       <View>
@@ -375,12 +379,7 @@ const MeterSection = ({ navigation }) => {
       </View>
     );
   }
-  // if (noteLoading) {
-  //   return(
-  //     <LoaderComponent loading={noteLoading}/>
-  //   )
 
-  // }
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
@@ -391,6 +390,9 @@ const MeterSection = ({ navigation }) => {
           />
         </TouchableOpacity>
       </>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshApp}/>}>
+
+   
       <View style={styles.heading}>
         <Text style={styles.headingText}>
           {id} | {name}
@@ -637,10 +639,10 @@ const MeterSection = ({ navigation }) => {
           <View>
             <TouchableOpacity onPress={toggleModalVisibilityImage}>
               <Image
-                source={require("../assets/Group (5).png")}
+                source={require("../assets/Frame.png")}
                 style={{
                   height: 28,
-                  width: 31,
+                  width: 30,
                 }}
                 resizeMode="center"
               />
@@ -722,7 +724,7 @@ const MeterSection = ({ navigation }) => {
       )}
 
       <View style={{ justifyContent: "flex-end", marginVertical: 15 }}>
-        <TouchableOpacity
+        <View
           style={{
             backgroundColor: "#197AB6",
             paddingVertical: 6,
@@ -735,7 +737,7 @@ const MeterSection = ({ navigation }) => {
           <Text style={{ color: "white", fontWeight: 700 }}>
             {pendingMeterCount} Meters Pending
           </Text>
-        </TouchableOpacity>
+        </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity onPress={toggleModalVisibilityInformation}>
@@ -816,6 +818,7 @@ const MeterSection = ({ navigation }) => {
       </Modal>
       {noteLoading && <LoaderComponent loading={noteLoading} />}
       {/* <CropImage/> */}
+      </ScrollView>
     </SafeAreaView>
   );
 };
