@@ -18,6 +18,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { ToastProvider, useToast } from "react-native-toast-notifications";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
@@ -85,21 +86,20 @@ const MeterSection = ({ navigation }) => {
     setisDropdownMeter(!isDropdownMeter);
   };
   const handleSelectionOptionMeter = (all_data, option) => {
-    setUserSelectedImage(null)
-    console.log("option is clicked ")
+    setUserSelectedImage(null);
+    console.log("option is clicked ");
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
     setmeterMake(getNameById(all_data, option));
     const meterMakevalue = getNameById(all_data, option);
-    console.log(meterMakevalue?.image ,"imagee eb")
-    console.log(userSelectedImage ,"user ")
+    console.log(meterMakevalue?.image, "imagee eb");
+    console.log(userSelectedImage, "user ");
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
       setisImage(meterMakevalue?.image);
     }
-
   };
 
   const toggleDropDownMeterReading = () => {
@@ -125,7 +125,7 @@ const MeterSection = ({ navigation }) => {
     toast.show("wait while updating", { type: "sucess" });
     const fetchSubmitData = async () => {
       const data = {
-        propertyId: PopertyId ,
+        propertyId: PopertyId,
         meter_id: inputValuemeter,
         note: isModalValue,
       };
@@ -155,10 +155,9 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibilityImage = () => {
-
     if (userSelectedImage) {
       setisImage(userSelectedImage);
-      console.log(isImage ,":::::::::::::")
+      console.log(isImage, ":::::::::::::");
     }
     //  else if (meterMake?.image) {
     //   console.log("this will run")
@@ -170,9 +169,8 @@ const MeterSection = ({ navigation }) => {
 
   const [modalVisibleUploadImage, setModalVisibleUploadImage] = useState(false);
   const [errorMessageUploadImage, setErrorMessageUploadImage] = useState(null);
-  const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] = useState(
-    false
-  );
+  const [isPickingFilePassPortPhoto, setIsPickingFilePassPortPhoto] =
+    useState(false);
   const toggleChangeImage = () => {
     setIsModalImage(!isModalImage);
     setModalVisibleUploadImage(true);
@@ -197,7 +195,7 @@ const MeterSection = ({ navigation }) => {
       if (res?.status) {
         setnoteLoading(false);
         toast.show(res?.message, { type: "sucess" });
-        console.log("res?.status:-" ,res?.status)
+        console.log("res?.status:-", res?.status);
       }
     } catch (error) {
       setnoteLoading(false);
@@ -256,21 +254,26 @@ const MeterSection = ({ navigation }) => {
       // Document picking in progress
       return;
     }
-  
+
     setIsPickingFilePassPortPhoto(true);
     setErrorMessageUploadImage(null);
-  
+
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
+        aspect: [4, 3],
+        quality: 1,
       });
-  
+
       console.log("File picker result:", result);
-  
-      if (!result.canceled && result.assets && result.assets.length > 0 && result.assets[0].uri) {
+
+      if (
+        !result.canceled &&
+        result.assets &&
+        result.assets.length > 0 &&
+        result.assets[0].uri
+      ) {
         // File picked
         ImageUpload(result);
         setUserSelectedImage(result.assets[0].uri);
@@ -285,27 +288,36 @@ const MeterSection = ({ navigation }) => {
     } finally {
       setIsPickingFilePassPortPhoto(false);
     }
-  
+
     closeModal();
   };
   const takePicture = async () => {
+    console.log("starting the camera");
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("Camera permission is required to take photos.");
       return;
     }
-  
+
     try {
       const imageResult = await ImagePicker.launchCameraAsync({
-        allowsEditing: true, 
-        aspect: [4, 3], 
-        quality: 1, 
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
       });
-  
+
       if (imageResult.assets && imageResult.assets[0].uri !== null) {
+        // Compress the image
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          imageResult.assets[0].uri,
+          [{ resize: { width: 800 } }], // resize to a width of 800 pixels, maintain aspect ratio
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // compress to 70% quality
+        );
+
         setModalVisibleUploadImage(false);
-        ImageUpload(imageResult);
-        setUserSelectedImage(imageResult.assets[0].uri);
+        ImageUpload(compressedImage); // Use compressed image for upload
+        setUserSelectedImage(compressedImage.uri);
+        console.log("got the image");
       }
     } catch (error) {
       showToast("Capture Failed");
@@ -474,8 +486,6 @@ const MeterSection = ({ navigation }) => {
                 </View>
 
                 {isImage ? (
-
-                  
                   <Image
                     source={{ uri: isImage }}
                     style={{
@@ -727,8 +737,8 @@ const MeterSection = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection:'row' ,alignItems:'center'}}>
-      <TouchableOpacity onPress={toggleModalVisibilityInformation}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity onPress={toggleModalVisibilityInformation}>
           <Image
             source={require("../assets/Group (7).png")}
             style={{
@@ -738,43 +748,47 @@ const MeterSection = ({ navigation }) => {
             resizeMode="center"
           />
         </TouchableOpacity>
-      <View style={{ marginVertical: 15, flexDirection: "row", gap: 80 ,alignItems:'center',width:'94%',justifyContent:'center' }}>
-        
-
-        <TouchableOpacity
-          disabled={inputValuemeter ? false : true}
+        <View
           style={{
-            backgroundColor: inputValuemeter
-              ? "rgba(255, 137, 2, 1)"
-              : "rgba(255, 137, 2, 0.5)",
-            borderRadius: 8,
-            height: 40,
-            width: 120,
-            justifyContent: "center",
+            marginVertical: 15,
+            flexDirection: "row",
+            gap: 80,
             alignItems: "center",
+            width: "94%",
+            justifyContent: "center",
           }}
-          onPress={() =>{
-            dispatch(setStringValue("Completion"));
-            navigation.jumpTo("meterReadingScanner", {
-              id,
-              name,
-              lastReading,
-              lastReadingDate,
-              avgUsage,
-              totalDigit: meterMake?.totalDigit,
-              meterName: inputValuemeter,
-            })
-          }
-          }
-           
         >
-          <Text style={{ fontWeight: "700", color: "white" }}>
-            Select Meter
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={inputValuemeter ? false : true}
+            style={{
+              backgroundColor: inputValuemeter
+                ? "rgba(255, 137, 2, 1)"
+                : "rgba(255, 137, 2, 0.5)",
+              borderRadius: 8,
+              height: 40,
+              width: 120,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              dispatch(setStringValue("Completion"));
+              navigation.jumpTo("meterReadingScanner", {
+                id,
+                name,
+                lastReading,
+                lastReadingDate,
+                avgUsage,
+                totalDigit: meterMake?.totalDigit,
+                meterName: inputValuemeter,
+              });
+            }}
+          >
+            <Text style={{ fontWeight: "700", color: "white" }}>
+              Select Meter
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      </View>
-
 
       {/* camera gallery modal */}
       <Modal
