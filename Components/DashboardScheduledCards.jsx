@@ -136,7 +136,7 @@ function DashboardScheduledCards({
           <TouchableOpacity onPress={() => setModalVisible(true)} >
             
             <Image
-              source={require("../assets/Background 1.png")}
+              source={require("../assets/viewImage.png")}
               resizeMode="cover"
               style={[styles.image ,{ height:23,width:21}]}
             ></Image>
