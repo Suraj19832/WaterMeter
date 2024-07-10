@@ -228,13 +228,12 @@ function DashboardScheduledCards({
 
       {index == expandSchedule ? (
         <View style={styles.expandContent}>
-          <View style={styles.expandContentHeading}>
-            <Text style={[styles.expandHeadingFTxt ,{marginBottom:7}]}>Address :</Text>
+          <View style={[styles.expandContentHeading,{marginBottom:7}]}>
+            <Text style={styles.expandHeadingFTxt}>Address :</Text>
             <Text style={{fontWeight:'600' ,fontSize:14  ,width:'80%' ,color:'rgba(89, 89, 89, 1)' ,paddingLeft: 10,}}>{items?.address}</Text>
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
-
             <Text style={styles.expandContentSTxt}>{items?.meter?.total}</Text>
           </View>
 
