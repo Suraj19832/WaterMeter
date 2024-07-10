@@ -6,24 +6,19 @@ import {
   StyleSheet,
   TextInput,
   Modal,
-  Button,
-  ToastAndroid,
-  TouchableWithoutFeedback,
   ScrollView,
   ActivityIndicator,
   RefreshControl
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
-import { AntDesign, Entypo } from "@expo/vector-icons";
-import { ToastProvider, useToast } from "react-native-toast-notifications";
-import * as DocumentPicker from "expo-document-picker";
+import { Entypo } from "@expo/vector-icons";
+import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
-// import CropImage from "../Components/CropImage";
 import { getFileData } from "../Helper/Helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
@@ -63,9 +58,7 @@ const MeterSection = ({ navigation }) => {
 
   const [noteLoading, setnoteLoading] = useState(false);
   const [refreshing,setRefreshing] = useState(false)
-  function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  }
+
   const toast = useToast();
   const getNameById = (all_data, id) => {
     const item = all_data?.find((obj) => obj?.id === id);
@@ -201,49 +194,6 @@ const MeterSection = ({ navigation }) => {
       setnoteLoading(false);
     }
   };
-  // const pickFilePassPortPhoto = async () => {
-  //   if (isPickingFilePassPortPhoto) {
-  //     // console.log("Document picking in progress");
-  //     return;
-  //   }
-
-  //   setIsPickingFilePassPortPhoto(true);
-  //   setErrorMessageUploadImage(null);
-
-  //   try {
-  //     const result = await DocumentPicker.getDocumentAsync({
-  //       type: "*/*",
-  //     });
-
-  //     console.log("File picker result:", result);
-
-  //     if (
-  //       !result.canceled &&
-  //       result.assets &&
-  //       result.assets.length > 0 &&
-  //       result.assets[0].uri
-  //     ) {
-  //       // console.log("File picked:", result.assets[0].uri);
-
-  //       // setisImage(result.assets[0].uri);
-  //       ImageUpload(result);
-  //       setUserSelectedImage(result.assets[0].uri);
-
-  //       // console.log(result.assets[0].uri ,"jjjjjj")
-  //       showToast("Uploading");
-  //     } else if (result.canceled) {
-  //       // console.log("File picking cancelled");
-  //     } else {
-  //       // console.log("File picking failed");
-  //       setErrorMessageUploadImage("File picking failed");
-  //     }
-  //   } catch (error) {
-  //     setErrorMessageUploadImage("Error picking file");
-  //   } finally {
-  //     setIsPickingFilePassPortPhoto(false);
-  //   }
-  //   closeModal();
-  // };
 
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
@@ -273,7 +223,7 @@ const MeterSection = ({ navigation }) => {
         // File picked
         ImageUpload(result);
         setUserSelectedImage(result.assets[0].uri);
-        showToast("Uploading");
+        toast.show("Uploading",{type:"sucess"});
       } else if (result.canceled) {
         // File picking cancelled
       } else {
@@ -316,7 +266,7 @@ const MeterSection = ({ navigation }) => {
         console.log("got the image");
       }
     } catch (error) {
-      showToast("Capture Failed");
+      toast.show("Capture Failed",{type:"warning"});
       // Handle error
     }
   };
@@ -333,9 +283,6 @@ const MeterSection = ({ navigation }) => {
         setname(res?.data?.name);
         setid(res?.data?.id);
         setmeterDataByApi(res?.data?.meters);
-
-        //lower part data's
-
         setpendingMeterCount(res?.data?.pendingMeterReading);
         setLastReading(res?.data?.last_reading);
         setLastReadingDate(res?.data?.last_reading_date);
@@ -345,14 +292,12 @@ const MeterSection = ({ navigation }) => {
         }
       }
     } catch (error) {
-      // console.log(error);
       setloading(false);
       console.log(error, "hihi");
-      showToast("Token Expire");
+      toast.show("Token Expire",{type:"warning"});
       await AsyncStorage.removeItem("token");
       dispatch(setAuthToken(null));
     } finally {
-      // console.log("api call complete");
       setloading(false);
     }
   };
@@ -390,7 +335,7 @@ const MeterSection = ({ navigation }) => {
           />
         </TouchableOpacity>
       </>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshApp}/>}>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshApp}/>} showsVerticalScrollIndicator={false}>
 
    
       <View style={styles.heading}>

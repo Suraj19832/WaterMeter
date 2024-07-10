@@ -6,17 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
-  Dimensions,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
 import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 import { useNavigation } from "@react-navigation/native";
 import appApi from "../Helper/Api";
-import { DoLogout } from "../Helper/Helper";
 
 function Dashboard({ navigation }) {
   let monthArr = [
@@ -41,7 +39,9 @@ function Dashboard({ navigation }) {
   const [monthIndex, setMonthIndex] = useState(currentMonthIndex);
   const [month, setMonth] = useState(monthArr[monthIndex]);
   const [year, setYear] = useState(currentYear);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const navigate = useNavigation();
 
   const nextDate = useCallback(() => {
@@ -66,28 +66,33 @@ function Dashboard({ navigation }) {
     }
   }, [month, monthArr, monthIndex, year]);
 
-  const [data, setData] = useState([]);
-  console.log(`${year}-${String(monthIndex + 1).padStart(2, "0")}-01`);
-
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     setLoading(true);
     const params = {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
       date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
     };
-    // console.log(date, "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
     appApi
       .dashboard(params)
       .then((res) => {
         setData(res?.data);
         setLoading(false);
-        console.log(res.data, "<<<<<<<<<<<<<<<<<<<<???????????????");
+        setRefreshing(false);
       })
       .catch((err) => {
-        console.error(err, "<<<<<<<<<<<<<<<<<error");
         setLoading(false);
+        setRefreshing(false);
       });
-  }, [toggleScheduleCompleted, monthIndex, year]); // Add toggleScheduleCompleted to the dependency array
+  }, [toggleScheduleCompleted, monthIndex, year]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refreshApp = () => {
+    setRefreshing(true);
+    fetchData();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -144,7 +149,6 @@ function Dashboard({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.prevNextMain}>
         <TouchableOpacity onPress={previous} style={styles.prevBtn}>
           <AntDesign name="left" size={15} color="#104F9C" />
@@ -166,7 +170,7 @@ function Dashboard({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshApp}/>}>
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -195,25 +199,23 @@ function Dashboard({ navigation }) {
             {data.length === 0 ? (
               <Text style={styles.noDataText}>No scheduled visits</Text>
             ) : (
-              <View style={{marginBottom:28}}>
-
-       
-              {data.map((items, index) => (
-                <View key={index}>
-                  <DashboardScheduledCards
-                    expandSchedule={expandSchedule}
-                    onPress={setExpandSchedule}
-                    index={index}
-                    items={items}
-                    navigation={navigation}
-                    date={`${year}-${String(monthIndex + 1).padStart(
-                      2,
-                      "0"
-                    )}-01`}
-                  />
-                </View>
-              ))}
-                     </View>
+              <View style={{ marginBottom: 28 }}>
+                {data.map((items, index) => (
+                  <View key={index}>
+                    <DashboardScheduledCards
+                      expandSchedule={expandSchedule}
+                      onPress={setExpandSchedule}
+                      index={index}
+                      items={items}
+                      navigation={navigation}
+                      date={`${year}-${String(monthIndex + 1).padStart(
+                        2,
+                        "0"
+                      )}-01`}
+                    />
+                  </View>
+                ))}
+              </View>
             )}
           </View>
         )}
