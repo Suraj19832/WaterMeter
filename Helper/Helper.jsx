@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as mime from "react-native-mime-types"
+import * as mime from "react-native-mime-types";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
-import {  useToast } from "react-native-toast-notifications";
+import { useToast } from "react-native-toast-notifications";
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -71,9 +71,9 @@ export async function sendGetRequest(url, params = {}) {
   return data;
 }
 
-export async function sendAuthorizeGetRequest(url, params=[] ) {
+export async function sendAuthorizeGetRequest(url, params = []) {
   let token = await AsyncStorage.getItem("token");
-console.log(token, "in helpper function")
+  console.log(token, "in helpper function");
 
   if (Object.keys(params).length != 0) {
     let queryString = new URLSearchParams(params);
@@ -243,7 +243,7 @@ export async function sendDeleteURLencoded(url, obj) {
 }
 
 export async function sendAuthorizePostFormData(url, obj) {
-  console.log(url ,obj)
+  console.log(url, obj);
   try {
     let token = await AsyncStorage.getItem("token");
     console.log(token, "<=====================");
@@ -253,7 +253,6 @@ export async function sendAuthorizePostFormData(url, obj) {
     }
 
     let response = await fetch(url, {
-      
       method: "POST",
       body: prepareFormDataFromObject(obj), // Converting the object to JSON string
       headers: {
@@ -335,9 +334,8 @@ export const getFileData = (obj = {}) => {
     name: fileName,
     type: mime.lookup(fileName),
   };
-  
 };
-export async function DoLogout () {
+export async function DoLogout() {
   const toast = useToast();
   toast.show("Token Expire", { type: "sucess" });
   const dispatch = useDispatch();

@@ -31,6 +31,7 @@ import {setBooleanValue, selectBooleanValue, selectStringValue ,setStringValue }
 
 const Tab = createBottomTabNavigator();
 
+
 export const CustomTabBar = ({ state, descriptors, navigation }) => {
   const activeTab = useSelector(selectStringValue);
   const dispatch = useDispatch();
@@ -40,8 +41,8 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
 
   // Update active tab when screen focuses
   useFocusEffect(() => {
-    setPreviousIndex(state.index);
-    dispatch(setStringValue(state.routes[state.index].name));
+    setPreviousIndex(state?.index);
+    dispatch(setStringValue(state?.routes[state?.index]?.name));
   });
 
   const handleTabPress = (routeName) => {

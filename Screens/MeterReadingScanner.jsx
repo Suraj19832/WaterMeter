@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Image,
   Modal,
-  Alert,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
@@ -108,6 +107,7 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const verifyNumber = async (imageFile) => {
+    console.log(imageFile,"+++++++++++++++++++++++")
     try {
       const data = {
         file: imageFile,
@@ -120,10 +120,7 @@ function MeterReadingScanner({ navigation }) {
       setEditMeter(true);
       setDataId(res?.dataId);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
-      if (res?.ocrReading) {
-        const newOTP = res.ocrReading.split("").slice(0, totalDigit);
-        setOTP(newOTP);
-      } else {
+      if (!res?.ocrReading) {
         toast.show("Unable to read !!", { type: "sucess", duration: 3000 });
       }
     } catch (err) {
@@ -149,7 +146,7 @@ function MeterReadingScanner({ navigation }) {
         // Resize image
         const resizedImage = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
-          [{ resize: { width: 800 } }], // Adjust width as needed
+          [{ resize: { width: 800 } }],
           { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
 
@@ -161,7 +158,7 @@ function MeterReadingScanner({ navigation }) {
     } catch (error) {
       setLoading(false);
       console.log("Error while scanning:", error);
-      toast.show("Failed to launch the camera", { type: "success" });
+      toast.show("Failed to launch the camera", { type: "warning" });
     }
   };
 
