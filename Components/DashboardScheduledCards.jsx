@@ -16,6 +16,7 @@ import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 import { useDispatch } from "react-redux";
 import { setBooleanValue, setStringValue } from "../redux/slices/UniqueSlice";
+import axios from "axios";
 function DashboardScheduledCards({
   items,
   index,
@@ -25,8 +26,9 @@ function DashboardScheduledCards({
   date,
 }) {
   const dispatch = useDispatch();
-  console.log(date, "<<<<<<<<<<schedule");
   const [modalVisible, setModalVisible] = useState(false);
+  const [image, setImage] = useState(null);
+
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
     for (let i = 0; i < words?.length; i++) {
@@ -92,27 +94,49 @@ function DashboardScheduledCards({
     return duration?.trim();
   }
 
+  function checkForImage(urll) {
+    let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
+    if (urll.match(regex)) {
+      return "valid";
+    } else {
+      return "invalid";
+    }
+  }
+
+  useEffect(() => {
+    const checkImageURL = async (url) => {
+      if (checkForImage(url) === "valid") {
+        try {
+          await axios.head(url);
+          setImage(url);
+        } catch (error) {
+          setImage(null);
+        }
+      } else {
+        setImage(null);
+      }
+    };
+
+    checkImageURL(items?.image);
+  }, [items?.image, modalVisible]);
+
   return (
     <View style={styles.propertyCards}>
       <View style={styles.cardContentTop}>
         <View style={styles.topFirst}>
-          <Text style={styles.propertyTxt}>Property</Text>
-     
-          <Text style={styles.besidePropertyTxt}>
-            : {items?.id} {" | "} {items?.name}
-          </Text>
+          <Text style={styles.propertyTxt}>Property : </Text>
 
-          
+          <Text style={styles.besidePropertyTxt}>
+            {items?.id} {" | "} {items?.name}
+          </Text>
         </View>
 
-        <View style={{width:'20%'}}>
+        <View style={{ width: "20%" }}>
           <Text style={styles.contentDateTxt}>
-            {formatDate(items?.reading_date?.on)} 
+            {formatDate(items?.reading_date?.on)}
           </Text>
         </View>
       </View>
-
-      {/* {items?.status?.name == "past due" ? ( */}
       <View style={styles.belowContentMain}>
         <View style={styles.belowFirst}>
           <View
@@ -133,12 +157,11 @@ function DashboardScheduledCards({
             </Text>
           )}
 
-          <TouchableOpacity onPress={() => setModalVisible(true)} >
-            
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
               source={require("../assets/viewImage.png")}
               resizeMode="cover"
-              style={[styles.image ,{ height:23,width:21}]}
+              style={[styles.image, { height: 23, width: 21 }]}
             ></Image>
           </TouchableOpacity>
         </View>
@@ -173,64 +196,21 @@ function DashboardScheduledCards({
           </TouchableOpacity>
         </View>
       </View>
-      {/* ) : ( */}
-      {/* <View style={styles.belowContentMainNotPast}>
-          <View
-            style={[
-              styles.status,
-              {
-                backgroundColor:
-                  items?.status?.name == "in process"
-                    ? items?.status?.colorCode
-                    : "#FFB604",
-                width: "25%",
-              },
-            ]}
-          >
-            <Text style={styles.statusTxt}>
-              {firstCapitalize(items?.status?.name)}
-            </Text>
-          </View>
-
-          <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>
-              {items?.meter?.total} meters
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                if (expandSchedule == index) {
-                  onPress(null);
-                } else {
-                  onPress(index);
-                }
-              }}
-              style={styles.expandBtn}
-            >
-              {index == expandSchedule ? (
-                <FontAwesome
-                  style={{ marginLeft: 5.6, marginTop: 0 }}
-                  name="angle-up"
-                  size={20}
-                  color="#FE8700"
-                />
-              ) : (
-                <FontAwesome
-                  style={{ marginLeft: 5.6, marginTop: 2 }}
-                  name="angle-down"
-                  size={20}
-                  color="#FE8700"
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View> */}
-      {/* )} */}
-
       {index == expandSchedule ? (
         <View style={styles.expandContent}>
-          <View style={[styles.expandContentHeading,{marginBottom:7}]}>
+          <View style={[styles.expandContentHeading, { marginBottom: 7 }]}>
             <Text style={styles.expandHeadingFTxt}>Address :</Text>
-            <Text style={{fontWeight:'600' ,fontSize:14  ,width:'80%' ,color:'rgba(89, 89, 89, 1)' ,paddingLeft: 10,}}>{items?.address}</Text>
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                width: "80%",
+                color: "rgba(89, 89, 89, 1)",
+                paddingLeft: 10,
+              }}
+            >
+              {items?.address}
+            </Text>
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
@@ -273,9 +253,10 @@ function DashboardScheduledCards({
                 dispatch(setBooleanValue(true));
                 dispatch(setStringValue("MeterSelection"));
                 // navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
-                navigation.jumpTo('MeterScreen', { PopertyId: items?.id, date});
-
-
+                navigation.jumpTo("MeterScreen", {
+                  PopertyId: items?.id,
+                  date,
+                });
               }}
             >
               <SubmitButton
@@ -295,14 +276,19 @@ function DashboardScheduledCards({
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Image
-              source={
-                items?.image !== null
-                  ? { uri: items?.image }
-                  : require("../assets/icons/no-image.jpg")
-              }
-              style={styles.modalImage}
-            />
+            {image != null ? (
+              <Image
+                source={{
+                  uri: image,
+                }}
+                style={styles.modalImage}
+              />
+            ) : (
+              <Image
+                source={require("../assets/icons/no-image.jpg")}
+                style={styles.modalImage}
+              />
+            )}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
@@ -437,7 +423,6 @@ const styles = StyleSheet.create({
   image: {
     width: 21,
     height: 23,
-
   },
   expandContent: {
     marginBottom: 20,

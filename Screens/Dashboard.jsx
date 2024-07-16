@@ -226,7 +226,6 @@ function Dashboard({ navigation }) {
 export default Dashboard;
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: colorCodes.white,
     paddingHorizontal: 20,
   },
   noDataText: {
