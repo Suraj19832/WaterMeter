@@ -125,6 +125,7 @@ function MeterReadingScanner({ navigation }) {
       }
     } catch (err) {
       console.error(err, "Error while uploading image");
+      toast.show(err,{type:"warning"})
     } finally {
       setLoading(false);
     }

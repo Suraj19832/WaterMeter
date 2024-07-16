@@ -101,9 +101,9 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
               <TouchableOpacity
                 accessibilityRole="button"
                 accessibilityState={isFocused ? { selected: true } : {}}
-                accessibilityLabel={options.tabBarAccessibilityLabel}
-                testID={options.tabBarTestID}
-                onPress={() => handleTabPress(route.name)}
+                accessibilityLabel={options?.tabBarAccessibilityLabel}
+                testID={options?.tabBarTestID}
+                onPress={() => handleTabPress(route?.name)}
                 activeOpacity={1}
               >
                 <View style={[route.name === 'MeterScreen' ? styles.middleTab : null, { zIndex: 10 }]}>
