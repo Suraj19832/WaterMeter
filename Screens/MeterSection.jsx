@@ -636,6 +636,7 @@ const MeterSection = ({ navigation }) => {
                 }
                 editable={false}
                 placeholderTextColor={"rgba(166, 166, 166, 1)"}
+                
               />
               <Entypo
                 name="chevron-down"
@@ -853,7 +854,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontWeight: "700",
     color: "#989898",
-    fontSize: 24,
+    fontSize: 18,
   },
 
   input_box: {
