@@ -9,6 +9,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
+import axios from "axios";
 
 const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
@@ -53,6 +55,9 @@ const MeterSection = ({ navigation }) => {
   const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
   const [meterReadingData, setmeterReadingData] = useState("");
+  const [completeImage, setCompleteImage] = useState(null);
+  const [completeModal, setCompleteModal] = useState(false);
+  const [image,setImage] = useState(null)
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
 
@@ -101,12 +106,11 @@ const MeterSection = ({ navigation }) => {
     setisDropdownMeterReading(!isDropdownMeterReading);
   };
   const handleSelectionOptionMeterReading = (option) => {
-    setinputValuemeterReading(option);
-    setmeterReadingData(option);
+    setinputValuemeterReading(option?.id);
+    setmeterReadingData(option?.id);
     setisDropdownMeterReading(false);
+    setCompleteImage(option?.image);
   };
-
-  //for picture
 
   const toggleModalVisibility = () => {
     setisModalValue(meterMake?.meterNote);
@@ -197,7 +201,6 @@ const MeterSection = ({ navigation }) => {
 
   const pickFilePassPortPhoto = async () => {
     if (isPickingFilePassPortPhoto) {
-      // Document picking in progress
       return;
     }
 
@@ -267,7 +270,6 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       toast.show("Capture Failed", { type: "warning" });
-      // Handle error
     }
   };
 
@@ -278,7 +280,6 @@ const MeterSection = ({ navigation }) => {
     };
     try {
       const res = await appApi.metersection(data);
-      console.log(res?.data?.meters, "YYYYYYYYYYYYYYYYYYYYYYYYYYYY");
       if (res?.status) {
         setname(res?.data?.name);
         setid(res?.data?.id);
@@ -304,6 +305,33 @@ const MeterSection = ({ navigation }) => {
     fetchData();
   }, [PopertyId]);
 
+
+  function checkForImage(urll) {
+    let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
+    if (urll.match(regex)) {
+      return "valid";
+    } else {
+      return "invalid";
+    }
+  }
+
+  useEffect(() => {
+    const checkImageURL = async (url) => {
+      if (checkForImage(url) === "valid") {
+        try {
+          await axios.head(url);
+          setImage(url);
+        } catch (error) {
+          setImage(null);
+        }
+      } else {
+        setImage(null);
+      }
+    };
+
+    checkImageURL(completeImage);
+  }, [completeImage, completeModal]);
+
   const refreshApp = () => {
     setRefreshing(true);
     handleSelectionOptionMeter();
@@ -311,7 +339,6 @@ const MeterSection = ({ navigation }) => {
     getNameById();
     setRefreshing(false);
   };
-
   if (loading) {
     return (
       <View>
@@ -354,9 +381,6 @@ const MeterSection = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Select Pending Meters"
                 value={inputValuemeter}
-                // onBlur={() =>
-                //   handleSelectionOptionMeter(meterDataByApi, inputValuemeter)
-                // }
                 editable={false}
                 placeholderTextColor={"rgba(166, 166, 166, 1)"}
               />
@@ -368,9 +392,7 @@ const MeterSection = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
-
         {/* Dropdown of meter */}
-
         {isDropdownMeter && (
           <View style={styles.dropdownContainer}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
@@ -378,7 +400,6 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   .filter((item) => item.status === "pending")
                   .map((meterid, index) => {
-                    console.log(meterid, ">>>>>>>>>>>>>>>>33333333333");
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -636,7 +657,6 @@ const MeterSection = ({ navigation }) => {
                 }
                 editable={false}
                 placeholderTextColor={"rgba(166, 166, 166, 1)"}
-                
               />
               <Entypo
                 name="chevron-down"
@@ -645,38 +665,56 @@ const MeterSection = ({ navigation }) => {
               />
             </View>
           </TouchableOpacity>
+
+          {isDropdownMeterReading && (
+            <View style={styles.dropdownContainer}>
+              <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
+                {meterDataByApi?.length > 0 &&
+                  meterDataByApi
+                    .filter((item) => item.status === "completed")
+                    .map((option, index) => {
+                      console.log(option, ">>>>>>>>>>>>>>>");
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          style={styles.dropdownOption}
+                          onPress={() =>
+                            handleSelectionOptionMeterReading(option)
+                          }
+                        >
+                          <Text style={styles.input}>{option?.id}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+              </ScrollView>
+            </View>
+          )}
         </View>
 
         {/* Dropdown of meter reading */}
 
-        {isDropdownMeterReading && (
-          <View style={styles.dropdownContainer}>
-            <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
-              {meterDataByApi?.length > 0 &&
-                meterDataByApi
-                  .filter((item) => item.status === "completed")
-                  .map((option, index) => {
-                    console.log(option, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                    return (
-                      <TouchableOpacity
-                        key={index}
-                        style={styles.dropdownOption}
-                        onPress={() =>
-                          handleSelectionOptionMeterReading(
-                            // meterDataByApi,
-                            option?.id
-                          )
-                        }
-                      >
-                        <Text style={styles.input}>{option?.id}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={{ justifyContent: "flex-end", marginVertical: 15 }}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            flexDirection: "row",
+            marginVertical: 15,
+          }}
+        >
+          {completeImage !== null && (
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#197AB6",
+                paddingVertical: 6,
+                borderRadius: 15,
+                paddingHorizontal: 16,
+              }}
+              onPress={() => setCompleteModal(true)}
+            >
+              <Text style={{ color: "white", fontWeight: 700 }}>
+                View Image
+              </Text>
+            </TouchableOpacity>
+          )}
           <View
             style={{
               backgroundColor: "#197AB6",
@@ -780,6 +818,36 @@ const MeterSection = ({ navigation }) => {
             </View>
           </View>
         </Modal>
+
+        {/* complete image */}
+
+        <Modal
+          transparent={true}
+          visible={completeModal}
+          onRequestClose={() => setCompleteModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContentt}>
+              <View style={styles.imageBox}>
+                {image !== null ? (
+                  <Image source={{ uri: "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg" }} style={{height:"100%",width:"100%"}}/>
+                ) : (
+                  <Image source={require("../assets/icons/no-image.jpg")} style={{height:"100%",width:"100%"}}/>
+                )}
+              </View>
+              <TouchableOpacity
+                style={styles.closeButtonn}
+                onPress={() => setCompleteModal(false)}
+              >
+                <Image
+                  source={require("../assets/icons/close.png")}
+                  style={{ height: 20, width: 20 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
         {noteLoading && <LoaderComponent loading={noteLoading} />}
         {/* <CropImage/> */}
       </ScrollView>
@@ -790,6 +858,26 @@ const MeterSection = ({ navigation }) => {
 export default MeterSection;
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContentt: {
+    height: Dimensions.get("window").height * 0.3,
+    width: "100%",
+  },
+  imageBox: {
+    height: 200,
+    width: "100%",
+    backgroundColor: "rgba(0,0,0,0.7)",
+  },
+  closeButtonn: {
+    position: "absolute",
+    right: 18,
+    top: -35,
+  },
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
