@@ -143,7 +143,7 @@ const DashboardStack = () => (
 
 const TabNavigator = () => (
   <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
-  <Bottom.Screen name="Dashboard" component={DashboardStack} options={{ headerShown: false }} />
+  <Bottom.Screen name="DashboardBottom" component={DashboardStack} options={{ headerShown: false }} />
     <Bottom.Screen name="meterReadingScanner" component={MeterReadingScanner} options={{ headerShown: false }} />
   
     <Bottom.Screen name="MeterScreen" component={MeterSection} options={{ headerShown: false }}  />

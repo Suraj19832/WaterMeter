@@ -75,7 +75,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
               iconName = camera;
               activeIconName = activecameraIcon;
               break;
-            case 'Dashboard':
+            case 'DashboardBottom':
               iconName = scheduled;
               activeIconName = activescheduleIcon;
               break;
