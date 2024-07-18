@@ -86,9 +86,7 @@ function MeterReadingScanner({ navigation }) {
   }
 
   const otpFields = useRef(
-    Array(totalDigit)
-      .fill()
-      .map(() => React.createRef())
+    Array(totalDigit)?.fill()?.map(() => React.createRef())
   );
 
   const handleOTPChange = (index, value) => {
@@ -102,12 +100,14 @@ function MeterReadingScanner({ navigation }) {
       otpFields.current[index - 1].current?.focus();
     }
   };
+  // const isOTPComplete = () => {
+  //   return otp.every((totalDigit) => totalDigit !== "");
+  // };
   const isOTPComplete = () => {
-    return otp.every((totalDigit) => totalDigit !== "");
+    return otp?.every((digit) => digit !== "");
   };
 
   const verifyNumber = async (imageFile) => {
-    console.log(imageFile,"+++++++++++++++++++++++")
     try {
       const data = {
         file: imageFile,
@@ -120,12 +120,15 @@ function MeterReadingScanner({ navigation }) {
       setEditMeter(true);
       setDataId(res?.dataId);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
-      if (!res?.ocrReading) {
-        toast.show("Unable to read !!", { type: "sucess", duration: 3000 });
+      if (res?.ocrReading) {
+        const newOTP = Array(totalDigit)?.fill("")?.map((_, index) => res?.ocrReading[index] || "");
+        setOTP(newOTP);
+      } else {
+        toast.show("Unable to read !!", { type: "success", duration: 3000 });
       }
     } catch (err) {
       console.error(err, "Error while uploading image");
-      toast.show(err,{type:"warning"})
+      toast.show(err, { type: "warning" });
     } finally {
       setLoading(false);
     }
@@ -188,7 +191,7 @@ function MeterReadingScanner({ navigation }) {
             meterName,
             id,
             name,
-            otp: otp.join(""),
+            otp: otp?.join(""),
           });
         }
       })
