@@ -182,7 +182,7 @@ function Dashboard({ navigation }) {
             {data.length === 0 ? (
               <Text style={styles.noDataText}>No completed visits</Text>
             ) : (
-              data.map((items, index) => (
+              data?.map((items, index) => (
                 <View key={index}>
                   <DashboardCompletedCards
                     expandCompleted={expandCompleted}
@@ -200,7 +200,7 @@ function Dashboard({ navigation }) {
               <Text style={styles.noDataText}>No scheduled visits</Text>
             ) : (
               <View style={{ marginBottom: 28 }}>
-                {data.map((items, index) => (
+                {data?.map((items, index) => (
                   <View key={index}>
                     <DashboardScheduledCards
                       expandSchedule={expandSchedule}

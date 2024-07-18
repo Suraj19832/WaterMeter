@@ -397,9 +397,7 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.dropdownContainer}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
               {meterDataByApi?.length > 0 &&
-                meterDataByApi
-                  .filter((item) => item.status === "pending")
-                  .map((meterid, index) => {
+                meterDataByApi?.filter((item) => item.status === "pending")?.map((meterid, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -670,9 +668,7 @@ const MeterSection = ({ navigation }) => {
             <View style={styles.dropdownContainer}>
               <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
                 {meterDataByApi?.length > 0 &&
-                  meterDataByApi
-                    .filter((item) => item.status === "completed")
-                    .map((option, index) => {
+                  meterDataByApi?.filter((item) => item.status === "completed")?.map((option, index) => {
                       console.log(option, ">>>>>>>>>>>>>>>");
                       return (
                         <TouchableOpacity

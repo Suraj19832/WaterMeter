@@ -270,7 +270,7 @@ function MeterReadingScanner({ navigation }) {
         >
           <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
-            {otp.map((totalDigit, index) => (
+            {otp?.map((totalDigit, index) => (
               <TextInput
                 key={index}
                 style={styles.otpBox}
