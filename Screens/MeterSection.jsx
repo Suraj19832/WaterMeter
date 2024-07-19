@@ -31,7 +31,7 @@ const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
-  const { PopertyId, date } = route.params;
+  const { PopertyId, date } = route.params ?? {};
   const [name, setname] = useState();
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
@@ -48,7 +48,6 @@ const MeterSection = ({ navigation }) => {
 
   const [isDropdownMeter, setisDropdownMeter] = useState(false);
   const [inputValuemeter, setinputValuemeter] = useState("");
-  console.log(inputValuemeter, "press button");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
 
@@ -58,6 +57,9 @@ const MeterSection = ({ navigation }) => {
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
   const [image, setImage] = useState(null);
+  const [completeDropdownImage, setCompleteDropdownImage] = useState(null);
+  const [completeLoading, setCompleteLoading] = useState(false);
+
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
 
@@ -87,14 +89,11 @@ const MeterSection = ({ navigation }) => {
   };
   const handleSelectionOptionMeter = (all_data, option) => {
     setUserSelectedImage(null);
-    console.log("option is clicked ");
     setinputValuemeter(option);
     setmeterData(option);
     setisDropdownMeter(false);
     setmeterMake(getNameById(all_data, option));
     const meterMakevalue = getNameById(all_data, option);
-    console.log(meterMakevalue?.image, "imagee eb");
-    console.log(userSelectedImage, "user ");
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
@@ -106,12 +105,12 @@ const MeterSection = ({ navigation }) => {
     setisDropdownMeterReading(!isDropdownMeterReading);
   };
   const handleSelectionOptionMeterReading = (option) => {
+    console.log(option.image);
     setinputValuemeterReading(option?.id);
     setmeterReadingData(option?.id);
     setisDropdownMeterReading(false);
     setCompleteImage(option?.image);
-    console.log(option?.id,"complete meter id")
-    completedImage()
+    completedImage();
   };
 
   const toggleModalVisibility = () => {
@@ -190,7 +189,6 @@ const MeterSection = ({ navigation }) => {
       if (res?.status) {
         setnoteLoading(false);
         toast.show(res?.message, { type: "sucess" });
-        console.log("res?.status:-", res?.status);
       }
     } catch (error) {
       setnoteLoading(false);
@@ -217,8 +215,6 @@ const MeterSection = ({ navigation }) => {
         quality: 1,
       });
 
-      console.log("File picker result:", result);
-
       if (
         !result.canceled &&
         result.assets &&
@@ -243,7 +239,6 @@ const MeterSection = ({ navigation }) => {
     closeModal();
   };
   const takePicture = async () => {
-    console.log("starting the camera");
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("Camera permission is required to take photos.");
@@ -268,7 +263,6 @@ const MeterSection = ({ navigation }) => {
         setModalVisibleUploadImage(false);
         ImageUpload(compressedImage); // Use compressed image for upload
         setUserSelectedImage(compressedImage.uri);
-        console.log("got the image");
       }
     } catch (error) {
       toast.show("Capture Failed", { type: "warning" });
@@ -308,6 +302,7 @@ const MeterSection = ({ navigation }) => {
   }, [PopertyId]);
 
   const completedImage = () => {
+    setCompleteLoading(true);
     const data = {
       property_id: id,
       meter_id: meterReadingData,
@@ -315,42 +310,41 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        console.log(res,"response from api");
-        toast.show(res?.message,{type:"sucess"})
+        toast.show(res?.message, { type: "sucess" });
+        setCompleteDropdownImage(res?.iamge);
+        setCompleteLoading(false);
       })
       .catch((err) => {
-        console.log(err,"error from complete");
+        console.log(err, "error from complete");
+        setCompleteLoading(false);
       });
   };
 
-  function checkForImage(urll) {
-    let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
-    if (urll.match(regex)) {
-      return "valid";
-    } else {
-      return "invalid";
-    }
-  }
+  // function checkForImage(urll) {
+  //   let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
+  //   if (urll.match(regex)) {
+  //     return "valid";
+  //   } else {
+  //     return "invalid";
+  //   }
+  // }
 
-  useEffect(() => {
-    const checkImageURL = async (url) => {
-      if (checkForImage(url) === "valid") {
-        try {
-          await axios.head(url);
-          setImage(url);
-          console.log(url,completeImage,"url compleete image")
-        } catch (error) {
-          setImage(null);
-        }
-      } else {
-        setImage(null);
-      }
-      console.log(url,completeImage,"complete image url")
-    };
+  // useEffect(() => {
+  //   const checkImageURL = async (url) => {
+  //     if (checkForImage(url) === "valid") {
+  //       try {
+  //         await axios.head(url);
+  //         setImage(url);
+  //       } catch (error) {
+  //         setImage(null);
+  //       }
+  //     } else {
+  //       setImage(null);
+  //     }
+  //   };
 
-    checkImageURL(completeImage);
-  }, [completeImage, completeModal]);
-  // console.log(image,completeImage,">>>>>>>>>>KKKKKKKKKKK")
+  //   checkImageURL(completeImage);
+  // }, [completeImage, completeModal]);
 
   const refreshApp = () => {
     setRefreshing(true);
@@ -693,7 +687,6 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
-                      console.log(option, ">>>>>>>>>>>>>>>");
                       return (
                         <TouchableOpacity
                           key={index}
@@ -728,7 +721,11 @@ const MeterSection = ({ navigation }) => {
                 borderRadius: 15,
                 paddingHorizontal: 16,
               }}
-              onPress={() => setCompleteModal(true)}
+              onPress={() => {
+                setCompleteModal(true);
+                setCompleteLoading(true); // Add this line
+                completedImage(); // Call this function to load the image
+              }}
             >
               <Text style={{ color: "white", fontWeight: 700 }}>
                 View Image
@@ -849,18 +846,11 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContentt}>
               <View style={styles.imageBox}>
-                {console.log(completeImage,"OOOOOOOOOO")}
-                {image == null ? (
-                  <Image
-                    source={{
-                      uri: "https://test.ehostingguru.com/water-meter/api/public/uploads/ocr/bLMbJItaN2VprwuLya1Eq09D0rmrI4gNY7FgCZi0.jpg",
-                    }}
-                    style={{ height: "100%", width: "100%" }}
-                    resizeMode="cover"
-                  />
+                {completeLoading ? (
+                  <ActivityIndicator size="medium" style={{flex:1,justifyContent:"center",alignItems:"center"}}/>
                 ) : (
                   <Image
-                    source={require("../assets/icons/no-image.jpg")}
+                    source={{ uri: completeDropdownImage }}
                     style={{ height: "100%", width: "100%" }}
                   />
                 )}
@@ -901,7 +891,7 @@ const styles = StyleSheet.create({
   imageBox: {
     height: 200,
     width: "100%",
-    backgroundColor: "rgba(0,0,0,0.7)",
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
   closeButtonn: {
     position: "absolute",
