@@ -69,5 +69,9 @@ const appApi = {
     const url = `${baseURL}/api/ocrFinal`;
     return sendAuthorizePostFormData(url, data);
   },
+  completedImage: function(data){
+    const url = `${baseURL}/api/reading/completed`
+    return sendAuthorizeGetRequest(url,data)
+  }
 };
 export default appApi;

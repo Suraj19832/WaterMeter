@@ -54,10 +54,10 @@ const MeterSection = ({ navigation }) => {
 
   const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
   const [inputValuemeterReading, setinputValuemeterReading] = useState("");
-  const [meterReadingData, setmeterReadingData] = useState("");
+  const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
-  const [image,setImage] = useState(null)
+  const [image, setImage] = useState(null);
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
 
@@ -110,6 +110,8 @@ const MeterSection = ({ navigation }) => {
     setmeterReadingData(option?.id);
     setisDropdownMeterReading(false);
     setCompleteImage(option?.image);
+    console.log(option?.id,"complete meter id")
+    completedImage()
   };
 
   const toggleModalVisibility = () => {
@@ -305,6 +307,21 @@ const MeterSection = ({ navigation }) => {
     fetchData();
   }, [PopertyId]);
 
+  const completedImage = () => {
+    const data = {
+      property_id: id,
+      meter_id: meterReadingData,
+    };
+    appApi
+      .completedImage(data)
+      .then((res) => {
+        console.log(res,"response from api");
+        toast.show(res?.message,{type:"sucess"})
+      })
+      .catch((err) => {
+        console.log(err,"error from complete");
+      });
+  };
 
   function checkForImage(urll) {
     let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
@@ -321,16 +338,19 @@ const MeterSection = ({ navigation }) => {
         try {
           await axios.head(url);
           setImage(url);
+          console.log(url,completeImage,"url compleete image")
         } catch (error) {
           setImage(null);
         }
       } else {
         setImage(null);
       }
+      console.log(url,completeImage,"complete image url")
     };
 
     checkImageURL(completeImage);
   }, [completeImage, completeModal]);
+  // console.log(image,completeImage,">>>>>>>>>>KKKKKKKKKKK")
 
   const refreshApp = () => {
     setRefreshing(true);
@@ -397,7 +417,9 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.dropdownContainer}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
               {meterDataByApi?.length > 0 &&
-                meterDataByApi?.filter((item) => item.status === "pending")?.map((meterid, index) => {
+                meterDataByApi
+                  ?.filter((item) => item.status === "pending")
+                  ?.map((meterid, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -668,7 +690,9 @@ const MeterSection = ({ navigation }) => {
             <View style={styles.dropdownContainer}>
               <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
                 {meterDataByApi?.length > 0 &&
-                  meterDataByApi?.filter((item) => item.status === "completed")?.map((option, index) => {
+                  meterDataByApi
+                    ?.filter((item) => item.status === "completed")
+                    ?.map((option, index) => {
                       console.log(option, ">>>>>>>>>>>>>>>");
                       return (
                         <TouchableOpacity
@@ -825,10 +849,20 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContentt}>
               <View style={styles.imageBox}>
-                {image !== null ? (
-                  <Image source={{ uri: "https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-1080x675.jpg" }} style={{height:"100%",width:"100%"}}/>
+                {console.log(completeImage,"OOOOOOOOOO")}
+                {image == null ? (
+                  <Image
+                    source={{
+                      uri: "https://test.ehostingguru.com/water-meter/api/public/uploads/ocr/bLMbJItaN2VprwuLya1Eq09D0rmrI4gNY7FgCZi0.jpg",
+                    }}
+                    style={{ height: "100%", width: "100%" }}
+                    resizeMode="cover"
+                  />
                 ) : (
-                  <Image source={require("../assets/icons/no-image.jpg")} style={{height:"100%",width:"100%"}}/>
+                  <Image
+                    source={require("../assets/icons/no-image.jpg")}
+                    style={{ height: "100%", width: "100%" }}
+                  />
                 )}
               </View>
               <TouchableOpacity
