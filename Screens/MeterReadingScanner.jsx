@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
 import { getFileData } from "../Helper/Helper";
@@ -204,6 +204,23 @@ function MeterReadingScanner({ navigation }) {
         setSubmitLoading(false);
       });
   };
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reset the states when the screen comes into focus
+      setScannedMeter(null);
+      setMeterValue(null);
+      setModalInfo(false);
+      setOTP(Array(totalDigit).fill(""));
+      setLoading(false);
+      setSubmitLoading(false);
+      setEditMeter(false);
+      setDataId(null);
+      setRescan(false);
+      setManual(false);
+    }, [totalDigit])
+  );
 
   return (
     <KeyboardAvoidingView
