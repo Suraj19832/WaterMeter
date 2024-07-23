@@ -8,18 +8,31 @@ import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name ,pendingmeterReading} = route.params ?? {};
+  const { id, name, pendingmeterReading } = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
-  const [data,setData]= useState(null)
+  const [dropdownValue, setDropdownValue] = useState(null);
+  const [data, setData] = useState(null);
 
   const data1 = [
-    { id: "A01", name: "ocr" },
-    { id: "A03", name: "ocr" },
-    { id: "A06", name: "ocr" },
-    { id: "F45", name: "ocr" },
-    { id: "K89", name: "ocr" },
-    { id: "B23", name: "ocr" },
+    {
+      id: "A01",
+      value: "A01",
+    },
+    {
+      id: "A01",
+      value: "A01",
+    },
+    {
+      id: "A02",
+      value: "A02",
+    },
   ];
+
+  const handleDropdownValue = (items) => {
+    console.log(items.id)
+    setDropdownValue(items?.id);
+    setToggleDropdown(false);
+  };
 
   useEffect(() => {
     const data = {
@@ -29,10 +42,10 @@ export default function SummaryScreen({ navigation }) {
       .summaryCompletion(data)
       .then((res) => {
         console.log(res, ">>>>>>>response");
-        setData(res?.data)
+        setData(res?.data);
       })
       .catch((err) => [console.log(err, ">>>>>>>error")]);
-  },[]);
+  }, []);
   return (
     <SafeAreaView>
       <View style={styles.headArrow}>
@@ -51,7 +64,9 @@ export default function SummaryScreen({ navigation }) {
       <ScrollView>
         <View style={styles.mainView}>
           <Text style={styles.summaryText}>Summary</Text>
-          <Text style={styles.meterRead}>{data?.totalMeterRead} Meters Read</Text>
+          <Text style={styles.meterRead}>
+            {data?.totalMeterRead} Meters Read
+          </Text>
 
           <View style={styles.mainBox}>
             <View style={{ width: "100%", gap: 15 }}>
@@ -62,7 +77,9 @@ export default function SummaryScreen({ navigation }) {
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.manualEditValue}>{data?.manualEdit} :</Text>
+                  <Text style={styles.manualEditValue}>
+                    {data?.manualEdit} :
+                  </Text>
                   <Text style={styles.manualEdit}> Manual Edit</Text>
                 </View>
               </View>
@@ -79,13 +96,15 @@ export default function SummaryScreen({ navigation }) {
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.meterNotesValue}>{data?.manualNotes} :</Text>
+                  <Text style={styles.meterNotesValue}>
+                    {data?.manualNotes} :
+                  </Text>
                   <Text style={styles.meterNotestext}> Meter Notes</Text>
                 </View>
               </View>
             </View>
 
-            <View style={{ gap: 8 }}>
+            {/* <View style={{ gap: 8 }}>
               <Text style={styles.taskCompleted}>
                 Task completed in 35 mins
               </Text>
@@ -93,7 +112,7 @@ export default function SummaryScreen({ navigation }) {
                 <Text style={styles.date}>28.05.2024</Text>
                 <Text style={styles.time}>10:56 AM</Text>
               </View>
-            </View>
+            </View> */}
           </View>
         </View>
 
@@ -113,7 +132,7 @@ export default function SummaryScreen({ navigation }) {
               style={styles.input_box}
               onPress={() => setToggleDropdown(!toggleDropdown)}
             >
-              <Text style={styles.completereading}>Completed Readings</Text>
+              <Text style={styles.completereading}>{dropdownValue ? `${dropdownValue}` : "Completed Readings"}</Text>
               <TouchableOpacity>
                 <AntDesign
                   name="down"
@@ -135,9 +154,13 @@ export default function SummaryScreen({ navigation }) {
                   {data1?.map((item, index) => {
                     console.log(item, ">>>>>>>>>>>>>>>");
                     return (
-                      <View style={styles.dropdownOptBox} key={index}>
+                      <TouchableOpacity
+                        style={styles.dropdownOptBox}
+                        key={index}
+                        onPress={() => handleDropdownValue(item)}
+                      >
                         <Text style={styles.dropdownOpttext}>{item?.id}</Text>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })}
                 </ScrollView>
@@ -148,7 +171,9 @@ export default function SummaryScreen({ navigation }) {
 
         <View style={styles.pending}>
           <View style={styles.pendingMeters}>
-            <Text style={styles.pendingMetersTxt}>{pendingmeterReading} Meters Pending</Text>
+            <Text style={styles.pendingMetersTxt}>
+              {pendingmeterReading} Meters Pending
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -322,7 +347,7 @@ const styles = StyleSheet.create({
   },
   completereading: {
     color: "rgba(152, 152, 152, 1)",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "400",
   },
   dropdownmain: {
@@ -333,7 +358,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   latLongBox: {
-    marginTop: 18,
+    marginTop: 50,
     flexDirection: "row",
     justifyContent: "space-between",
   },

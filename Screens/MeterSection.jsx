@@ -8,7 +8,6 @@ import {
   Modal,
   ScrollView,
   ActivityIndicator,
-  RefreshControl,
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +16,7 @@ import { Entypo } from "@expo/vector-icons";
 import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
 import { getFileData } from "../Helper/Helper";
@@ -25,7 +24,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
-import axios from "axios";
 
 const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
@@ -64,7 +62,6 @@ const MeterSection = ({ navigation }) => {
   const [userSelectedImage, setUserSelectedImage] = useState(null);
 
   const [noteLoading, setnoteLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
 
   const toast = useToast();
   const getNameById = (all_data, id) => {
@@ -93,6 +90,7 @@ const MeterSection = ({ navigation }) => {
     setmeterData(option);
     setisDropdownMeter(false);
     setmeterMake(getNameById(all_data, option));
+
     const meterMakevalue = getNameById(all_data, option);
     if (userSelectedImage) {
       setisImage(userSelectedImage);
@@ -105,7 +103,6 @@ const MeterSection = ({ navigation }) => {
     setisDropdownMeterReading(!isDropdownMeterReading);
   };
   const handleSelectionOptionMeterReading = (option) => {
-    console.log(option.image);
     setinputValuemeterReading(option?.id);
     setmeterReadingData(option?.id);
     setisDropdownMeterReading(false);
@@ -284,6 +281,7 @@ const MeterSection = ({ navigation }) => {
         setLastReading(res?.data?.last_reading);
         setLastReadingDate(res?.data?.last_reading_date);
         setAvgUsage(res?.data?.avg_usage);
+
         if (inputValuemeter != "") {
           handleSelectionOptionMeter(res?.data?.meters, inputValuemeter);
         }
@@ -324,13 +322,13 @@ const MeterSection = ({ navigation }) => {
       });
   };
 
-  const refreshApp = () => {
-    setRefreshing(true);
-    handleSelectionOptionMeter();
-    fetchData();
-    getNameById();
-    setRefreshing(false);
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      setinputValuemeter("");
+      setinputValuemeterReading("");
+    }, [])
+  );
+
   if (loading) {
     return (
       <View>
@@ -353,12 +351,7 @@ const MeterSection = ({ navigation }) => {
           />
         </TouchableOpacity>
       </>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refreshApp} />
-        }
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
           <Text style={styles.headingText}>
             {id} | {name}
@@ -665,6 +658,8 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
+
+                      console.log(option,">>>>>???????????")
                       return (
                         <TouchableOpacity
                           key={index}
