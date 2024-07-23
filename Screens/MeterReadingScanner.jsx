@@ -36,6 +36,7 @@ function MeterReadingScanner({ navigation }) {
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
+  const [pendingmeterReading, setPendingMeterReading] = useState(null)
   const [submitLoading, setSubmitLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -187,6 +188,7 @@ function MeterReadingScanner({ navigation }) {
         console.log(res, "submission form api");
         if (res?.status) {
           setSubmitLoading(false);
+          setPendingMeterReading(res?.pendingMeterCount)
           toast.show("Sucessfully Submitted", {
             type: "sucess",
             duration: 3000,
@@ -196,6 +198,7 @@ function MeterReadingScanner({ navigation }) {
             id,
             name,
             otp: otp?.join(""),
+            pendingmeterReading
           });
         }
       })

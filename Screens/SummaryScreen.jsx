@@ -8,7 +8,7 @@ import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name } = route.params;
+  const { id, name ,pendingmeterReading} = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [data,setData]= useState(null)
 
@@ -148,7 +148,7 @@ export default function SummaryScreen({ navigation }) {
 
         <View style={styles.pending}>
           <View style={styles.pendingMeters}>
-            <Text style={styles.pendingMetersTxt}>99 Meters Pending</Text>
+            <Text style={styles.pendingMetersTxt}>{pendingmeterReading} Meters Pending</Text>
           </View>
         </View>
       </ScrollView>
