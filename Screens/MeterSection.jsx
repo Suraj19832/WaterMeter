@@ -324,32 +324,6 @@ const MeterSection = ({ navigation }) => {
       });
   };
 
-  // function checkForImage(urll) {
-  //   let regex = /^https?:\/\/.*\/.*\.(png|gif|webp|jpeg|jpg)\??.*$/gim;
-  //   if (urll.match(regex)) {
-  //     return "valid";
-  //   } else {
-  //     return "invalid";
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const checkImageURL = async (url) => {
-  //     if (checkForImage(url) === "valid") {
-  //       try {
-  //         await axios.head(url);
-  //         setImage(url);
-  //       } catch (error) {
-  //         setImage(null);
-  //       }
-  //     } else {
-  //       setImage(null);
-  //     }
-  //   };
-
-  //   checkImageURL(completeImage);
-  // }, [completeImage, completeModal]);
-
   const refreshApp = () => {
     setRefreshing(true);
     handleSelectionOptionMeter();

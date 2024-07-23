@@ -118,32 +118,18 @@ function MeterReadingScanner({ navigation }) {
       };
       const res = await appApi.meterScanner(data);
 
-      if (res.ok) {
-        console.log(res, "Response from API");
-        setMeterValue(res?.ocrReading);
-        setEditMeter(true);
-        setDataId(res?.dataId);
-        toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
-        if (res?.ocrReading) {
-          const newOTP = Array(totalDigit)
-            ?.fill("")
-            ?.map((_, index) => res?.ocrReading[index] || "");
-          setOTP(newOTP);
-        } else {
-          toast.show("Unable to read !!", { type: "success", duration: 3000 });
-        }
-      } else if (res.status === 500) {
-        console.error("Internal Server Error", res);
-        toast.show("Internal Server Error. Please try again later.", {
-          type: "error",
-          duration: 3000,
-        });
+      console.log(res, "Response from API");
+      setMeterValue(res?.ocrReading);
+      setEditMeter(true);
+      setDataId(res?.dataId);
+      toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
+      if (res?.ocrReading) {
+        const newOTP = Array(totalDigit)
+          ?.fill("")
+          ?.map((_, index) => res?.ocrReading[index] || "");
+        setOTP(newOTP);
       } else {
-        console.error("Error while uploading image", res);
-        toast.show("Error while uploading image. Please try again later.", {
-          type: "error",
-          duration: 3000,
-        });
+        toast.show("Unable to read !!", { type: "success", duration: 3000 });
       }
     } catch (err) {
       console.error(err, "Error while uploading image");

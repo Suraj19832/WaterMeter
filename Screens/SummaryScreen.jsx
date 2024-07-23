@@ -1,13 +1,18 @@
 import { AntDesign } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
+  const route = useRoute();
+  const { id, name } = route.params;
   const [toggleDropdown, setToggleDropdown] = useState(false);
+  const [data,setData]= useState(null)
 
-  const data = [
+  const data1 = [
     { id: "A01", name: "ocr" },
     { id: "A03", name: "ocr" },
     { id: "A06", name: "ocr" },
@@ -15,6 +20,19 @@ export default function SummaryScreen({ navigation }) {
     { id: "K89", name: "ocr" },
     { id: "B23", name: "ocr" },
   ];
+
+  useEffect(() => {
+    const data = {
+      property_id: id,
+    };
+    appApi
+      .summaryCompletion(data)
+      .then((res) => {
+        console.log(res, ">>>>>>>response");
+        setData(res?.data)
+      })
+      .catch((err) => [console.log(err, ">>>>>>>error")]);
+  },[]);
   return (
     <SafeAreaView>
       <View style={styles.headArrow}>
@@ -27,24 +45,24 @@ export default function SummaryScreen({ navigation }) {
       </View>
 
       <View style={styles.propertyName}>
-        <Text style={styles.propertyNameFTxt}>M01 |</Text>
-        <Text style={styles.propertyNameSTxt}> Masari Heights</Text>
+        <Text style={styles.propertyNameFTxt}>{id} |</Text>
+        <Text style={styles.propertyNameSTxt}> {name}</Text>
       </View>
       <ScrollView>
         <View style={styles.mainView}>
           <Text style={styles.summaryText}>Summary</Text>
-          <Text style={styles.meterRead}>26 Meters Read</Text>
+          <Text style={styles.meterRead}>{data?.totalMeterRead} Meters Read</Text>
 
           <View style={styles.mainBox}>
             <View style={{ width: "100%", gap: 15 }}>
               <View style={styles.ocr}>
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.ocrpassedValue}>12 :</Text>
+                  <Text style={styles.ocrpassedValue}>{data?.ocrPassed} :</Text>
                   <Text style={styles.ocrPassed}> OCR Passed</Text>
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.manualEditValue}>05 :</Text>
+                  <Text style={styles.manualEditValue}>{data?.manualEdit} :</Text>
                   <Text style={styles.manualEdit}> Manual Edit</Text>
                 </View>
               </View>
@@ -61,7 +79,7 @@ export default function SummaryScreen({ navigation }) {
                 </View>
 
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.meterNotesValue}>03 :</Text>
+                  <Text style={styles.meterNotesValue}>{data?.manualNotes} :</Text>
                   <Text style={styles.meterNotestext}> Meter Notes</Text>
                 </View>
               </View>
@@ -81,11 +99,11 @@ export default function SummaryScreen({ navigation }) {
 
         <View style={styles.latLongBox}>
           <View style={styles.latBox}>
-            <Text style={styles.lat}>Lat : 31.1830</Text>
+            <Text style={styles.lat}>Lat : {data?.lat}</Text>
           </View>
 
           <View style={styles.longBox}>
-            <Text style={styles.longtext}>Long : 31.2232</Text>
+            <Text style={styles.longtext}>Long : {data?.lng}</Text>
           </View>
         </View>
 
@@ -105,7 +123,7 @@ export default function SummaryScreen({ navigation }) {
               </TouchableOpacity>
             </TouchableOpacity>
             {toggleDropdown && (
-              <View style={{zIndex:100}}>
+              <View style={{ zIndex: 100 }}>
                 <ScrollView
                   contentContainerStyle={styles.dropdownBox}
                   scrollEnabled={true}
@@ -114,7 +132,7 @@ export default function SummaryScreen({ navigation }) {
                     maxHeight: 120,
                   }}
                 >
-                  {data?.map((item, index) => {
+                  {data1?.map((item, index) => {
                     console.log(item, ">>>>>>>>>>>>>>>");
                     return (
                       <View style={styles.dropdownOptBox} key={index}>

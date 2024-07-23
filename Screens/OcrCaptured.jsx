@@ -1,14 +1,11 @@
-import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View, StyleSheet, Text, ImageBackground, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
-import { colorCodes } from "../ColorCodes/Colors";
 
 export default function OcrCaptured({ navigation }) {
-  const [selectMeter, setSelectMeter] = useState(false);
 
   const route = useRoute();
   const { meterName, id, name, otp } = route.params;
@@ -131,7 +128,7 @@ export default function OcrCaptured({ navigation }) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate("SummaryScreen")}
+              onPress={() => navigation.navigate("SummaryScreen",{id,name})}
             >
               <SubmitButton
                 text="Submit Another"
