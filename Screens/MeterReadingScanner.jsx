@@ -86,7 +86,9 @@ function MeterReadingScanner({ navigation }) {
   }
 
   const otpFields = useRef(
-    Array(totalDigit)?.fill()?.map(() => React.createRef())
+    Array(totalDigit)
+      ?.fill()
+      ?.map(() => React.createRef())
   );
 
   const handleOTPChange = (index, value) => {
@@ -115,20 +117,36 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
       };
       const res = await appApi.meterScanner(data);
-      console.log(res, "Response from API");
-      setMeterValue(res?.ocrReading);
-      setEditMeter(true);
-      setDataId(res?.dataId);
-      toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
-      if (res?.ocrReading) {
-        const newOTP = Array(totalDigit)?.fill("")?.map((_, index) => res?.ocrReading[index] || "");
-        setOTP(newOTP);
+
+      if (res.ok) {
+        console.log(res, "Response from API");
+        setMeterValue(res?.ocrReading);
+        setEditMeter(true);
+        setDataId(res?.dataId);
+        toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
+        if (res?.ocrReading) {
+          const newOTP = Array(totalDigit)
+            ?.fill("")
+            ?.map((_, index) => res?.ocrReading[index] || "");
+          setOTP(newOTP);
+        } else {
+          toast.show("Unable to read !!", { type: "success", duration: 3000 });
+        }
+      } else if (res.status === 500) {
+        console.error("Internal Server Error", res);
+        toast.show("Internal Server Error. Please try again later.", {
+          type: "error",
+          duration: 3000,
+        });
       } else {
-        toast.show("Unable to read !!", { type: "success", duration: 3000 });
+        console.error("Error while uploading image", res);
+        toast.show("Error while uploading image. Please try again later.", {
+          type: "error",
+          duration: 3000,
+        });
       }
     } catch (err) {
       console.error(err, "Error while uploading image");
-      toast.show(err, { type: "warning" });
     } finally {
       setLoading(false);
     }

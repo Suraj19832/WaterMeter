@@ -310,8 +310,12 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        toast.show(res?.message, { type: "sucess" });
-        setCompleteDropdownImage(res?.iamge);
+        if (res?.iamge && res.iamge !== "") {
+          setCompleteDropdownImage(res?.iamge);
+        } else {
+          // Handle the case where res.iamge is null or an empty string
+          console.log("No image found");
+        }
         setCompleteLoading(false);
       })
       .catch((err) => {
@@ -847,12 +851,21 @@ const MeterSection = ({ navigation }) => {
             <View style={styles.modalContentt}>
               <View style={styles.imageBox}>
                 {completeLoading ? (
-                  <ActivityIndicator size="medium" style={{flex:1,justifyContent:"center",alignItems:"center"}}/>
-                ) : (
-                  <Image
-                    source={{ uri: completeDropdownImage }}
-                    style={{ height: "100%", width: "100%" }}
+                  <ActivityIndicator
+                    size="medium"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   />
+                ) : (
+                  completeDropdownImage && (
+                    <Image
+                      source={{ uri: completeDropdownImage }}
+                      style={{ height: "100%", width: "100%" }}
+                    />
+                  )
                 )}
               </View>
               <TouchableOpacity

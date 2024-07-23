@@ -9,6 +9,7 @@ import {
   Dimensions,
   Modal,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -28,6 +29,7 @@ function DashboardScheduledCards({
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
@@ -105,15 +107,19 @@ function DashboardScheduledCards({
 
   useEffect(() => {
     const checkImageURL = async (url) => {
+      setImageLoading(true);
       if (checkForImage(url) === "valid") {
         try {
           await axios.head(url);
           setImage(url);
+          setImageLoading(false);
         } catch (error) {
           setImage(null);
+          setImageLoading(false);
         }
       } else {
         setImage(null);
+        setImageLoading(false);
       }
     };
 
@@ -162,7 +168,7 @@ function DashboardScheduledCards({
               source={require("../assets/viewImage.png")}
               resizeMode="cover"
               style={[styles.image, { height: 23, width: 21 }]}
-            ></Image>
+            />
           </TouchableOpacity>
         </View>
 
@@ -277,12 +283,16 @@ function DashboardScheduledCards({
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             {image != null ? (
-              <Image
-                source={{
-                  uri: image,
-                }}
-                style={styles.modalImage}
-              />
+              imageLoading ? (
+                <ActivityIndicator size={"large"} color={"white"}/>
+              ) : (
+                <Image
+                  source={{
+                    uri: image,
+                  }}
+                  style={styles.modalImage}
+                />
+              )
             ) : (
               <Image
                 source={require("../assets/icons/no-image.jpg")}
