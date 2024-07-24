@@ -8,8 +8,7 @@ import SubmitButton from "../Components/SubmitButton";
 export default function OcrCaptured({ navigation }) {
 
   const route = useRoute();
-  const { meterName, id, name, otp, pendingmeterReading } = route.params ?? {};
-  console.log(pendingmeterReading)
+  const { meterName, id, name, otp ,res} = route.params ?? {};
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -129,7 +128,7 @@ export default function OcrCaptured({ navigation }) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate("SummaryScreen",{id,name,pendingmeterReading})}
+              onPress={() => navigation.navigate("SummaryScreen",{id,name,res})}
             >
               <SubmitButton
                 text="Submit Another"
@@ -149,7 +148,7 @@ export default function OcrCaptured({ navigation }) {
             }}
           >
             <View style={styles.pendingMeters}>
-              <Text style={styles.pendingMetersTxt}>{pendingmeterReading} Meters Pending</Text>
+              <Text style={styles.pendingMetersTxt}>{res?.pendingMeterCount} Meters Pending</Text>
             </View>
           </View>
         </View>

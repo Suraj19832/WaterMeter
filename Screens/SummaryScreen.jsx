@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, StyleSheet, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
@@ -8,25 +8,12 @@ import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name, pendingmeterReading } = route.params ?? {};
+  const { id, name,res} = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
-
-  const data1 = [
-    {
-      id: "A01",
-      value: "A01",
-    },
-    {
-      id: "A01",
-      value: "A01",
-    },
-    {
-      id: "A02",
-      value: "A02",
-    },
-  ];
+  const [dropdownData, setDropdownData] = useState([])
+ 
 
   const handleDropdownValue = (items) => {
     console.log(items.id)
@@ -34,18 +21,21 @@ export default function SummaryScreen({ navigation }) {
     setToggleDropdown(false);
   };
 
-  useEffect(() => {
-    const data = {
-      property_id: id,
-    };
-    appApi
-      .summaryCompletion(data)
-      .then((res) => {
-        console.log(res, ">>>>>>>response");
-        setData(res?.data);
-      })
-      .catch((err) => [console.log(err, ">>>>>>>error")]);
-  }, []);
+  useFocusEffect(
+    React.useCallback(()=>{
+      const data = {
+        property_id: id,
+      };
+      appApi
+        .summaryCompletion(data)
+        .then((res) => {
+          console.log(res, ">>>>>>>response");
+          setData(res?.data);
+          setDropdownData(res?.data?.completedMeters)
+        })
+        .catch((err) => [console.log(err, ">>>>>>>error")]);
+    },[])
+  )
   return (
     <SafeAreaView>
       <View style={styles.headArrow}>
@@ -90,10 +80,10 @@ export default function SummaryScreen({ navigation }) {
                   justifyContent: "space-between",
                 }}
               >
-                <View style={{ flexDirection: "row" }}>
+                {/* <View style={{ flexDirection: "row" }}>
                   <Text style={styles.potentialErrorValue}>06 :</Text>
                   <Text style={styles.potentialError}> Potential Error</Text>
-                </View>
+                </View> */}
 
                 <View style={{ flexDirection: "row" }}>
                   <Text style={styles.meterNotesValue}>
@@ -151,7 +141,7 @@ export default function SummaryScreen({ navigation }) {
                     maxHeight: 120,
                   }}
                 >
-                  {data1?.map((item, index) => {
+                  {dropdownData?.map((item, index) => {
                     console.log(item, ">>>>>>>>>>>>>>>");
                     return (
                       <TouchableOpacity
@@ -172,7 +162,7 @@ export default function SummaryScreen({ navigation }) {
         <View style={styles.pending}>
           <View style={styles.pendingMeters}>
             <Text style={styles.pendingMetersTxt}>
-              {pendingmeterReading} Meters Pending
+              {res?.pendingMeterCount} Meters Pending
             </Text>
           </View>
         </View>

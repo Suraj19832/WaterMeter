@@ -36,13 +36,13 @@ function MeterReadingScanner({ navigation }) {
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
-  const [pendingmeterReading, setPendingMeterReading] = useState(null)
   const [submitLoading, setSubmitLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
   const [dataId, setDataId] = useState(null);
   const [rescan, setRescan] = useState(false);
-  const [manual, setManual] = useState(false);
   const toast = useToast();
+
+  console.log(editMeter)
 
   function formatDate(inputDate) {
     if (!inputDate) {
@@ -121,7 +121,6 @@ function MeterReadingScanner({ navigation }) {
 
       console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
-      setEditMeter(true);
       setDataId(res?.dataId);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
@@ -156,7 +155,7 @@ function MeterReadingScanner({ navigation }) {
         const resizedImage = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [{ resize: { width: 800 } }],
-          { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
         );
 
         const fileData = getFileData(resizedImage);
@@ -177,10 +176,10 @@ function MeterReadingScanner({ navigation }) {
       property_id: id, //done
       meter_id: meterName, //done
       data_id: dataId, //done
-      rescan: rescan,
+      rescan: rescan,   // not done
       ocr_reading: meterValue, //done
-      is_manual: manual,
-      note: "no",
+      is_manual: editMeter ? "1" : "0",  //done
+      note: null,  //under process
     };
     appApi
       .submitReading(data)
@@ -188,7 +187,6 @@ function MeterReadingScanner({ navigation }) {
         console.log(res, "submission form api");
         if (res?.status) {
           setSubmitLoading(false);
-          setPendingMeterReading(res?.pendingMeterCount)
           toast.show("Sucessfully Submitted", {
             type: "sucess",
             duration: 3000,
@@ -198,7 +196,7 @@ function MeterReadingScanner({ navigation }) {
             id,
             name,
             otp: otp?.join(""),
-            pendingmeterReading
+            res
           });
         }
       })
@@ -221,7 +219,6 @@ function MeterReadingScanner({ navigation }) {
       setEditMeter(false);
       setDataId(null);
       setRescan(false);
-      setManual(false);
     }, [totalDigit])
   );
 
@@ -303,7 +300,6 @@ function MeterReadingScanner({ navigation }) {
                 onChangeText={(value) => handleOTPChange(index, value)}
                 value={totalDigit}
                 ref={otpFields.current[index]}
-                editable={editMeter}
               />
             ))}
           </View>
