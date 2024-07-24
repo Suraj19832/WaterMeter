@@ -313,7 +313,7 @@ function MeterReadingScanner({ navigation }) {
         <View style={styles.infoText}>
           <TouchableOpacity onPress={() => setModalInfo(true)}>
             <Image
-              source={require("../assets/Group (7).png")}
+              source={require("../assets/infoIcon.png")}
               style={{ height: 30, width: 30 }}
             />
           </TouchableOpacity>
@@ -342,7 +342,7 @@ function MeterReadingScanner({ navigation }) {
           <TouchableOpacity onPress={() => setEditMeter(!editMeter)}>
             {editMeter ? (
               <Image
-                source={require("../assets/Group (6).png")}
+                source={require("../assets/write.png")}
                 style={{ height: 30, width: 30 }}
               />
             ) : (

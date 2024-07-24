@@ -595,7 +595,7 @@ const MeterSection = ({ navigation }) => {
             <View>
               <TouchableOpacity onPress={toggleModalVisibilityImage}>
                 <Image
-                  source={require("../assets/Frame.png")}
+                  source={require("../assets/frame.png")}
                   style={{
                     height: 28,
                     width: 30,
@@ -620,7 +620,7 @@ const MeterSection = ({ navigation }) => {
                 disabled={noteLoading}
               >
                 <Image
-                  source={require("../assets/Group (6).png")}
+                  source={require("../assets/write.png")}
                   style={{ height: 20, width: 20 }}
                   resizeMode="center"
                 />
@@ -658,8 +658,7 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
-
-                      console.log(option,">>>>>???????????")
+                      console.log(option, ">>>>>???????????");
                       return (
                         <TouchableOpacity
                           key={index}
@@ -686,7 +685,7 @@ const MeterSection = ({ navigation }) => {
             marginVertical: 15,
           }}
         >
-          {completeImage !== null && (
+          {completeImage !== null ? (
             <TouchableOpacity
               style={{
                 backgroundColor: "#197AB6",
@@ -704,6 +703,8 @@ const MeterSection = ({ navigation }) => {
                 View Image
               </Text>
             </TouchableOpacity>
+          ) : (
+            <View />
           )}
           <View
             style={{
@@ -731,7 +732,7 @@ const MeterSection = ({ navigation }) => {
         >
           <TouchableOpacity onPress={toggleModalVisibilityInformation}>
             <Image
-              source={require("../assets/Group (7).png")}
+              source={require("../assets/infoIcon.png")}
               style={{
                 height: 30,
                 width: 30,
