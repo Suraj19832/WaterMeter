@@ -86,7 +86,7 @@ function ForgotPassword({ navigation }) {
           />
           <TouchableOpacity
             onPress={navigation.goBack}
-            style={{ position: "absolute" }}
+            style={{ position: "absolute" ,zIndex:1}}
           >
             <Image
               source={require("../assets/left-arrow.png")}

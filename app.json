@@ -2,7 +2,14 @@
   "expo": {
     "name": "Water Meter",
     "slug": "water-meter",
-    "plugins": [],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +27,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.desun.watermeter"
+      "bundleIdentifier": "com.desun.watermeter",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app needs access to your camera to take photos.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select photos."
+      }
     },
     "android": {
       "versionCode": 3,

@@ -42,7 +42,7 @@ function MeterReadingScanner({ navigation }) {
   const [rescan, setRescan] = useState(false);
   const toast = useToast();
 
-  console.log(editMeter)
+  console.log(editMeter);
 
   function formatDate(inputDate) {
     if (!inputDate) {
@@ -140,6 +140,12 @@ function MeterReadingScanner({ navigation }) {
 
   const handleScan = async () => {
     try {
+      const permissionCamera =
+        await ImagePicker.requestCameraPermissionsAsync();
+      if (!permissionCamera.granted) {
+        toast.show("Camera permission denied!", { type: "error" });
+        return;
+      }
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
@@ -176,10 +182,10 @@ function MeterReadingScanner({ navigation }) {
       property_id: id, //done
       meter_id: meterName, //done
       data_id: dataId, //done
-      rescan: rescan,   // not done
+      rescan: rescan, // not done
       ocr_reading: meterValue, //done
-      is_manual: editMeter ? "1" : "0",  //done
-      note: null,  //under process
+      is_manual: editMeter ? "1" : "0", //done
+      note: null, //under process
     };
     appApi
       .submitReading(data)
@@ -196,7 +202,7 @@ function MeterReadingScanner({ navigation }) {
             id,
             name,
             otp: otp?.join(""),
-            res
+            res,
           });
         }
       })
@@ -205,7 +211,6 @@ function MeterReadingScanner({ navigation }) {
         setSubmitLoading(false);
       });
   };
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -322,7 +327,6 @@ function MeterReadingScanner({ navigation }) {
               paddingHorizontal: 15,
               paddingVertical: 12,
               borderRadius: 8,
-              width: 150,
             }}
             disabled={!isOTPComplete()}
           >

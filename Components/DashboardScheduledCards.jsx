@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "500",
     lineHeight: 16,
-    width: 60,
+    minWidth: 60,
   },
   daysTxt: {
     height: 20,
