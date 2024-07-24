@@ -137,7 +137,7 @@ function DashboardScheduledCards({
           </Text>
         </View>
 
-        <View style={{ width: "20%" }}>
+        <View style={{ width: "23%" }}>
           <Text style={styles.contentDateTxt}>
             {formatDate(items?.reading_date?.on)}
           </Text>
