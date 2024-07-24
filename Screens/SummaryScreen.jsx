@@ -46,11 +46,13 @@ export default function SummaryScreen({ navigation }) {
           />
         </TouchableOpacity>
       </View>
-
-      <View style={styles.propertyName}>
-        <Text style={styles.propertyNameFTxt}>{id} |</Text>
-        <Text style={styles.propertyNameSTxt}> {name}</Text>
-      </View>
+      <View style={{ paddingHorizontal: 4,marginHorizontal:16 }}>
+          <View style={styles.heading}>
+            <Text style={styles.headingText}>
+              {id} | {name}
+            </Text>
+          </View>
+        </View>
       <ScrollView>
         <View style={styles.mainView}>
           <Text style={styles.summaryText}>Summary</Text>
@@ -172,6 +174,26 @@ export default function SummaryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  heading: {
+    marginVertical: 20,
+    backgroundColor: "#F5F5F5",
+    // Adding shadow properties
+    shadowColor: "#2198C9",
+    shadowOffset: { width: 0, height: 0.8 },
+    shadowOpacity: 0.7,
+    shadowRadius: 4,
+    elevation: 7, // For Android shadow
+    borderRadius: 10,
+  },
+  headingText: {
+    fontFamily: "Roboto",
+    fontWeight: "700",
+    fontSize: 24,
+    lineHeight: 28.13,
+    color: "#0B9ED2",
+    textAlign: "center",
+    marginVertical: 12,
+  },
   headArrow: {
     marginHorizontal: 20,
     marginTop: 5,

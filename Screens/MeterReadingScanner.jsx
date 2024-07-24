@@ -243,10 +243,12 @@ function MeterReadingScanner({ navigation }) {
           />
         </TouchableOpacity>
         {/* heading title */}
-        <View style={styles.heading}>
-          <Text style={styles.headingText}>
-            {id} | {name}
-          </Text>
+        <View style={{ paddingHorizontal: 4 }}>
+          <View style={styles.heading}>
+            <Text style={styles.headingText}>
+              {id} | {name}
+            </Text>
+          </View>
         </View>
         {/* scanner meter image display */}
         <View style={styles.scannerView}>
@@ -454,11 +456,12 @@ const styles = StyleSheet.create({
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
+    // Adding shadow properties
     shadowColor: "#2198C9",
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 0.8 },
     shadowOpacity: 0.7,
-    shadowRadius: 8,
-    elevation: 7,
+    shadowRadius: 4,
+    elevation: 7, // For Android shadow
     borderRadius: 10,
   },
   headingText: {

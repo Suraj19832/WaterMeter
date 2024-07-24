@@ -352,10 +352,13 @@ const MeterSection = ({ navigation }) => {
         </TouchableOpacity>
       </>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{paddingHorizontal:4}}>
+
         <View style={styles.heading}>
           <Text style={styles.headingText}>
             {id} | {name}
           </Text>
+        </View>
         </View>
 
         <View style={styles.fields_main}>
@@ -886,9 +889,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     // Adding shadow properties
     shadowColor: "#2198C9",
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 0.8 },
     shadowOpacity: 0.7,
-    shadowRadius: 8,
+    shadowRadius: 4,
     elevation: 7, // For Android shadow
     borderRadius: 10,
   },
