@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
   },
   otpBox: {
     height: 50,
-    width: "auto",
+    width: "16%",
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 14,
