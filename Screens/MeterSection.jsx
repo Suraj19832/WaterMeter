@@ -326,6 +326,8 @@ const MeterSection = ({ navigation }) => {
     React.useCallback(() => {
       setinputValuemeter("");
       setinputValuemeterReading("");
+      setisDropdownMeterReading(false);
+      setisDropdownMeter(false);
     }, [])
   );
 

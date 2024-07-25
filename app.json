@@ -40,14 +40,17 @@
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.desun.watermeter"
+      "package": "com.desun.watermeter",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "afc9f8e8-bd56-4033-8ada-83e02a06d28a"
+        "projectId": "a21bf8d9-86ce-435e-a332-10778e69c720"
       }
     }
   }
