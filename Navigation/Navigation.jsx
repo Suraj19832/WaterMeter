@@ -1,5 +1,3 @@
-
-
 // import { NavigationContainer } from "@react-navigation/native";
 // import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -45,7 +43,7 @@
 //   <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
 //   <Bottom.Screen name="Dashboard" component={DashboardStack} options={{ headerShown: false }} />
 //     <Bottom.Screen name="Completion" component={Dashboard} options={{ headerShown: false }} />
-  
+
 //     <Bottom.Screen name="MeterScreen" component={MeterSection} options={{ headerShown: false }}  />
 //     <Bottom.Screen name="SummaryScreen" component={SummaryScreen} options={{ headerShown: false }}  />
 //     <Bottom.Screen name="MeterSelection" component={MeterSelection} options={{ headerShown: false }} />
@@ -99,7 +97,6 @@
 
 // export default NavigationComponent;
 
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -143,12 +140,33 @@ const DashboardStack = () => (
 
 const TabNavigator = () => (
   <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
-  <Bottom.Screen name="DashboardBottom" component={DashboardStack} options={{ headerShown: false }} />
-    <Bottom.Screen name="meterReadingScanner" component={MeterReadingScanner} options={{ headerShown: false }} />
-  
-    <Bottom.Screen name="MeterScreen" component={MeterSection} options={{ headerShown: false }}  />
-    <Bottom.Screen name="SummaryScreen" component={SummaryScreen} options={{ headerShown: false }}  />
-    <Bottom.Screen name="MeterSelection" component={MeterSelection} options={{ headerShown: false }} />
+    <Bottom.Screen
+      name="meterReadingScanner"
+      component={MeterReadingScanner}
+      options={{ headerShown: false }}
+    />
+    <Bottom.Screen
+      name="DashboardBottom"
+      component={DashboardStack}
+      options={{ headerShown: false }}
+    />
+    
+
+    <Bottom.Screen
+      name="MeterScreen"
+      component={MeterSection}
+      options={{ headerShown: false }}
+    />
+    <Bottom.Screen
+      name="SummaryScreen"
+      component={SummaryScreen}
+      options={{ headerShown: false }}
+    />
+    <Bottom.Screen
+      name="MeterSelection"
+      component={MeterSelection}
+      options={{ headerShown: false }}
+    />
     {/* <Bottom.Screen name="MeterSelection" component={MeterSelection} options={{ headerShown: false }}  /> */}
   </Bottom.Navigator>
 );
@@ -180,10 +198,10 @@ const MainStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {authToken !== null ? (
         <>
-        <Stack.Screen name="Main" component={DrawerNav} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-      </>
+          <Stack.Screen name="Main" component={DrawerNav} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+        </>
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
       )}
