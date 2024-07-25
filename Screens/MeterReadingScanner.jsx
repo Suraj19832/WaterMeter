@@ -39,7 +39,7 @@ function MeterReadingScanner({ navigation }) {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [editMeter, setEditMeter] = useState(false);
   const [dataId, setDataId] = useState(null);
-  const [rescan, setRescan] = useState(false);
+  const [isRescanClicked, setIsRescanClicked] = useState(false);
   const toast = useToast();
 
   function formatDate(inputDate) {
@@ -147,6 +147,7 @@ function MeterReadingScanner({ navigation }) {
       if (!result.cancelled) {
         setLoading(true);
         setScannedMeter(result.assets[0].uri);
+        setIsRescanClicked(true);
 
         // Resize image
         const resizedImage = await ImageManipulator.manipulateAsync(
@@ -169,13 +170,13 @@ function MeterReadingScanner({ navigation }) {
   const handleSubmit = () => {
     setSubmitLoading(true);
     const data = {
-      property_id: id, //done
-      meter_id: meterName, //done
-      data_id: dataId, //done
-      rescan: rescan, // not done
-      ocr_reading: meterValue, //done
-      is_manual: editMeter ? "1" : "0", //done
-      note: null, //under process
+      property_id: id, 
+      meter_id: meterName, 
+      data_id: dataId, 
+      rescan: isRescanClicked ? "1" : "0", 
+      ocr_reading: meterValue, 
+      is_manual: editMeter ? "1" : "0", 
+      note: null, //not done
     };
     appApi
       .submitReading(data)
@@ -212,7 +213,6 @@ function MeterReadingScanner({ navigation }) {
       setSubmitLoading(false);
       setEditMeter(false);
       setDataId(null);
-      setRescan(false);
     }, [totalDigit])
   );
   return (
