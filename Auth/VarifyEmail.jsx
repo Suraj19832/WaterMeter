@@ -63,7 +63,7 @@ function VarifyEmail({ navigation }) {
           timer: res?.resendInSec,
         });
       } else {
-        showToast("Something went wrong");
+        showToast("Unable to send OTP");
         setloading(false);
       }
     });

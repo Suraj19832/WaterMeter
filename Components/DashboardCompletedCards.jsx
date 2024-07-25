@@ -442,7 +442,7 @@ export default function DashboardCompletedCards({
                   textSize={13}
                   bgColor={colorCodes.submitButtonEnabled}
                   height={37}
-                  width={150}
+                  width={160}
                   text="Completion Summary"
                 />
               </TouchableOpacity>

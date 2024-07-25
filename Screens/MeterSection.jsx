@@ -328,6 +328,7 @@ const MeterSection = ({ navigation }) => {
       setinputValuemeterReading("");
       setisDropdownMeterReading(false);
       setisDropdownMeter(false);
+      setCompleteImage(null)
     }, [])
   );
 
@@ -726,6 +727,9 @@ const MeterSection = ({ navigation }) => {
             </Text>
           </View>
         </View>
+
+
+
         <View
           style={{
             justifyContent: "center",

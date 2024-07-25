@@ -42,8 +42,6 @@ function MeterReadingScanner({ navigation }) {
   const [rescan, setRescan] = useState(false);
   const toast = useToast();
 
-  console.log(editMeter);
-
   function formatDate(inputDate) {
     if (!inputDate) {
       return "";
@@ -85,13 +83,11 @@ function MeterReadingScanner({ navigation }) {
 
     return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
   }
-
   const otpFields = useRef(
     Array(totalDigit)
       ?.fill()
       ?.map(() => React.createRef())
   );
-
   const handleOTPChange = (index, value) => {
     const newOTP = [...otp];
     newOTP[index] = value;
@@ -103,13 +99,9 @@ function MeterReadingScanner({ navigation }) {
       otpFields.current[index - 1].current?.focus();
     }
   };
-  // const isOTPComplete = () => {
-  //   return otp.every((totalDigit) => totalDigit !== "");
-  // };
   const isOTPComplete = () => {
     return otp?.every((digit) => digit !== "");
   };
-
   const verifyNumber = async (imageFile) => {
     try {
       const data = {
@@ -137,7 +129,6 @@ function MeterReadingScanner({ navigation }) {
       setLoading(false);
     }
   };
-
   const handleScan = async () => {
     try {
       const permissionCamera =
@@ -175,7 +166,6 @@ function MeterReadingScanner({ navigation }) {
       toast.show("Failed to launch the camera", { type: "warning" });
     }
   };
-
   const handleSubmit = () => {
     setSubmitLoading(true);
     const data = {
@@ -211,7 +201,6 @@ function MeterReadingScanner({ navigation }) {
         setSubmitLoading(false);
       });
   };
-
   useFocusEffect(
     React.useCallback(() => {
       // Reset the states when the screen comes into focus
@@ -226,30 +215,29 @@ function MeterReadingScanner({ navigation }) {
       setRescan(false);
     }, [totalDigit])
   );
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
+      <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
+        <Image
+          source={require("../assets/left-arrow (1).png")}
+          style={{ height: 22, width: 12 }}
+        />
+      </TouchableOpacity>
+      {/* heading title */}
+      <View style={{ paddingHorizontal: 4 }}>
+        <View style={styles.heading}>
+          <Text style={styles.headingText}>
+            {id} | {name}
+          </Text>
+        </View>
+      </View>
       <ScrollView
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={{marginBottom:50}}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
-          <Image
-            source={require("../assets/left-arrow (1).png")}
-            style={{ height: 22, width: 12 }}
-          />
-        </TouchableOpacity>
-        {/* heading title */}
-        <View style={{ paddingHorizontal: 4 }}>
-          <View style={styles.heading}>
-            <Text style={styles.headingText}>
-              {id} | {name}
-            </Text>
-          </View>
-        </View>
         {/* scanner meter image display */}
         <View style={styles.scannerView}>
           {loading ? (
@@ -307,6 +295,7 @@ function MeterReadingScanner({ navigation }) {
                 onChangeText={(value) => handleOTPChange(index, value)}
                 value={totalDigit}
                 ref={otpFields.current[index]}
+                editable={editMeter}
               />
             ))}
           </View>
@@ -329,13 +318,14 @@ function MeterReadingScanner({ navigation }) {
               paddingHorizontal: 15,
               paddingVertical: 12,
               borderRadius: 8,
+              minWidth:160
             }}
             disabled={!isOTPComplete()}
           >
             {submitLoading ? (
               <ActivityIndicator size={"small"} />
             ) : (
-              <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 }}>
+              <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 ,textAlign:"center"}}>
                 Submit Reading
               </Text>
             )}
