@@ -6,9 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
 
 export default function OcrCaptured({ navigation }) {
-
   const route = useRoute();
-  const { meterName, id, name, otp ,res} = route.params ?? {};
+  const { meterName, id, name, otp, res } = route.params ?? {};
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -60,6 +59,27 @@ export default function OcrCaptured({ navigation }) {
       fontWeight: "500",
       fontSize: 12,
     },
+    heading: {
+      marginVertical: 12,
+      marginHorizontal:20,
+      backgroundColor: "#F5F5F5",
+      // Adding shadow properties
+      shadowColor: "#2198C9",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.4,
+      shadowRadius: 2,
+      elevation: 7, // For Android shadow
+      borderRadius: 10,
+    },
+    headingText: {
+      fontFamily: "Roboto",
+      fontWeight: "700",
+      fontSize: 24,
+      lineHeight: 28.13,
+      color: "#0B9ED2",
+      textAlign: "center",
+      marginVertical: 12,
+    },
   });
 
   return (
@@ -76,10 +96,13 @@ export default function OcrCaptured({ navigation }) {
             />
           </TouchableOpacity>
         </View>
-        <View style={{ gap: 80 }}>
-          <View style={styles.propertyName}>
-            <Text style={styles.propertyNameFTxt}>{id} |</Text>
-            <Text style={styles.propertyNameSTxt}> {name}</Text>
+        <View style={{ gap:40 }}>
+          <View style={{ paddingHorizontal: 4 }}>
+            <View style={styles.heading}>
+              <Text style={styles.headingText}>
+                {id} | {name}
+              </Text>
+            </View>
           </View>
           <View
             style={{
@@ -128,7 +151,9 @@ export default function OcrCaptured({ navigation }) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate("SummaryScreen",{id,name,res})}
+              onPress={() =>
+                navigation.navigate("SummaryScreen", { id, name, res })
+              }
             >
               <SubmitButton
                 text="Submit Another"
@@ -148,7 +173,9 @@ export default function OcrCaptured({ navigation }) {
             }}
           >
             <View style={styles.pendingMeters}>
-              <Text style={styles.pendingMetersTxt}>{res?.pendingMeterCount} Meters Pending</Text>
+              <Text style={styles.pendingMetersTxt}>
+                {res?.pendingMeterCount} Meters Pending
+              </Text>
             </View>
           </View>
         </View>

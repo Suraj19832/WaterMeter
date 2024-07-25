@@ -328,7 +328,7 @@ const MeterSection = ({ navigation }) => {
       setinputValuemeterReading("");
       setisDropdownMeterReading(false);
       setisDropdownMeter(false);
-      setCompleteImage(null)
+      setCompleteImage(null);
     }, [])
   );
 
@@ -355,13 +355,12 @@ const MeterSection = ({ navigation }) => {
         </TouchableOpacity>
       </>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{paddingHorizontal:4}}>
-
-        <View style={styles.heading}>
-          <Text style={styles.headingText}>
-            {id} | {name}
-          </Text>
-        </View>
+        <View style={{ paddingHorizontal: 4 }}>
+          <View style={styles.heading}>
+            <Text style={styles.headingText}>
+              {id} | {name}
+            </Text>
+          </View>
         </View>
 
         <View style={styles.fields_main}>
@@ -606,7 +605,6 @@ const MeterSection = ({ navigation }) => {
                     height: 28,
                     width: 30,
                   }}
-                  resizeMode="center"
                 />
               </TouchableOpacity>
             </View>
@@ -628,7 +626,6 @@ const MeterSection = ({ navigation }) => {
                 <Image
                   source={require("../assets/write.png")}
                   style={{ height: 20, width: 20 }}
-                  resizeMode="center"
                 />
               </TouchableOpacity>
             </View>
@@ -728,8 +725,6 @@ const MeterSection = ({ navigation }) => {
           </View>
         </View>
 
-
-
         <View
           style={{
             justifyContent: "center",
@@ -746,7 +741,6 @@ const MeterSection = ({ navigation }) => {
                 height: 30,
                 width: 30,
               }}
-              resizeMode="center"
             />
           </TouchableOpacity>
           <View
@@ -895,9 +889,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     // Adding shadow properties
     shadowColor: "#2198C9",
-    shadowOffset: { width: 0, height: 0.8 },
-    shadowOpacity: 0.7,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
     elevation: 7, // For Android shadow
     borderRadius: 10,
   },

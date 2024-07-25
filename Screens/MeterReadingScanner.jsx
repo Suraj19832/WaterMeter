@@ -448,9 +448,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     // Adding shadow properties
     shadowColor: "#2198C9",
-    shadowOffset: { width: 0, height: 0.8 },
-    shadowOpacity: 0.7,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 2,
     elevation: 7, // For Android shadow
     borderRadius: 10,
   },
