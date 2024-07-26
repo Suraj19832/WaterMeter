@@ -4,6 +4,7 @@ import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
 import axios from "axios";
+import store from "../redux/reduxstore";
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -45,34 +46,110 @@ export async function sendPostRequest(url, obj) {
   return data;
 }
 
+// export async function sendGetRequest(url, params = {}) {
+//   if (Object.keys(params).length != 0) {
+//     let queryString = new URLSearchParams(params);
+//     url += "?" + queryString.toString();
+//   }
+
+//   let response = await fetch(url, {
+//     method: "GET",
+//     cache: "no-cache",
+//     headers: {
+//       "Accept-Language": "en",
+//     },
+//   });
+
+//   let data = await response.json();
+
+//   if (!response.ok) {
+//     throw new ValidationError(data.message, data.errors);
+//   }
+
+//   return data;
+// }
+
 export async function sendGetRequest(url, params = {}) {
-  // console.log({
-  //   url: url,
-  //   params: params,
-  // });
-  if (Object.keys(params).length != 0) {
-    let queryString = new URLSearchParams(params);
-    url += "?" + queryString.toString();
+  try {
+    const response = await axios.get(url, {
+      params: params,
+      headers: {
+        "Accept-Language": "en",
+      },
+      cache: "no-cache",
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // Request made and server responded
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+
+      if (error.response.status === 401) {
+        console.log("Unauthorized: 401");
+        // DoLogout();
+        // Handle 401 error here, e.g., remove token, redirect to login, etc.
+        throw new Error("Unauthorized: 401");
+      }
+
+      throw new ValidationError(
+        error.response.data.message,
+        error.response.data.errors
+      );
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+      throw new Error(error.message);
+    }
   }
-
-  let response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
-    headers: {
-      "Accept-Language": "en",
-    },
-  });
-
-  let data = await response.json();
-
-  if (!response.ok) {
-    throw new ValidationError(data.message, data.errors);
-  }
-
-  return data;
 }
 
+export async function sendAuthorizeGetRequest(url, params = []) {
+  let token = await AsyncStorage.getItem("token");
 
+  const config = {
+    method: "get",
+    url: url,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: params,
+  };
+
+  try {
+    const response = await axios(config);
+    console.log(response, ">>>>>>>>");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        console.log("Unauthorized: 401");
+        AsyncStorage.removeItem("token")
+        store.dispatch(setAuthToken(null));
+        throw new Error("Unauthorized: 401");
+      }
+
+      throw new ValidationError(
+        error.response.data.message,
+        error.response.data.errors
+      );
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+      throw new Error(error.message);
+    }
+  }
+}
 // export async function sendAuthorizeGetRequest(url, params = []) {
 //   let token = await AsyncStorage.getItem("token");
 //   // console.log(token, "in helpper function");
@@ -98,50 +175,6 @@ export async function sendGetRequest(url, params = {}) {
 //   console.log(data,">>>>>>>>>>>>>??????????????????")
 //   return data;
 // }
-
-export async function sendAuthorizeGetRequest(url, params = []) {
-  let token = await AsyncStorage.getItem("token");
-
-  const config = {
-    method: 'get',
-    url: url,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: params,
-  };
-
-  try {
-    const response = await axios(config);
-    console.log(response,">>>>>>>>")
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      // Request made and server responded
-      console.log(error.response.data,">>>>>>>>>>>>>>data");
-      console.log(error.response.status,">>>>>>>>stattus");
-      console.log(error.response.headers,">>>>>>>>>>>>>headers");
-
-      if (error.response.status === 401) {
-        console.log("Unauthorized: 401");
-        // Handle 401 error here, e.g., remove token, redirect to login, etc.
-        DoLogout()
-        throw new Error("Unauthorized: 401");
-      }
-
-      throw new ValidationError(error.response.data.message, error.response.data.errors);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.log(error.request);
-      throw new Error("No response received from server");
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-      throw new Error(error.message);
-    }
-  }
-}
-
 
 export async function sendAuthorizePostRequest(url, obj) {
   let token = AsyncStorage.getItem("token");
@@ -185,21 +218,61 @@ export async function sendAuthorizePatchRequest(url, obj) {
 }
 
 export async function sendPostFormData(url, obj) {
-  // console.log(url, data);
-  let response = await fetch(url, {
-    method: "POST",
-    cache: "no-cache",
-    body: prepareFormDataFromObject(obj),
-  });
-  // console.log(response, "<============response");
-  let data = await response.json();
+  try {
+    const formData = prepareFormDataFromObject(obj);
 
-  // if (!response.ok) {
-  //   throw new ValidationError(data.message, data.errors);
-  // }
+    const response = await axios.post(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-  return data;
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // Request made and server responded
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+
+      if (error.response.status === 401) {
+        console.log("Unauthorized: 401");
+        // Handle 401 error here, e.g., remove token, redirect to login, etc.
+        throw new Error("Unauthorized: 401");
+      }
+
+      throw new ValidationError(
+        error.response.data.message,
+        error.response.data.errors
+      );
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+      throw new Error(error.message);
+    }
+  }
 }
+
+// export async function sendPostFormData(url, obj) {
+//   // console.log(url, data);
+//   let response = await fetch(url, {
+//     method: "POST",
+//     cache: "no-cache",
+//     body: prepareFormDataFromObject(obj),
+//   });
+//   // console.log(response, "<============response");
+//   let data = await response.json();
+
+//   // if (!response.ok) {
+//   //   throw new ValidationError(data.message, data.errors);
+//   // }
+
+//   return data;
+// }
 
 export async function sendPostURLencoded(url, obj) {
   // console.log("calledS");
@@ -300,27 +373,76 @@ export async function sendAuthorizePostFormData(url, obj) {
       throw new Error("No token found");
     }
 
-    let response = await fetch(url, {
-      method: "POST",
-      body: prepareFormDataFromObject(obj), // Converting the object to JSON string
+    const formData = prepareFormDataFromObject(obj);
+
+    const response = await axios.post(url, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
 
-    let data = await response.json();
-
-    // if (!response.ok) {
-    //   throw new ValidationError(data.message, data.errors);
-    // }
-
-    return data;
+    return response.data;
   } catch (error) {
-    console.error("Error in sendAuthorizePostFormData:", error);
-    throw error;
+    if (error.response) {
+      // Request made and server responded
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+
+      if (error.response.status === 401) {
+        console.log("Unauthorized: 401");
+        // Handle 401 error here, e.g., remove token, redirect to login, etc.
+        throw new Error("Unauthorized: 401");
+      }
+
+      throw new ValidationError(
+        error.response.data.message,
+        error.response.data.errors
+      );
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log("Error", error.message);
+      throw new Error(error.message);
+    }
   }
 }
+
+// export async function sendAuthorizePostFormData(url, obj) {
+//   console.log(url, obj);
+//   try {
+//     let token = await AsyncStorage.getItem("token");
+//     console.log(token, "<=====================");
+
+//     if (!token) {
+//       throw new Error("No token found");
+//     }
+
+//     let response = await fetch(url, {
+//       method: "POST",
+//       body: prepareFormDataFromObject(obj), // Converting the object to JSON string
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     let data = await response.json();
+
+//     // if (!response.ok) {
+//     //   throw new ValidationError(data.message, data.errors);
+//     // }
+
+//     return data;
+//   } catch (error) {
+//     console.error("Error in sendAuthorizePostFormData:", error);
+//     throw error;
+//   }
+// }
 
 export async function sendAuthorizePatchFormData(url, obj) {
   let token = localStorage.getItem("token");
@@ -384,8 +506,9 @@ export const getFileData = (obj = {}) => {
   };
 };
 export async function DoLogout() {
-  const toast = useToast();
-  toast.show("Token Expire", { type: "sucess" });
+  console.log("do logout console");
+  // const toast = useToast();
+  // toast.show("Token Expire", { type: "sucess" });
   const dispatch = useDispatch();
   await AsyncStorage.removeItem("token");
   dispatch(setAuthToken(null));

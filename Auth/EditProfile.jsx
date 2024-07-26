@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ImageBackground, Text } from "react-native";
+import { Alert, Dimensions, Image, ImageBackground, Pressable, StatusBar, Text } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -101,8 +101,12 @@ function EditProfile({ navigation }) {
       setloading(false);
     }
   };
+
+  
+ 
   return (
     <SafeAreaView>
+
       <ScrollView style={{ height: "auto" }}>
         <ImageBackground
           source={require("../assets/BackgroundImage.png")}
@@ -112,9 +116,9 @@ function EditProfile({ navigation }) {
 
         <View style={{ position: "absolute" }}>
           <View style={{ position: "absolute", zIndex: 2 }}>
-            <TouchableOpacity
+            <Pressable
               onPress={navigation.goBack}
-              style={{ position: "absolute",zIndex:1 }}
+              style={{ position: "absolute",zIndex:1,height:22,width:22 }}
             >
               <Image
                 source={require("../assets/left-arrow.png")}
@@ -122,11 +126,11 @@ function EditProfile({ navigation }) {
                   height: 22,
                   width: 12,
                   position: "absolute",
-                  top: 30,
+                  top: 20,
                   left: 20,
                 }}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <Image

@@ -1,11 +1,11 @@
 import {
-  sendAuthorizeGetRequest,
-  sendAuthorizePostFormData,
-  sendGetRequest,
+  sendAuthorizeGetRequest,  
+  sendAuthorizePostFormData, 
+  sendGetRequest, 
   sendPostFormData,
 } from "./Helper";
-const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";  //for devs
-// const baseURL = "https://test.ehostingguru.com/water-meter/api/public";      //for testing
+const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";    //for devs
+// const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
 // const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat
 
 const appApi = {

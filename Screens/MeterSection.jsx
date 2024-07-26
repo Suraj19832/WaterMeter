@@ -16,7 +16,7 @@ import { Entypo } from "@expo/vector-icons";
 import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
 import { getFileData } from "../Helper/Helper";
@@ -289,9 +289,9 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       setloading(false);
-      toast.show("Token Expire", { type: "warning" });
-      await AsyncStorage.removeItem("token");
-      dispatch(setAuthToken(null));
+      // toast.show("Token Expire", { type: "warning" });
+      // await AsyncStorage.removeItem("token");
+      // dispatch(setAuthToken(null));
     } finally {
       setloading(false);
     }
@@ -332,6 +332,15 @@ const MeterSection = ({ navigation }) => {
       setCompleteImage(null);
     }, [])
   );
+
+  const isFocus = useIsFocused()
+
+  useEffect(() => {
+    return () => {
+      setinputValuemeter("");
+     
+    };
+  }, [isFocus]);
 
   if (loading) {
     return (

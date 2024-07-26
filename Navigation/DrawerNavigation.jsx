@@ -27,41 +27,20 @@ const DrawerNavigation = ({ navigation }) => {
   const [isYesPressed, setIsYesPressed] = useState(false);
   const [isNoPressed, setIsNoPressed] = useState(false);
   const dispatch = useDispatch();
-  // function showToast(message) {
-  //   ToastAndroid.show(message, ToastAndroid.SHORT);
-  // }
+
   const toast = useToast();
+
   const handleYesLogout = async () => {
-    //  await AsyncStorage.removeItem("token");
-    //  const savedEmail = await AsyncStorage.getItem("token")
-    //  console.log(savedEmail,"flflflflflflflflflflflflfl")
-    // console.log("token start removeing")
-    // await AsyncStorage.removeItem("token");
-    // dispatch(setAuthToken(null));
-    // console.log("token remove successfully ")
-    // // navigation.navigate("Login");
-    // const token = await AsyncStorage.getItem('token');
-    //       console.log(token ,"in drawer navigation before funcrion call ")
     try {
       setModal(false);
-      // showToast("Wait a Second");
       toast.show("Wait a Second", { type: "sucess" });
       const res = await appApi.logout();
-      console.log(res?.status, "mxmxmxmxmxm");
       if (res?.status) {
-        // showToast("Logout Successfully");
         toast.show("Logout Successfully", { type: "sucess" });
         await AsyncStorage.removeItem("token");
         dispatch(setAuthToken(null));
-        // await AsyncStorage.removeItem("token");
-        // const token = await AsyncStorage.getItem('token');
-        // console.log(token ,"in drawer navigation")
-        // dispatch(setAuthToken(null));
       }
     } catch (error) {
-      // navigation.navigate("Login");
-      console.log(error, "hihi");
-      // showToast("Logout Successfully");
       toast.show("Logout Successfully", { type: "sucess" });
       await AsyncStorage.removeItem("token");
       dispatch(setAuthToken(null));
