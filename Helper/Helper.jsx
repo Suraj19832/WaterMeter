@@ -3,6 +3,7 @@ import * as mime from "react-native-mime-types";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { useToast } from "react-native-toast-notifications";
+import axios from "axios";
 export function prepareFormDataFromObject(obj) {
   let formdata = new FormData();
   for (let key in obj) {
@@ -71,29 +72,76 @@ export async function sendGetRequest(url, params = {}) {
   return data;
 }
 
+
+// export async function sendAuthorizeGetRequest(url, params = []) {
+//   let token = await AsyncStorage.getItem("token");
+//   // console.log(token, "in helpper function");
+// console.log("khkhkhkhkhkhkjh",url)
+//   if (Object.keys(params).length != 0) {
+//     let queryString = new URLSearchParams(params);
+//     url += "?" + queryString.toString();
+//   }
+//   let response = await fetch(url, {
+//     method: "GET",
+//     cache: "no-cache",
+//     headers: {
+//       Authorization: `Bearer ${"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2Vob3N0aW5nZ3VydS5jb20vc3RhZ2Uvd2F0ZXItbWV0ZXIvYXBpL3B1YmxpYy9hcGkvbG9naW4iLCJpYXQiOjE3MjE5MDQ4MzgsImV4cCI6MTcyMTkwNjYzOCwibmJmIjoxNzIxOTA0ODM4LCJqdGkiOiJsZDlIVkJNR3REREpzSkhjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.kzqrmcsjw2wTVAbylnpl_JYmYVV5sqweDYS4EvfmhY0"}`,
+//     },
+//   });
+//   console.log(response.status,">>>>>>>>>>>>>??from daasbaord????????????????")
+
+//   let data = await response.json();
+//   if (!response.ok) {
+//     throw new ValidationError(data.message, data.errors);
+
+//   }
+//   console.log(data,">>>>>>>>>>>>>??????????????????")
+//   return data;
+// }
+
 export async function sendAuthorizeGetRequest(url, params = []) {
   let token = await AsyncStorage.getItem("token");
-  // console.log(token, "in helpper function");
 
-  if (Object.keys(params).length != 0) {
-    let queryString = new URLSearchParams(params);
-    url += "?" + queryString.toString();
-  }
-  let response = await fetch(url, {
-    method: "GET",
-    cache: "no-cache",
+  const config = {
+    method: 'get',
+    url: url,
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });
+    params: params,
+  };
 
-  let data = await response.json();
-  if (!response.ok) {
-    throw new ValidationError(data.message, data.errors);
+  try {
+    const response = await axios(config);
+    console.log(response,">>>>>>>>")
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      // Request made and server responded
+      console.log(error.response.data,">>>>>>>>>>>>>>data");
+      console.log(error.response.status,">>>>>>>>stattus");
+      console.log(error.response.headers,">>>>>>>>>>>>>headers");
+
+      if (error.response.status === 401) {
+        console.log("Unauthorized: 401");
+        // Handle 401 error here, e.g., remove token, redirect to login, etc.
+        DoLogout()
+        throw new Error("Unauthorized: 401");
+      }
+
+      throw new ValidationError(error.response.data.message, error.response.data.errors);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log(error.request);
+      throw new Error("No response received from server");
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+      throw new Error(error.message);
+    }
   }
-
-  return data;
 }
+
 
 export async function sendAuthorizePostRequest(url, obj) {
   let token = AsyncStorage.getItem("token");

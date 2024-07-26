@@ -82,6 +82,7 @@ function Dashboard({ navigation }) {
       .catch((err) => {
         setLoading(false);
         setRefreshing(false);
+        console.log(err,"dashoard app error")
       });
   }, [toggleScheduleCompleted, monthIndex, year]);
 
@@ -189,6 +190,7 @@ function Dashboard({ navigation }) {
                     onPress={setExpandCompleted}
                     index={index}
                     items={items}
+                    navigation={navigation}
                   />
                 </View>
               ))

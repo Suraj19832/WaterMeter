@@ -152,7 +152,7 @@ export default function OcrCaptured({ navigation }) {
             </View>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("SummaryScreen", { id, name, res })
+                navigation.navigate("MeterScreen")
               }
             >
               <SubmitButton

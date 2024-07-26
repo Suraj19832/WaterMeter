@@ -18,6 +18,7 @@ export default function DashboardCompletedCards({
   index,
   onPress,
   expandCompleted,
+  navigation
 }) {
   console.log(items, "<<<<<<<<<<<<<<<<<<<<<<<<complete");
   const styles = StyleSheet.create({
@@ -434,9 +435,7 @@ export default function DashboardCompletedCards({
             >
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => {
-                  alert("Reading...");
-                }}
+                onPress={() =>navigation.navigate("SummaryScreen")}
               >
                 <SubmitButton
                   textSize={13}

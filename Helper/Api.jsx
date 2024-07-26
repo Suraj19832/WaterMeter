@@ -25,6 +25,7 @@ const appApi = {
     const url = `${baseURL}/api/forget-password`;
     return sendPostFormData(url, data);
   },
+  
   changePassword: function (data) {
     const url = `${baseURL}/api/change-password`;
     return sendAuthorizePostFormData(url, data);

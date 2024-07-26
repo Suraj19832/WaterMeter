@@ -267,6 +267,7 @@ const MeterSection = ({ navigation }) => {
   };
 
   const fetchData = async () => {
+    setloading(true);
     const data = {
       propertyId: PopertyId,
       date: date,
@@ -661,7 +662,6 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
-                      console.log(option, ">>>>>???????????");
                       return (
                         <TouchableOpacity
                           key={index}
