@@ -124,7 +124,6 @@ export async function sendAuthorizeGetRequest(url, params = []) {
 
   try {
     const response = await axios(config);
-    console.log(response, ">>>>>>>>");
     return response.data;
   } catch (error) {
     if (error.response) {

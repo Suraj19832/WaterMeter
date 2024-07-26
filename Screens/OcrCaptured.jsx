@@ -4,10 +4,14 @@ import { View, StyleSheet, Text, ImageBackground, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
+import { useSelector } from "react-redux";
+
 
 export default function OcrCaptured({ navigation }) {
   const route = useRoute();
   const { meterName, id, name, otp, res } = route.params ?? {};
+  const {meterDataParams} = useSelector(state=>state.MeterSlice)
+  console.log(meterDataParams,"chekinggggggggggggggg")
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -88,7 +92,7 @@ export default function OcrCaptured({ navigation }) {
         <View style={styles.headArrow}>
           <TouchableOpacity
             style={{ marginTop: 5 }}
-            onPress={() => navigation.navigate("Dashboard")}
+            onPress={()=>navigation.navigate("MeterScreen")}
           >
             <Image
               source={require("../assets/left-arrow (1).png")}
@@ -152,7 +156,8 @@ export default function OcrCaptured({ navigation }) {
             </View>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("Dashboard")
+                navigation.navigate("MeterScreen",{PopertyId: meterDataParams?.propertyId,
+                  date:meterDataParams?.date,})
               }
             >
               <SubmitButton

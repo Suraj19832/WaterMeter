@@ -357,7 +357,7 @@ const MeterSection = ({ navigation }) => {
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
-        <TouchableOpacity style={{ marginTop: 10 }} onPress={navigation.goBack}>
+        <TouchableOpacity style={{ marginTop: 10 }} onPress={()=>navigation.navigate("Dashboard")}>
           <Image
             source={require("../assets/left-arrow (1).png")}
             style={{ height: 22, width: 12 }}

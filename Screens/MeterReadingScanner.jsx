@@ -220,7 +220,7 @@ function MeterReadingScanner({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <TouchableOpacity style={{ marginTop: 5 }} onPress={navigation.goBack}>
+      <TouchableOpacity style={{ marginTop: 5 }} onPress={()=>navigation.navigate("MeterScreen")}>
         <Image
           source={require("../assets/left-arrow (1).png")}
           style={{ height: 22, width: 12 }}

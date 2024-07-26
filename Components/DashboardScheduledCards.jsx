@@ -17,7 +17,9 @@ import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 import { useDispatch } from "react-redux";
 import { setBooleanValue, setStringValue } from "../redux/slices/UniqueSlice";
+import {setMeterPropertyID} from "../redux/slices/MeterSlice"
 import axios from "axios";
+
 function DashboardScheduledCards({
   items,
   index,
@@ -259,6 +261,9 @@ function DashboardScheduledCards({
                 dispatch(setBooleanValue(true));
                 dispatch(setStringValue("MeterSelection"));
                 // navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
+                const meterData = {propertyId:items?.id, date: date}
+                dispatch(setMeterPropertyID(meterData))
+                // dispatch(setMeterPropertyID(meterData))
                 navigation.jumpTo("MeterScreen", {
                   PopertyId: items?.id,
                   date,

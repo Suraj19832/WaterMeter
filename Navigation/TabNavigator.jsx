@@ -159,9 +159,12 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
   });
 
   const handleTabPress = (routeName) => {
+    console.log(routeName,">>>>>>>>>>>>routemname")
     if (routeName === 'MeterSelection') {
       drawerNavigation.openDrawer();
-    } else {
+    } else if(routeName === "DashboardBottom"){
+      navigation.navigate("DashboardBottom")
+    }else{
       dispatch(setStringValue(routeName));
     }
   };
