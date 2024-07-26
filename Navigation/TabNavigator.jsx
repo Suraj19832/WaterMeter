@@ -163,7 +163,9 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
     if (routeName === 'MeterSelection') {
       drawerNavigation.openDrawer();
     } else if(routeName === "DashboardBottom"){
+      navigation.navigate("Dashboard")
       navigation.navigate("DashboardBottom")
+      console.log(">>>>>>>>")
     }else{
       dispatch(setStringValue(routeName));
     }
@@ -217,6 +219,7 @@ export const CustomTabBar = ({ state, descriptors, navigation }) => {
                 accessibilityLabel={options?.tabBarAccessibilityLabel}
                 testID={options?.tabBarTestID}
                 onPress={() => handleTabPress(route?.name)}
+                // onPress={()=>console.log("<<<<<<<<<<")}
                 activeOpacity={1}
               >
                 <View style={[route.name === 'MeterScreen' ? styles.middleTab : null, { zIndex: 10 }]}>

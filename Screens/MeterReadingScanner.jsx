@@ -215,6 +215,7 @@ function MeterReadingScanner({ navigation }) {
       setDataId(null);
     }, [totalDigit])
   );
+  
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
