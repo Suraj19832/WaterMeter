@@ -50,6 +50,7 @@ function MeterReadingScanner({ navigation }) {
   const [manualReading, setManualReading] = useState("");
   const [selectedReading, setSelectedReading] = useState(null);
   const [meReasons, setMeReasons] = useState([]);
+  const [manualLoading, setManulLoading] = useState(false);
 
   function formatDate(inputDate) {
     if (!inputDate) {
@@ -103,9 +104,9 @@ function MeterReadingScanner({ navigation }) {
     setOTP(newOTP);
 
     if (value !== "" && index < totalDigit - 1) {
-      otpFields.current[index + 1].current?.focus();
+      otpFields?.current[index + 1]?.current?.focus();
     } else if (value === "" && index > 0) {
-      otpFields.current[index - 1].current?.focus();
+      otpFields?.current[index - 1]?.current?.focus();
     }
   };
   const isOTPComplete = () => {
@@ -204,7 +205,6 @@ function MeterReadingScanner({ navigation }) {
       setReadingMismatchModalVisible(true);
       return;
     }
-
     setSubmitLoading(true);
     const data = {
       property_id: id,
@@ -242,23 +242,24 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleManualReadingSubmit = () => {
-    // setSubmitLoading(true);
+    setManulLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
       data_id: dataId,
       rescan: isRescanClicked ? "1" : "0",
       ocr_reading: meterValue,
-      is_manual: "1",
+      is_manual: null,
       note: null, //not done
-      me_reason:selectedReading
+      me_reason: selectedReading,
     };
     appApi
       .submitReading(data)
       .then((res) => {
         console.log(res, "submission form api");
         if (res?.status) {
-          // setSubmitLoading(false);
+          setManulLoading(false);
+          setReadingMismatchModalVisible(false);
           toast.show("Sucessfully Submitted", {
             type: "sucess",
             duration: 3000,
@@ -274,7 +275,8 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
-        // setSubmitLoading(false);
+        setManulLoading(false);
+        setReadingMismatchModalVisible(false);
       });
   };
   const handleSelectionOptionMeter = (meterId) => {
@@ -293,6 +295,7 @@ function MeterReadingScanner({ navigation }) {
       setLoading(false);
       setSubmitLoading(false);
       setDataId(null);
+      setSelectedReading(null);
     }, [totalDigit])
   );
 
@@ -378,7 +381,7 @@ function MeterReadingScanner({ navigation }) {
                 maxLength={1}
                 onChangeText={(value) => handleOTPChange(index, value)}
                 value={totalDigit}
-                ref={otpFields.current[index]}
+                ref={otpFields?.current[index]}
               />
             ))}
           </View>
@@ -553,11 +556,15 @@ function MeterReadingScanner({ navigation }) {
               </View>
             )}
             <TouchableOpacity
-              style={[styles.button]}
+              style={[styles.button,{backgroundColor:manualLoading ? colorCodes.submitButtonDisabled: colorCodes.submitButtonEnabled}]}
               onPress={handleManualReadingSubmit}
-              disabled={!selectedReading}
+              disabled={manualLoading}
             >
-              <Text style={styles.buttonText}>Submit</Text>
+              {manualLoading ? (
+                <ActivityIndicator size={"small"} />
+              ) : (
+                <Text style={styles.buttonText}>Submit</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -578,6 +585,7 @@ const styles = StyleSheet.create({
   dropdownButtonText: {
     fontSize: 16,
     color: "#333",
+    fontWeight: "500",
   },
   dropdownContainer: {
     width: "100%",
@@ -601,7 +609,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     alignItems: "center",
-    backgroundColor: colorCodes.submitButtonEnabled,
+    // backgroundColor: colorCodes.submitButtonEnabled,
   },
   buttonText: {
     color: "white",
@@ -659,7 +667,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   closeBtn: {
-    bottom: 90,
+    bottom: 130,
     left: 140,
   },
   otp: {
