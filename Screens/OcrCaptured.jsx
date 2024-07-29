@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function OcrCaptured({ navigation }) {
   const route = useRoute();
-  const { meterName, id, name, otp, res } = route.params ?? {};
+  const { meterName, id, name, otp, res,value } = route.params ?? {};
   const { meterDataParams } = useSelector((state) => state.MeterSlice);
   console.log(res, "chekinggggggggggggggg");
 
@@ -128,7 +128,7 @@ export default function OcrCaptured({ navigation }) {
                 fontWeight: 500,
               }}
             >
-              {otp} OCR Captured
+              {otp} {value === "me" ? "ME" : "OCR"} Captured
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Text

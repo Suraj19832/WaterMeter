@@ -213,7 +213,7 @@ function MeterReadingScanner({ navigation }) {
       rescan: isRescanClicked ? "1" : "0",
       ocr_reading: meterValue,
       is_manual: "1",
-      note: null, //not done
+      note: notes, //not done
       // me_reason:null
     };
     appApi
@@ -232,6 +232,7 @@ function MeterReadingScanner({ navigation }) {
             name,
             otp: otp?.join(""),
             res,
+            value:"ocr"
           });
         }
       })
@@ -250,7 +251,7 @@ function MeterReadingScanner({ navigation }) {
       rescan: isRescanClicked ? "1" : "0",
       ocr_reading: meterValue,
       is_manual: null,
-      note: null, //not done
+      note: notes, //not done
       me_reason: selectedReading,
     };
     appApi
@@ -270,6 +271,7 @@ function MeterReadingScanner({ navigation }) {
             name,
             otp: otp?.join(""),
             res,
+            value :"me"
           });
         }
       })
@@ -563,7 +565,7 @@ function MeterReadingScanner({ navigation }) {
               {manualLoading ? (
                 <ActivityIndicator size={"small"} />
               ) : (
-                <Text style={styles.buttonText}>Submit</Text>
+                <Text style={styles.buttonText}>Confirm reading</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -605,11 +607,12 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    width: "100%",
-    padding: 15,
+    width: "60%",
+    padding: 8,
     borderRadius: 5,
     alignItems: "center",
-    // backgroundColor: colorCodes.submitButtonEnabled,
+    alignSelf:"flex-end",
+    paddingVertical:6
   },
   buttonText: {
     color: "white",
