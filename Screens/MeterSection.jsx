@@ -33,7 +33,8 @@ const MeterSection = ({ navigation }) => {
   const [name, setname] = useState();
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
-  const [pendingMeterCount, setpendingMeterCount] = useState();
+  const [pendingMeterCount, setpendingMeterCount] = useState(null);
+  console.log(pendingMeterCount,">>>>>>>")
   const [lastReading, setLastReading] = useState("");
   const [lastReadingDate, setLastReadingDate] = useState("");
   const [avgUsage, setAvgUsage] = useState("");
@@ -720,7 +721,7 @@ const MeterSection = ({ navigation }) => {
           )}
           <View
             style={{
-              backgroundColor: "#197AB6",
+              backgroundColor: pendingMeterCount === 0 ? "#2F8A16" : "#197AB6",
               paddingVertical: 6,
               borderRadius: 15,
               width: 160,

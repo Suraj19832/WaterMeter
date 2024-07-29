@@ -44,6 +44,12 @@ function MeterReadingScanner({ navigation }) {
   const [noteLoading, setnoteLoading] = useState(false);
   const [isRescanClicked, setIsRescanClicked] = useState(false);
   const toast = useToast();
+  const [readingMismatchModalVisible, setReadingMismatchModalVisible] =
+    useState(false);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(true);
+  const [manualReading, setManualReading] = useState("");
+  const [selectedReading, setSelectedReading] = useState(null);
+  const [meReasons, setMeReasons] = useState([]);
 
   function formatDate(inputDate) {
     if (!inputDate) {
@@ -139,6 +145,7 @@ function MeterReadingScanner({ navigation }) {
       console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
       setDataId(res?.dataId);
+      setMeReasons(res?.meReasons);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
         const newOTP = Array(totalDigit)
@@ -193,6 +200,11 @@ function MeterReadingScanner({ navigation }) {
     }
   };
   const handleSubmit = () => {
+    if (meterValue !== otp.join("") || meterValue === null) {
+      setReadingMismatchModalVisible(true);
+      return;
+    }
+
     setSubmitLoading(true);
     const data = {
       property_id: id,
@@ -202,6 +214,7 @@ function MeterReadingScanner({ navigation }) {
       ocr_reading: meterValue,
       is_manual: "1",
       note: null, //not done
+      // me_reason:null
     };
     appApi
       .submitReading(data)
@@ -227,6 +240,49 @@ function MeterReadingScanner({ navigation }) {
         setSubmitLoading(false);
       });
   };
+
+  const handleManualReadingSubmit = () => {
+    // setSubmitLoading(true);
+    const data = {
+      property_id: id,
+      meter_id: meterName,
+      data_id: dataId,
+      rescan: isRescanClicked ? "1" : "0",
+      ocr_reading: meterValue,
+      is_manual: "1",
+      note: null, //not done
+      me_reason:selectedReading
+    };
+    appApi
+      .submitReading(data)
+      .then((res) => {
+        console.log(res, "submission form api");
+        if (res?.status) {
+          // setSubmitLoading(false);
+          toast.show("Sucessfully Submitted", {
+            type: "sucess",
+            duration: 3000,
+          });
+          navigation.navigate("OcrCaptured", {
+            meterName,
+            id,
+            name,
+            otp: otp?.join(""),
+            res,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // setSubmitLoading(false);
+      });
+  };
+  const handleSelectionOptionMeter = (meterId) => {
+    // console.log(meterId)
+    setSelectedReading(meterId);
+    setIsDropdownVisible(false); // Close dropdown after selection
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       // Reset the states when the screen comes into focus
@@ -435,7 +491,7 @@ function MeterReadingScanner({ navigation }) {
                 onPress={() => {
                   setNotesModalVisible(false);
                   meternotesubmit();
-                  setNotes("")
+                  setNotes("");
                 }}
               >
                 <Text style={styles.modalButtonText}>Submit Notes</Text>
@@ -453,11 +509,140 @@ function MeterReadingScanner({ navigation }) {
           </View>
         </View>
       </Modal>
+      <Modal
+        visible={readingMismatchModalVisible}
+        transparent={true}
+        onRequestClose={() => setReadingMismatchModalVisible(false)}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              onPress={() => setReadingMismatchModalVisible(false)}
+              style={styles.modalCloseButton}
+            >
+              <Text>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalHeading}>Select Reading</Text>
+            <TouchableOpacity
+              onPress={() => setIsDropdownVisible((prev) => !prev)} // Toggle dropdown visibility
+              style={styles.dropdownButton}
+            >
+              <Text style={styles.dropdownButtonText}>
+                {selectedReading || "Select meter reading"}
+              </Text>
+            </TouchableOpacity>
+            {isDropdownVisible && (
+              <View style={styles.dropdownContainer}>
+                <ScrollView
+                  nestedScrollEnabled={true}
+                  style={{ maxHeight: 150 }}
+                >
+                  {meReasons.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={styles.dropdownOption}
+                        onPress={() => handleSelectionOptionMeter(item.reason)}
+                        key={index}
+                      >
+                        <Text style={styles.input}>{item.reason}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            )}
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={handleManualReadingSubmit}
+              disabled={!selectedReading}
+            >
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       {noteLoading && <LoaderComponent loading={noteLoading} />}
     </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
+  dropdownButton: {
+    width: "100%",
+    padding: 10,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  dropdownButtonText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  dropdownContainer: {
+    width: "100%",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: "white",
+    marginBottom: 10,
+  },
+  dropdownOption: {
+    padding: 10,
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+  },
+  input: {
+    fontSize: 16,
+    color: "#333",
+  },
+  button: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    backgroundColor: colorCodes.submitButtonEnabled,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+  },
+  modalCloseIcon: {
+    width: 24,
+    height: 24,
+  },
+  modalHeading: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 16,
+  },
+  modalInput: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 16,
+    textAlignVertical: "top",
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: "center",

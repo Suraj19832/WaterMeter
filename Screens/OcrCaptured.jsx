@@ -6,12 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
 import { useSelector } from "react-redux";
 
-
 export default function OcrCaptured({ navigation }) {
   const route = useRoute();
   const { meterName, id, name, otp, res } = route.params ?? {};
-  const {meterDataParams} = useSelector(state=>state.MeterSlice)
-  console.log(meterDataParams,"chekinggggggggggggggg")
+  const { meterDataParams } = useSelector((state) => state.MeterSlice);
+  console.log(meterDataParams, "chekinggggggggggggggg");
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -49,7 +48,6 @@ export default function OcrCaptured({ navigation }) {
     },
 
     pendingMeters: {
-      backgroundColor: "#197AB6",
       borderRadius: 30,
       paddingVertical: 4,
       paddingHorizontal: 8,
@@ -65,7 +63,7 @@ export default function OcrCaptured({ navigation }) {
     },
     heading: {
       marginVertical: 12,
-      marginHorizontal:20,
+      marginHorizontal: 20,
       backgroundColor: "#F5F5F5",
       // Adding shadow properties
       shadowColor: "#2198C9",
@@ -92,7 +90,8 @@ export default function OcrCaptured({ navigation }) {
         <View style={styles.headArrow}>
           <TouchableOpacity
             style={{ marginTop: 5 }}
-            onPress={()=>navigation.navigate("MeterScreen")}
+            onPress={() => navigation.navigate("MeterScreen",{PopertyId: meterDataParams?.propertyId,
+              date: meterDataParams?.date,})}
           >
             <Image
               source={require("../assets/left-arrow (1).png")}
@@ -100,7 +99,7 @@ export default function OcrCaptured({ navigation }) {
             />
           </TouchableOpacity>
         </View>
-        <View style={{ gap:40 }}>
+        <View style={{ gap: 40 }}>
           <View style={{ paddingHorizontal: 4 }}>
             <View style={styles.heading}>
               <Text style={styles.headingText}>
@@ -156,8 +155,10 @@ export default function OcrCaptured({ navigation }) {
             </View>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("MeterScreen",{PopertyId: meterDataParams?.propertyId,
-                  date:meterDataParams?.date,})
+                navigation.navigate("MeterScreen", {
+                  PopertyId: meterDataParams?.propertyId,
+                  date: meterDataParams?.date,
+                })
               }
             >
               <SubmitButton
@@ -177,7 +178,15 @@ export default function OcrCaptured({ navigation }) {
               alignSelf: "center",
             }}
           >
-            <View style={styles.pendingMeters}>
+            <View
+              style={[
+                styles.pendingMeters,
+                {
+                  backgroundColor:
+                    res?.pendingMeterCount === 0 ? "#2F8A16" : "#197AB6",
+                },
+              ]}
+            >
               <Text style={styles.pendingMetersTxt}>
                 {res?.pendingMeterCount} Meters Pending
               </Text>
