@@ -19,6 +19,7 @@ import appApi from "../Helper/Api";
 import { getFileData } from "../Helper/Helper";
 import { useToast } from "react-native-toast-notifications";
 import * as ImageManipulator from "expo-image-manipulator";
+import LoaderComponent from "../Components/LoaderComponent";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
@@ -37,8 +38,10 @@ function MeterReadingScanner({ navigation }) {
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [editMeter, setEditMeter] = useState(false);
   const [dataId, setDataId] = useState(null);
+  const [notes, setNotes] = useState("");
+  const [notesModalVisible, setNotesModalVisible] = useState(false);
+  const [noteLoading, setnoteLoading] = useState(false);
   const [isRescanClicked, setIsRescanClicked] = useState(false);
   const toast = useToast();
 
@@ -101,6 +104,28 @@ function MeterReadingScanner({ navigation }) {
   };
   const isOTPComplete = () => {
     return otp?.every((digit) => digit !== "");
+  };
+  const meternotesubmit = async () => {
+    setnoteLoading(true);
+    const data = {
+      propertyId: id,
+      meter_id: meterName,
+      note: notes,
+    };
+    try {
+      const res = await appApi.meternote(data);
+      if (res?.status) {
+        toast.show(res?.message, { type: "success" });
+        setnoteLoading(false);
+      } else {
+        toast.show("Failed to submit note", { type: "error" });
+        setnoteLoading(false);
+      }
+    } catch (error) {
+      console.error("Error submitting note:", error);
+      setnoteLoading(false);
+      toast.show("Unexpected Error Occurred", { type: "error" });
+    }
   };
   const verifyNumber = async (imageFile) => {
     try {
@@ -170,12 +195,12 @@ function MeterReadingScanner({ navigation }) {
   const handleSubmit = () => {
     setSubmitLoading(true);
     const data = {
-      property_id: id, 
-      meter_id: meterName, 
-      data_id: dataId, 
-      rescan: isRescanClicked ? "1" : "0", 
-      ocr_reading: meterValue, 
-      is_manual: editMeter ? "1" : "0", 
+      property_id: id,
+      meter_id: meterName,
+      data_id: dataId,
+      rescan: isRescanClicked ? "1" : "0",
+      ocr_reading: meterValue,
+      is_manual: "1",
       note: null, //not done
     };
     appApi
@@ -211,17 +236,19 @@ function MeterReadingScanner({ navigation }) {
       setOTP(Array(totalDigit).fill(""));
       setLoading(false);
       setSubmitLoading(false);
-      setEditMeter(false);
       setDataId(null);
     }, [totalDigit])
   );
-  
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <TouchableOpacity style={{ marginTop: 5 }} onPress={()=>navigation.navigate("MeterScreen")}>
+      <TouchableOpacity
+        style={{ marginTop: 5 }}
+        onPress={() => navigation.navigate("MeterScreen")}
+      >
         <Image
           source={require("../assets/left-arrow (1).png")}
           style={{ height: 22, width: 12 }}
@@ -236,7 +263,7 @@ function MeterReadingScanner({ navigation }) {
         </View>
       </View>
       <ScrollView
-        contentContainerStyle={{marginBottom:50}}
+        contentContainerStyle={{ marginBottom: 50 }}
         showsVerticalScrollIndicator={false}
       >
         {/* scanner meter image display */}
@@ -296,7 +323,6 @@ function MeterReadingScanner({ navigation }) {
                 onChangeText={(value) => handleOTPChange(index, value)}
                 value={totalDigit}
                 ref={otpFields.current[index]}
-                editable={editMeter}
               />
             ))}
           </View>
@@ -319,31 +345,31 @@ function MeterReadingScanner({ navigation }) {
               paddingHorizontal: 15,
               paddingVertical: 12,
               borderRadius: 8,
-              minWidth:160
+              minWidth: 160,
             }}
             disabled={!isOTPComplete()}
           >
             {submitLoading ? (
               <ActivityIndicator size={"small"} />
             ) : (
-              <Text style={{ color: "#fff", fontWeight: 700, fontSize: 16 ,textAlign:"center"}}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: 16,
+                  textAlign: "center",
+                }}
+              >
                 Submit Reading
               </Text>
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => setEditMeter(!editMeter)}>
-            {editMeter ? (
-              <Image
-                source={require("../assets/write.png")}
-                style={{ height: 30, width: 30 }}
-              />
-            ) : (
-              <Image
-                source={require("../assets/edit.png")}
-                style={{ height: 30, width: 30 }}
-              />
-            )}
+          <TouchableOpacity onPress={() => setNotesModalVisible(true)}>
+            <Image
+              source={require("../assets/write.png")}
+              style={{ height: 30, width: 30 }}
+            />
           </TouchableOpacity>
         </View>
         {/* info modal  */}
@@ -387,6 +413,47 @@ function MeterReadingScanner({ navigation }) {
           </Modal>
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={notesModalVisible}
+        onRequestClose={() => setNotesModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Notes</Text>
+            <TextInput
+              style={styles.notesInput}
+              placeholder="Enter your notes here..."
+              value={notes}
+              onChangeText={(text) => setNotes(text)}
+              multiline
+            />
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setNotesModalVisible(false);
+                  meternotesubmit();
+                  setNotes("")
+                }}
+              >
+                <Text style={styles.modalButtonText}>Submit Notes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setNotesModalVisible(false);
+                  setNotes("");
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {noteLoading && <LoaderComponent loading={noteLoading} />}
     </KeyboardAvoidingView>
   );
 }
@@ -486,6 +553,46 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  notesInput: {
+    height: 100,
+    borderColor: "#0B9ED2",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  modalButton: {
+    backgroundColor: colorCodes.submitButtonEnabled,
+    padding: 10,
+    borderRadius: 5,
+    width: "48%",
+    alignItems: "center",
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 export default MeterReadingScanner;
