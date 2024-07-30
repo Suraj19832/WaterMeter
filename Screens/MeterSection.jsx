@@ -34,7 +34,6 @@ const MeterSection = ({ navigation }) => {
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
   const [pendingMeterCount, setpendingMeterCount] = useState(null);
-  console.log(pendingMeterCount,">>>>>>>")
   const [lastReading, setLastReading] = useState("");
   const [lastReadingDate, setLastReadingDate] = useState("");
   const [avgUsage, setAvgUsage] = useState("");
@@ -45,19 +44,23 @@ const MeterSection = ({ navigation }) => {
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
 
-  const [isDropdownMeter, setisDropdownMeter] = useState(false);
-  const [inputValuemeter, setinputValuemeter] = useState("");
+  const [isPendingDropdown, setIsPendingDropdown] = useState(false);
+  const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
 
-  const [isDropdownMeterReading, setisDropdownMeterReading] = useState(false);
-  const [inputValuemeterReading, setinputValuemeterReading] = useState("");
+  const [isCompletedDropdown, setIsCompletedDropdown] = useState(false);
+  const [inputValueCompleted, setinputValueCompleted] = useState("");
   const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
   const [image, setImage] = useState(null);
   const [completeDropdownImage, setCompleteDropdownImage] = useState(null);
   const [completeLoading, setCompleteLoading] = useState(false);
+
+
+  //30/07/2024
+  const [meterCompletedImage, setMeterCompletedImage] = useState("")
 
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
@@ -82,14 +85,17 @@ const MeterSection = ({ navigation }) => {
         };
   };
 
-  const toggleDropDownMeter = () => {
-    setisDropdownMeter(!isDropdownMeter);
+  const togglePendingDropdown = () => {
+    setIsPendingDropdown(!isPendingDropdown);
+    setIsCompletedDropdown(false);
+    setinputValueCompleted("")
+    setCompleteImage(null)
   };
   const handleSelectionOptionMeter = (all_data, option) => {
     setUserSelectedImage(null);
-    setinputValuemeter(option);
+    setinputValuePending(option);
     setmeterData(option);
-    setisDropdownMeter(false);
+    setIsPendingDropdown(false);
     setmeterMake(getNameById(all_data, option));
 
     const meterMakevalue = getNameById(all_data, option);
@@ -100,15 +106,17 @@ const MeterSection = ({ navigation }) => {
     }
   };
 
-  const toggleDropDownMeterReading = () => {
-    setisDropdownMeterReading(!isDropdownMeterReading);
+  const toggleCompletedDropdown = () => {
+    setIsCompletedDropdown(!isCompletedDropdown);
+    setIsPendingDropdown(false);
+    setinputValuePending("")
   };
-  const handleSelectionOptionMeterReading = (option) => {
-    setinputValuemeterReading(option?.id);
-    setmeterReadingData(option?.id);
-    setisDropdownMeterReading(false);
-    setCompleteImage(option?.image);
+  const handleCompletedSelectMeter = (option) => {
     completedImage();
+    setinputValueCompleted(option?.id);
+    setmeterReadingData(option?.id);
+    setIsCompletedDropdown(false);
+    setCompleteImage(option?.image);
   };
 
   const toggleModalVisibility = () => {
@@ -124,7 +132,7 @@ const MeterSection = ({ navigation }) => {
     const fetchSubmitData = async () => {
       const data = {
         propertyId: PopertyId,
-        meter_id: inputValuemeter,
+        meter_id: inputValuePending,
         note: isModalValue,
       };
       try {
@@ -179,7 +187,7 @@ const MeterSection = ({ navigation }) => {
     const newtry = getFileData(result);
     const postData = {
       propertyId: PopertyId,
-      meter_id: inputValuemeter,
+      meter_id: inputValuePending,
       file: newtry,
     };
     try {
@@ -284,8 +292,8 @@ const MeterSection = ({ navigation }) => {
         setLastReadingDate(res?.data?.last_reading_date);
         setAvgUsage(res?.data?.avg_usage);
 
-        if (inputValuemeter != "") {
-          handleSelectionOptionMeter(res?.data?.meters, inputValuemeter);
+        if (inputValuePending != "") {
+          handleSelectionOptionMeter(res?.data?.meters, inputValuePending);
         }
       }
     } catch (error) {
@@ -310,12 +318,15 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        if (res?.iamge && res.iamge !== "") {
-          setCompleteDropdownImage(res?.iamge);
-        } else {
-          // Handle the case where res.iamge is null or an empty string
-          console.log("No image found");
-        }
+        setMeterCompletedImage(res?.iamge)
+        console.log(res?.iamge,">>>>>>>>>image response")
+        // if (res?.iamge) {
+        //   setCompleteDropdownImage(res?.iamge);
+        //   console.log("checkij>>>>>>>>>>>>>>")
+        // } else {
+        //   // Handle the case where res.iamge is null or an empty string
+        //   console.log("No image found");
+        // }
         setCompleteLoading(false);
       })
       .catch((err) => {
@@ -326,10 +337,10 @@ const MeterSection = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setinputValuemeter("");
-      setinputValuemeterReading("");
-      setisDropdownMeterReading(false);
-      setisDropdownMeter(false);
+      setinputValuePending("");
+      setinputValueCompleted("");
+      setIsCompletedDropdown(false);
+      setIsPendingDropdown(false);
       setCompleteImage(null);
     }, [])
   );
@@ -338,7 +349,7 @@ const MeterSection = ({ navigation }) => {
 
   useEffect(() => {
     return () => {
-      setinputValuemeter("");
+      setinputValuePending("");
      
     };
   }, [isFocus]);
@@ -376,12 +387,12 @@ const MeterSection = ({ navigation }) => {
 
         <View style={styles.fields_main}>
           <Text style={styles.selectheading}>Meter :</Text>
-          <TouchableOpacity onPress={toggleDropDownMeter}>
+          <TouchableOpacity onPress={togglePendingDropdown}>
             <View style={styles.input_box}>
               <TextInput
                 style={styles.input}
                 placeholder="Select Pending Meters"
-                value={inputValuemeter}
+                value={inputValuePending}
                 editable={false}
                 placeholderTextColor={"rgba(166, 166, 166, 1)"}
               />
@@ -394,7 +405,7 @@ const MeterSection = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         {/* Dropdown of meter */}
-        {isDropdownMeter && (
+        {isPendingDropdown && (
           <View style={styles.dropdownContainer}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
               {meterDataByApi?.length > 0 &&
@@ -588,7 +599,7 @@ const MeterSection = ({ navigation }) => {
             )}
           </View>
         </Modal>
-        {inputValuemeter && (
+        {inputValuePending && (
           <View
             style={{
               marginTop: 24,
@@ -623,7 +634,7 @@ const MeterSection = ({ navigation }) => {
         )}
 
         <View style={styles.fields_main}>
-          {inputValuemeter && (
+          {inputValuePending && (
             <View
               style={{ flexDirection: "row", gap: 2, alignItems: "center" }}
             >
@@ -642,16 +653,16 @@ const MeterSection = ({ navigation }) => {
             </View>
           )}
 
-          <TouchableOpacity onPress={toggleDropDownMeterReading}>
+          <TouchableOpacity onPress={toggleCompletedDropdown}>
             <View style={styles.input_box}>
               <TextInput
                 style={styles.input}
                 placeholder="View Completed Meters"
-                value={inputValuemeterReading}
+                value={inputValueCompleted}
                 onBlur={() =>
                   handleSelectionOptionMeter(
                     meterDataByApi,
-                    inputValuemeterReading
+                    inputValueCompleted
                   )
                 }
                 editable={false}
@@ -665,22 +676,23 @@ const MeterSection = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
-          {isDropdownMeterReading && (
+          {isCompletedDropdown && (
             <View style={styles.dropdownContainer}>
               <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
                 {meterDataByApi?.length > 0 &&
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
+                      console.log(option,">>>>>>>>>>>")
                       return (
                         <TouchableOpacity
                           key={index}
                           style={styles.dropdownOption}
                           onPress={() =>
-                            handleSelectionOptionMeterReading(option)
+                            handleCompletedSelectMeter(option)
                           }
                         >
-                          <Text style={styles.input}>{option?.id}</Text>
+                          <Text style={styles.input}>{option?.id}com</Text>
                         </TouchableOpacity>
                       );
                     })}
@@ -764,9 +776,9 @@ const MeterSection = ({ navigation }) => {
             }}
           >
             <TouchableOpacity
-              disabled={inputValuemeter ? false : true}
+              disabled={inputValuePending ? false : true}
               style={{
-                backgroundColor: inputValuemeter
+                backgroundColor: inputValuePending
                   ? "rgba(255, 137, 2, 1)"
                   : "rgba(255, 137, 2, 0.5)",
                 borderRadius: 8,
@@ -784,7 +796,7 @@ const MeterSection = ({ navigation }) => {
                   lastReadingDate,
                   avgUsage,
                   totalDigit: meterMake?.totalDigit,
-                  meterName: inputValuemeter,
+                  meterName: inputValuePending,
                 });
               }}
             >
@@ -959,8 +971,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#989898",
     fontSize: 18,
+    zIndex:1
   },
-
   input_box: {
     flexDirection: "row",
     alignItems: "center",
