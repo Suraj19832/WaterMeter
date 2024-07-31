@@ -16,7 +16,11 @@ import { Entypo } from "@expo/vector-icons";
 import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useRoute,
+} from "@react-navigation/native";
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
 import { getFileData } from "../Helper/Helper";
@@ -57,10 +61,16 @@ const MeterSection = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [completeDropdownImage, setCompleteDropdownImage] = useState(null);
   const [completeLoading, setCompleteLoading] = useState(false);
+  const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
 
+  const [completedUnit, setCompletedUnit] = useState({
+    reading: "",
+    readingType: "",
+    readingDate: "",
+  });
 
   //30/07/2024
-  const [meterCompletedImage, setMeterCompletedImage] = useState("")
+  const [meterCompletedImage, setMeterCompletedImage] = useState("");
 
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
@@ -88,8 +98,9 @@ const MeterSection = ({ navigation }) => {
   const togglePendingDropdown = () => {
     setIsPendingDropdown(!isPendingDropdown);
     setIsCompletedDropdown(false);
-    setinputValueCompleted("")
-    setCompleteImage(null)
+    setinputValueCompleted("");
+    setCompleteImage(null);
+    setCompletedUnit({});
   };
   const handleSelectionOptionMeter = (all_data, option) => {
     setUserSelectedImage(null);
@@ -109,12 +120,14 @@ const MeterSection = ({ navigation }) => {
   const toggleCompletedDropdown = () => {
     setIsCompletedDropdown(!isCompletedDropdown);
     setIsPendingDropdown(false);
-    setinputValuePending("")
+    setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    completedImage();
+    console.log("clciked");
+    completedImage(option?.id);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
+
     setIsCompletedDropdown(false);
     setCompleteImage(option?.image);
   };
@@ -298,9 +311,6 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       setloading(false);
-      // toast.show("Token Expire", { type: "warning" });
-      // await AsyncStorage.removeItem("token");
-      // dispatch(setAuthToken(null));
     } finally {
       setloading(false);
     }
@@ -309,29 +319,32 @@ const MeterSection = ({ navigation }) => {
     fetchData();
   }, [PopertyId]);
 
-  const completedImage = () => {
+  const completedImage = (meterId) => {
     setCompleteLoading(true);
+    setCompleteDetailsLoading(true);
     const data = {
       property_id: id,
-      meter_id: meterReadingData,
+      meter_id: meterId,
     };
+
+    console.log(data);
     appApi
       .completedImage(data)
       .then((res) => {
-        setMeterCompletedImage(res?.iamge)
-        console.log(res?.iamge,">>>>>>>>>image response")
-        // if (res?.iamge) {
-        //   setCompleteDropdownImage(res?.iamge);
-        //   console.log("checkij>>>>>>>>>>>>>>")
-        // } else {
-        //   // Handle the case where res.iamge is null or an empty string
-        //   console.log("No image found");
-        // }
+        console.log(res);
+        setMeterCompletedImage(res?.iamge);
+        setCompletedUnit({
+          reading: res?.reading,
+          readingType: res?.readingType,
+          readingDate: res?.readingDate,
+        });
         setCompleteLoading(false);
+        setCompleteDetailsLoading(false);
       })
       .catch((err) => {
         console.log(err, "error from complete");
         setCompleteLoading(false);
+        setCompleteDetailsLoading(false);
       });
   };
 
@@ -342,15 +355,15 @@ const MeterSection = ({ navigation }) => {
       setIsCompletedDropdown(false);
       setIsPendingDropdown(false);
       setCompleteImage(null);
+      setCompletedUnit({});
     }, [])
   );
 
-  const isFocus = useIsFocused()
+  const isFocus = useIsFocused();
 
   useEffect(() => {
     return () => {
       setinputValuePending("");
-     
     };
   }, [isFocus]);
 
@@ -369,7 +382,10 @@ const MeterSection = ({ navigation }) => {
   return (
     <SafeAreaView style={{ marginHorizontal: 20 }}>
       <>
-        <TouchableOpacity style={{ marginTop: 10 }} onPress={()=>navigation.navigate("Dashboard")}>
+        <TouchableOpacity
+          style={{ marginTop: 10 }}
+          onPress={() => navigation.navigate("Dashboard")}
+        >
           <Image
             source={require("../assets/left-arrow (1).png")}
             style={{ height: 22, width: 12 }}
@@ -683,16 +699,13 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
-                      console.log(option,">>>>>>>>>>>")
                       return (
                         <TouchableOpacity
                           key={index}
                           style={styles.dropdownOption}
-                          onPress={() =>
-                            handleCompletedSelectMeter(option)
-                          }
+                          onPress={() => handleCompletedSelectMeter(option)}
                         >
-                          <Text style={styles.input}>{option?.id}com</Text>
+                          <Text style={styles.input}>{option?.id}</Text>
                         </TouchableOpacity>
                       );
                     })}
@@ -720,8 +733,8 @@ const MeterSection = ({ navigation }) => {
               }}
               onPress={() => {
                 setCompleteModal(true);
-                setCompleteLoading(true); // Add this line
-                completedImage(); // Call this function to load the image
+                // setCompleteLoading(true); // Add this line
+                // completedImage(); // Call this function to load the image
               }}
             >
               <Text style={{ color: "white", fontWeight: 700 }}>
@@ -731,6 +744,7 @@ const MeterSection = ({ navigation }) => {
           ) : (
             <View />
           )}
+
           <View
             style={{
               backgroundColor: pendingMeterCount === 0 ? "#2F8A16" : "#197AB6",
@@ -746,6 +760,43 @@ const MeterSection = ({ navigation }) => {
             </Text>
           </View>
         </View>
+
+        {completedUnit.length !== 0 ? (
+          <>
+            {completeDetailsLoading ? (
+              <ActivityIndicator size={"small"} color={"red"} />
+            ) : (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ alignItems: "center", gap: 10 }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "500",
+                      color: "#197AB6",
+                    }}
+                  >
+                    {completedUnit.reading} {completedUnit.readingType}{" "}
+                    {completedUnit.readingDate}
+                  </Text>
+                </View>
+                {Object.keys(completedUnit).length !== 0 && (
+                  <TouchableOpacity>
+                    <Image
+                      source={require("../assets/write.png")}
+                      style={{ height: 30, width: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </>
+        ) : null}
 
         <View
           style={{
@@ -855,9 +906,9 @@ const MeterSection = ({ navigation }) => {
                     }}
                   />
                 ) : (
-                  completeDropdownImage && (
+                  meterCompletedImage && (
                     <Image
-                      source={{ uri: completeDropdownImage }}
+                      source={{ uri: meterCompletedImage }}
                       style={{ height: "100%", width: "100%" }}
                     />
                   )
@@ -900,6 +951,11 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
     backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  modalImage: {
+    width: "100%",
+    height: Dimensions.get("window").height * 0.3,
+    marginBottom: 20,
   },
   closeButtonn: {
     position: "absolute",
@@ -971,7 +1027,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#989898",
     fontSize: 18,
-    zIndex:1
+    zIndex: 1,
   },
   input_box: {
     flexDirection: "row",

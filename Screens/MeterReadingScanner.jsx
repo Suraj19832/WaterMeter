@@ -36,6 +36,7 @@ function MeterReadingScanner({ navigation }) {
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
+  console.log(otp)
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -102,7 +103,6 @@ function MeterReadingScanner({ navigation }) {
     const newOTP = [...otp];
     newOTP[index] = value;
     setOTP(newOTP);
-
     if (value !== "" && index < totalDigit - 1) {
       otpFields?.current[index + 1]?.current?.focus();
     } else if (value === "" && index > 0) {
@@ -212,9 +212,8 @@ function MeterReadingScanner({ navigation }) {
       data_id: dataId,
       rescan: isRescanClicked ? "1" : "0",
       ocr_reading: meterValue,
-      is_manual: "1",
+      is_manual: meterValue !== otp.join("") ? "1" : "0",
       note: notes, //not done
-      // me_reason:null
     };
     appApi
       .submitReading(data)
@@ -232,7 +231,7 @@ function MeterReadingScanner({ navigation }) {
             name,
             otp: otp?.join(""),
             res,
-            value:"ocr"
+            value: "ocr",
           });
         }
       })
@@ -250,7 +249,7 @@ function MeterReadingScanner({ navigation }) {
       data_id: dataId,
       rescan: isRescanClicked ? "1" : "0",
       ocr_reading: meterValue,
-      is_manual: null,
+      is_manual: meterValue !== otp.join("") ? "1" : "0",
       note: notes, //not done
       me_reason: selectedReading,
     };
@@ -271,7 +270,7 @@ function MeterReadingScanner({ navigation }) {
             name,
             otp: otp?.join(""),
             res,
-            value :"me"
+            value: "me",
           });
         }
       })
@@ -375,17 +374,22 @@ function MeterReadingScanner({ navigation }) {
         >
           <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
-            {otp?.map((totalDigit, index) => (
-              <TextInput
-                key={index}
-                style={styles.otpBox}
-                keyboardType="numeric"
-                maxLength={1}
-                onChangeText={(value) => handleOTPChange(index, value)}
-                value={totalDigit}
-                ref={otpFields?.current[index]}
-              />
-            ))}
+            {otp?.map((totalDigit, index) => {
+              console.log(totalDigit,">>>>totaldigit")
+              return(
+                (
+                  <TextInput
+                    key={index}
+                    style={styles.otpBox}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    onChangeText={(value) => handleOTPChange(index, value)}
+                    value={totalDigit}
+                    ref={otpFields?.current[index]}
+                  />
+                )
+              )
+            })}
           </View>
         </View>
         {/* info ,submit button, manual typing button */}
@@ -425,7 +429,6 @@ function MeterReadingScanner({ navigation }) {
               </Text>
             )}
           </TouchableOpacity>
-
           <TouchableOpacity onPress={() => setNotesModalVisible(true)}>
             <Image
               source={require("../assets/write.png")}
@@ -438,7 +441,7 @@ function MeterReadingScanner({ navigation }) {
           <Modal
             transparent={true}
             visible={modalInfo}
-            onRequestClose={() => setModalInfo(false)}
+            onRequestClose={() => setModalInfo(false)}F
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
@@ -558,7 +561,14 @@ function MeterReadingScanner({ navigation }) {
               </View>
             )}
             <TouchableOpacity
-              style={[styles.button,{backgroundColor:manualLoading ? colorCodes.submitButtonDisabled: colorCodes.submitButtonEnabled}]}
+              style={[
+                styles.button,
+                {
+                  backgroundColor: manualLoading
+                    ? colorCodes.submitButtonDisabled
+                    : colorCodes.submitButtonEnabled,
+                },
+              ]}
               onPress={handleManualReadingSubmit}
               disabled={manualLoading}
             >
@@ -611,8 +621,8 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 5,
     alignItems: "center",
-    alignSelf:"flex-end",
-    paddingVertical:6
+    alignSelf: "flex-end",
+    paddingVertical: 6,
   },
   buttonText: {
     color: "white",
