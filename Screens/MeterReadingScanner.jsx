@@ -36,7 +36,6 @@ function MeterReadingScanner({ navigation }) {
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
-  console.log(otp)
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -142,8 +141,6 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
       };
       const res = await appApi.meterScanner(data);
-
-      console.log(res, "Response from API");
       setMeterValue(res?.ocrReading);
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
@@ -180,7 +177,7 @@ function MeterReadingScanner({ navigation }) {
       if (!result.cancelled) {
         setLoading(true);
         setScannedMeter(result.assets[0].uri);
-        setIsRescanClicked(true);
+        setIsRescanClicked(scannedMeter !== null);
 
         // Resize image
         const resizedImage = await ImageManipulator.manipulateAsync(
@@ -201,7 +198,7 @@ function MeterReadingScanner({ navigation }) {
     }
   };
   const handleSubmit = () => {
-    if (meterValue !== otp.join("") || meterValue === null) {
+    if (meterValue !== otp?.join("") || meterValue === null) {
       setReadingMismatchModalVisible(true);
       return;
     }
@@ -210,15 +207,18 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: dataId,
-      rescan: isRescanClicked ? "1" : "0",
-      ocr_reading: meterValue,
-      is_manual: meterValue !== otp.join("") ? "1" : "0",
-      note: notes, //not done
+      rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
+      ocr_reading: otp?.join(""),
+      is_manual: meterValue !== otp?.join("") ? "1" : "0",
+      note: notes,
     };
+    console.log(data, "::::::::::not_manual");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, "submission form api");
+        console.log("====================================");
+        console.log(res);
+        console.log("====================================");
         if (res?.status) {
           setSubmitLoading(false);
           toast.show("Sucessfully Submitted", {
@@ -247,16 +247,17 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: dataId,
-      rescan: isRescanClicked ? "1" : "0",
-      ocr_reading: meterValue,
-      is_manual: meterValue !== otp.join("") ? "1" : "0",
-      note: notes, //not done
+      rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
+      ocr_reading: otp?.join(""),
+      is_manual: meterValue !== otp?.join("") ? "1" : "0",
+      note: notes,
       me_reason: selectedReading,
     };
+    console.log(data, ":::::::datamanualreading");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, "submission form api");
+        console.log(res, ">>>>>>>>>>>>>>>>>>>>>>>>>");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -281,9 +282,8 @@ function MeterReadingScanner({ navigation }) {
       });
   };
   const handleSelectionOptionMeter = (meterId) => {
-    // console.log(meterId)
     setSelectedReading(meterId);
-    setIsDropdownVisible(false); // Close dropdown after selection
+    setIsDropdownVisible(false);
   };
 
   useFocusEffect(
@@ -296,6 +296,8 @@ function MeterReadingScanner({ navigation }) {
       setLoading(false);
       setSubmitLoading(false);
       setDataId(null);
+      setSelectedReading(null);
+      setMeReasons([]);
       setSelectedReading(null);
     }, [totalDigit])
   );
@@ -375,20 +377,17 @@ function MeterReadingScanner({ navigation }) {
           <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
             {otp?.map((totalDigit, index) => {
-              console.log(totalDigit,">>>>totaldigit")
-              return(
-                (
-                  <TextInput
-                    key={index}
-                    style={styles.otpBox}
-                    keyboardType="numeric"
-                    maxLength={1}
-                    onChangeText={(value) => handleOTPChange(index, value)}
-                    value={totalDigit}
-                    ref={otpFields?.current[index]}
-                  />
-                )
-              )
+              return (
+                <TextInput
+                  key={index}
+                  style={styles.otpBox}
+                  keyboardType="numeric"
+                  maxLength={1}
+                  onChangeText={(value) => handleOTPChange(index, value)}
+                  value={totalDigit}
+                  ref={otpFields?.current[index]}
+                />
+              );
             })}
           </View>
         </View>
@@ -441,7 +440,8 @@ function MeterReadingScanner({ navigation }) {
           <Modal
             transparent={true}
             visible={modalInfo}
-            onRequestClose={() => setModalInfo(false)}F
+            onRequestClose={() => setModalInfo(false)}
+            F
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>

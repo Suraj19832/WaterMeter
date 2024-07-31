@@ -391,7 +391,8 @@ export async function sendAuthorizePostFormData(url, obj) {
 
       if (error.response.status === 401) {
         console.log("Unauthorized: 401");
-        // Handle 401 error here, e.g., remove token, redirect to login, etc.
+        AsyncStorage.removeItem("token")
+        store.dispatch(setAuthToken(null));
         throw new Error("Unauthorized: 401");
       }
 

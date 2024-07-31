@@ -356,6 +356,7 @@ const MeterSection = ({ navigation }) => {
       setIsPendingDropdown(false);
       setCompleteImage(null);
       setCompletedUnit({});
+      fetchData() //maybe removed
     }, [])
   );
 
