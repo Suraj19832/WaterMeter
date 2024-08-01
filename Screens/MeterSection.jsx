@@ -75,7 +75,7 @@ const MeterSection = ({ navigation }) => {
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
-  const [completedNotes, setCompletedNotes] = useState("")
+  const [completedNotes, setCompletedNotes] = useState("");
 
   const [noteLoading, setnoteLoading] = useState(false);
 
@@ -125,14 +125,14 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    console.log(option,"<<<<<<<<<<<<")
+    console.log(option, "<<<<<<<<<<<<");
     completedImage(option?.id);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
     setCompletedTotalDigit(option?.total_number_of_digit);
     setIsCompletedDropdown(false);
     setCompleteImage(option?.image);
-    setCompletedNotes(option?.note)
+    setCompletedNotes(option?.note);
   };
 
   const toggleModalVisibility = () => {
@@ -318,9 +318,13 @@ const MeterSection = ({ navigation }) => {
       setloading(false);
     }
   };
-  useEffect(() => {
-    fetchData();
-  }, [PopertyId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reset the states when the screen comes into focus
+      fetchData();
+    }, [PopertyId])
+  );
 
   const completedImage = (meterId) => {
     setCompleteLoading(true);
@@ -332,11 +336,11 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        console.log(res,"LLLLLLLLLLLLLL")
+        console.log(res, "LLLLLLLLLLLLLL");
         setMeterCompletedImage(res?.iamge);
-        setMeterReading(res?.reading)
-        setCompletedDataId(res?.data_id)
-       
+        setMeterReading(res?.reading);
+        setCompletedDataId(res?.data_id);
+
         setCompletedUnit({
           reading: res?.reading,
           readingType: res?.readingType,
@@ -803,9 +807,9 @@ const MeterSection = ({ navigation }) => {
                         meterName: inputValueCompleted,
                         totalDigit: completedTotalDigit,
                         meterImage: meterCompletedImage,
-                        meterReading : meterReading,
-                        completed_dataId:completedDataId,
-                        completed_note : completedNotes
+                        meterReading: meterReading,
+                        completed_dataId: completedDataId,
+                        completed_note: completedNotes,
                       })
                     }
                   >

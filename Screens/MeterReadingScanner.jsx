@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -44,7 +44,7 @@ function MeterReadingScanner({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState(completed_note || "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
   const [isRescanClicked, setIsRescanClicked] = useState(false);
@@ -116,27 +116,27 @@ function MeterReadingScanner({ navigation }) {
   const isOTPComplete = () => {
     return otp?.every((digit) => digit !== "");
   };
-  const meternotesubmit = async () => {
+  const meternotesubmit = (note) => {
     setnoteLoading(true);
     const data = {
       propertyId: id,
       meter_id: meterName,
-      note: notes,
+      note: note,
     };
-    try {
-      const res = await appApi.meternote(data);
-      if (res?.status) {
-        toast.show(res?.message, { type: "success" });
-        setnoteLoading(false);
-      } else {
-        toast.show("Failed to submit note", { type: "error" });
-        setnoteLoading(false);
-      }
-    } catch (error) {
-      console.error("Error submitting note:", error);
-      setnoteLoading(false);
-      toast.show("Unexpected Error Occurred", { type: "error" });
-    }
+    appApi
+      .meternote(data)
+      .then((res) => {
+        if (res?.status) {
+          toast.show(res?.message, { type: "success" });
+          setnoteLoading(false);
+        } else {
+          toast.show("Failed to submit note", { type: "error" });
+          setnoteLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const verifyNumber = async (imageFile) => {
     try {
@@ -258,7 +258,6 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, ">>>>>>>>>>>>>>>>>>>>>>>>>");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -286,6 +285,7 @@ function MeterReadingScanner({ navigation }) {
     setSelectedReading(meterId);
     setIsDropdownVisible(false);
   };
+
   useFocusEffect(
     React.useCallback(() => {
       // Reset the states when the screen comes into focus
@@ -299,7 +299,8 @@ function MeterReadingScanner({ navigation }) {
       setSelectedReading(null);
       setMeReasons([]);
       setSelectedReading(null);
-    }, [totalDigit])
+      setNotes(completed_note || "");
+    }, [totalDigit, completed_note])
   );
 
   return (
@@ -499,7 +500,7 @@ function MeterReadingScanner({ navigation }) {
             <TextInput
               style={styles.notesInput}
               placeholder="Enter your notes here..."
-              value={completed_note ? completed_note : notes}
+              value={notes}
               onChangeText={(text) => setNotes(text)}
               multiline
             />
@@ -508,8 +509,10 @@ function MeterReadingScanner({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setNotesModalVisible(false);
-                  meternotesubmit();
-                  setNotes("");
+
+                  meternotesubmit(notes);
+
+                  // setNotes("");
                 }}
               >
                 <Text style={styles.modalButtonText}>Submit Notes</Text>
@@ -518,7 +521,7 @@ function MeterReadingScanner({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setNotesModalVisible(false);
-                  setNotes("");
+                  setNotes(completed_note || "");
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
