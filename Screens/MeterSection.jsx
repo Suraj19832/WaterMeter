@@ -319,6 +319,10 @@ const MeterSection = ({ navigation }) => {
     }
   };
 
+  // useEffect(()=>{
+  //   fetchData()
+  // },[PopertyId])
+
   useFocusEffect(
     React.useCallback(() => {
       // Reset the states when the screen comes into focus
@@ -603,7 +607,7 @@ const MeterSection = ({ navigation }) => {
                   <View style={{ width: "100%", gap: 10 }}>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Last Reading :</Text>
-                      <Text style={styles.modalValueText}>{lastReading}</Text>
+                      <Text style={styles.modalValueText}>{lastReading ? lastReading : "N/A"}</Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>
@@ -611,12 +615,12 @@ const MeterSection = ({ navigation }) => {
                       </Text>
                       <Text style={styles.modalValueText}>
                         {" "}
-                        {lastReadingDate}
+                        {lastReadingDate ? lastReadingDate : "N/A"}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Avg Usage : </Text>
-                      <Text style={styles.modalValueText}> {avgUsage}</Text>
+                      <Text style={styles.modalValueText}> {avgUsage ? avgUsage : "N/A"}</Text>
                     </View>
                   </View>
                 )}

@@ -460,19 +460,19 @@ function MeterReadingScanner({ navigation }) {
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading :
                   </Text>{" "}
-                  {lastReading}
+                  {lastReading ? lastReading : "N/A"}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading Date :
                   </Text>{" "}
-                  {formatDate(lastReadingDate)}
+                  {lastReadingDate ? formatDate(lastReadingDate) : "N/A"}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Avg Usage :
                   </Text>{" "}
-                  {avgUsage}
+                  {avgUsage ? avgUsage : "N/A"}
                 </Text>
               </View>
               <TouchableOpacity
