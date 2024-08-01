@@ -9,7 +9,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
-  Platform, // Import Alert for showing errors
+  Platform,
   ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -26,16 +26,21 @@ function MeterReadingScanner({ navigation }) {
   const {
     id,
     name,
-    lastReading,
-    lastReadingDate,
-    avgUsage,
+    lastReading, // for info
+    lastReadingDate, // for info
+    avgUsage, // for info
     totalDigit,
     meterName,
+    meterImage,
+    meterReading,
+    completed_dataId,
+    completed_note,
   } = route.params ?? {};
   const [scannedMeter, setScannedMeter] = useState(null);
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(Array(totalDigit).fill(""));
+  const realOtp = meterReading ? meterReading.split("") : otp;
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -206,19 +211,16 @@ function MeterReadingScanner({ navigation }) {
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: dataId,
+      data_id: completed_dataId ? completed_dataId : dataId,
       rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
       ocr_reading: otp?.join(""),
       is_manual: meterValue !== otp?.join("") ? "1" : "0",
-      note: notes,
+      note: completed_note ? completed_note : notes,
     };
     console.log(data, "::::::::::not_manual");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log("====================================");
-        console.log(res);
-        console.log("====================================");
         if (res?.status) {
           setSubmitLoading(false);
           toast.show("Sucessfully Submitted", {
@@ -240,17 +242,16 @@ function MeterReadingScanner({ navigation }) {
         setSubmitLoading(false);
       });
   };
-
   const handleManualReadingSubmit = () => {
     setManulLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: dataId,
+      data_id: completed_dataId ? completed_dataId : dataId,
       rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
       ocr_reading: otp?.join(""),
       is_manual: meterValue !== otp?.join("") ? "1" : "0",
-      note: notes,
+      note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };
     console.log(data, ":::::::datamanualreading");
@@ -285,7 +286,6 @@ function MeterReadingScanner({ navigation }) {
     setSelectedReading(meterId);
     setIsDropdownVisible(false);
   };
-
   useFocusEffect(
     React.useCallback(() => {
       // Reset the states when the screen comes into focus
@@ -332,10 +332,16 @@ function MeterReadingScanner({ navigation }) {
         <View style={styles.scannerView}>
           {loading ? (
             <ActivityIndicator size={"large"} />
+          ) : scannedMeter && scannedMeter ? (
+            <Image
+              source={{ uri: scannedMeter }}
+              style={styles.scannedImage}
+              resizeMode="cover"
+            />
           ) : (
-            scannedMeter && (
+            meterImage && (
               <Image
-                source={{ uri: scannedMeter }}
+                source={{ uri: meterImage }}
                 style={styles.scannedImage}
                 resizeMode="cover"
               />
@@ -360,7 +366,11 @@ function MeterReadingScanner({ navigation }) {
             disabled={loading}
           >
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
-              {loading ? "Scanning...." : scannedMeter ? "Rescan" : "Scan"}
+              {loading
+                ? "Scanning...."
+                : scannedMeter || meterImage
+                ? "Rescan"
+                : "Scan"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -376,7 +386,7 @@ function MeterReadingScanner({ navigation }) {
         >
           <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
-            {otp?.map((totalDigit, index) => {
+            {realOtp?.map((totalDigit, index) => {
               return (
                 <TextInput
                   key={index}
@@ -489,7 +499,7 @@ function MeterReadingScanner({ navigation }) {
             <TextInput
               style={styles.notesInput}
               placeholder="Enter your notes here..."
-              value={notes}
+              value={completed_note ? completed_note : notes}
               onChangeText={(text) => setNotes(text)}
               multiline
             />

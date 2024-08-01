@@ -62,7 +62,7 @@ const MeterSection = ({ navigation }) => {
   const [completeDropdownImage, setCompleteDropdownImage] = useState(null);
   const [completeLoading, setCompleteLoading] = useState(false);
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
-
+  const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -71,9 +71,11 @@ const MeterSection = ({ navigation }) => {
 
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-
   // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
+  const [meterReading, setMeterReading] = useState(null);
+  const [completedDataId, setCompletedDataId] = useState(null);
+  const [completedNotes, setCompletedNotes] = useState("")
 
   const [noteLoading, setnoteLoading] = useState(false);
 
@@ -123,13 +125,14 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    console.log("clciked");
+    console.log(option,"<<<<<<<<<<<<")
     completedImage(option?.id);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
-
+    setCompletedTotalDigit(option?.total_number_of_digit);
     setIsCompletedDropdown(false);
     setCompleteImage(option?.image);
+    setCompletedNotes(option?.note)
   };
 
   const toggleModalVisibility = () => {
@@ -326,13 +329,14 @@ const MeterSection = ({ navigation }) => {
       property_id: id,
       meter_id: meterId,
     };
-
-    console.log(data);
     appApi
       .completedImage(data)
       .then((res) => {
-        console.log(res);
+        console.log(res,"LLLLLLLLLLLLLL")
         setMeterCompletedImage(res?.iamge);
+        setMeterReading(res?.reading)
+        setCompletedDataId(res?.data_id)
+       
         setCompletedUnit({
           reading: res?.reading,
           readingType: res?.readingType,
@@ -356,7 +360,7 @@ const MeterSection = ({ navigation }) => {
       setIsPendingDropdown(false);
       setCompleteImage(null);
       setCompletedUnit({});
-      fetchData() //maybe removed
+      // fetchData(); //maybe removed
     }, [])
   );
 
@@ -765,7 +769,7 @@ const MeterSection = ({ navigation }) => {
         {completedUnit.length !== 0 ? (
           <>
             {completeDetailsLoading ? (
-              <ActivityIndicator size={"small"} color={"red"} />
+              <ActivityIndicator size={"small"} color={"#197AB6"} />
             ) : (
               <View
                 style={{
@@ -782,12 +786,29 @@ const MeterSection = ({ navigation }) => {
                       color: "#197AB6",
                     }}
                   >
-                    {completedUnit.reading} {completedUnit.readingType}{" "}
+                    {completedUnit.reading} {completedUnit.readingType}
+                    {"  "}
                     {completedUnit.readingDate}
                   </Text>
                 </View>
                 {Object.keys(completedUnit).length !== 0 && (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("meterReadingScanner", {
+                        id,
+                        name,
+                        lastReading,
+                        lastReadingDate,
+                        avgUsage,
+                        meterName: inputValueCompleted,
+                        totalDigit: completedTotalDigit,
+                        meterImage: meterCompletedImage,
+                        meterReading : meterReading,
+                        completed_dataId:completedDataId,
+                        completed_note : completedNotes
+                      })
+                    }
+                  >
                     <Image
                       source={require("../assets/write.png")}
                       style={{ height: 30, width: 30 }}
