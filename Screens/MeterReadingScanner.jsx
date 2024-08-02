@@ -26,9 +26,9 @@ function MeterReadingScanner({ navigation }) {
   const {
     id,
     name,
-    lastReading, // for info
-    lastReadingDate, // for info
-    avgUsage, // for info
+    lastReading,
+    lastReadingDate,
+    avgUsage,
     totalDigit,
     meterName,
     meterImage,
@@ -39,8 +39,9 @@ function MeterReadingScanner({ navigation }) {
   const [scannedMeter, setScannedMeter] = useState(null);
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
-  const [otp, setOTP] = useState(Array(totalDigit).fill(""));
-  const realOtp = meterReading ? meterReading.split("") : otp;
+  const [otp, setOTP] = useState(
+    meterReading?.split("") || Array(totalDigit)?.fill("")
+  );
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -107,6 +108,7 @@ function MeterReadingScanner({ navigation }) {
     const newOTP = [...otp];
     newOTP[index] = value;
     setOTP(newOTP);
+    // realOtp = newOTP
     if (value !== "" && index < totalDigit - 1) {
       otpFields?.current[index + 1]?.current?.focus();
     } else if (value === "" && index > 0) {
@@ -300,6 +302,7 @@ function MeterReadingScanner({ navigation }) {
       setMeReasons([]);
       setSelectedReading(null);
       setNotes(completed_note || "");
+      setOTP(meterReading?.split("") || Array(totalDigit)?.fill(""));
     }, [totalDigit, completed_note])
   );
 
@@ -387,7 +390,7 @@ function MeterReadingScanner({ navigation }) {
         >
           <Text style={styles.title}>Meter Reading :</Text>
           <View style={styles.otp}>
-            {realOtp?.map((totalDigit, index) => {
+            {otp?.map((totalDigit, index) => {
               return (
                 <TextInput
                   key={index}
@@ -395,6 +398,7 @@ function MeterReadingScanner({ navigation }) {
                   keyboardType="numeric"
                   maxLength={1}
                   onChangeText={(value) => handleOTPChange(index, value)}
+                  // defaultValue={totalDigit}
                   value={totalDigit}
                   ref={otpFields?.current[index]}
                 />
