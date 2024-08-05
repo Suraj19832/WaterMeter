@@ -11,7 +11,10 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  Animated,
+  Button,
 } from "react-native";
+
 import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
@@ -21,14 +24,22 @@ import { useToast } from "react-native-toast-notifications";
 import * as ImageManipulator from "expo-image-manipulator";
 import LoaderComponent from "../Components/LoaderComponent";
 
+import "react-native-gesture-handler";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import {
+  PinchGestureHandler,
+  State,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
   const {
     id,
     name,
-    lastReading,
-    lastReadingDate,
-    avgUsage,
+    lastReading, // for info
+    lastReadingDate, // for info
+    avgUsage, // for info
     totalDigit,
     meterName,
     meterImage,
@@ -36,24 +47,22 @@ function MeterReadingScanner({ navigation }) {
     completed_dataId,
     completed_note,
   } = route.params ?? {};
-  const [scannedMeter, setScannedMeter] = useState(null);
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(
     meterReading?.split("") || Array(totalDigit)?.fill("")
   );
+
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
   const [notes, setNotes] = useState(completed_note || "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
-  const [isRescanClicked, setIsRescanClicked] = useState(false);
   const toast = useToast();
   const [readingMismatchModalVisible, setReadingMismatchModalVisible] =
     useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(true);
-  const [manualReading, setManualReading] = useState("");
   const [selectedReading, setSelectedReading] = useState(null);
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
@@ -108,7 +117,6 @@ function MeterReadingScanner({ navigation }) {
     const newOTP = [...otp];
     newOTP[index] = value;
     setOTP(newOTP);
-    // realOtp = newOTP
     if (value !== "" && index < totalDigit - 1) {
       otpFields?.current[index + 1]?.current?.focus();
     } else if (value === "" && index > 0) {
@@ -140,7 +148,68 @@ function MeterReadingScanner({ navigation }) {
         console.log(err);
       });
   };
+  const handleSelectionOptionMeter = (meterId) => {
+    setSelectedReading(meterId);
+    setIsDropdownVisible(false);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reset the states when the screen comes into focus
+
+      setMeterValue(null);
+      setModalInfo(false);
+      setOTP(meterReading?.split("") || Array(totalDigit)?.fill(""));
+      setSubmitLoading(false);
+      setDataId(null);
+      setSelectedReading(null);
+      setMeReasons([]);
+      setSelectedReading(null);
+      setNotes(completed_note || "");
+      setCapturedImage(null);
+    }, [totalDigit, completed_note])
+  );
+
+  const scanAnimation = useRef(new Animated.Value(3)).current;
+  const [facing, setFacing] = useState("back");
+  const [permission, requestPermission] = useCameraPermissions();
+  const [zoom, setZoom] = useState(0);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [isRescanClicked, setIsRescanClicked] = useState(false)
+  const cameraRef = useRef(null);
+
+  const onPinchEvent = (event) => {
+    // Calculate the new zoom level based on the scale from the pinch gesture
+    const newZoom = Math.min(
+      Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
+      1
+    );
+    setZoom(newZoom);
+  };
+  const onPinchStateChange = (event) => {
+    // Check if the pinch gesture has ended
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      const newZoom = Math.min(
+        Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
+        1
+      );
+      setZoom(newZoom);
+    }
+  };
+  const startScanningAnimation = () => {
+    scanAnimation.setValue(0);
+    Animated.loop(
+      Animated.timing(scanAnimation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
   const verifyNumber = async (imageFile) => {
+    setLoading(true);
     try {
       const data = {
         file: imageFile,
@@ -157,53 +226,45 @@ function MeterReadingScanner({ navigation }) {
           ?.fill("")
           ?.map((_, index) => res?.ocrReading[index] || "");
         setOTP(newOTP);
+        setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
+        setLoading(false);
       }
     } catch (err) {
       console.error(err, "Error while uploading image");
-    } finally {
       setLoading(false);
     }
   };
-  const handleScan = async () => {
+
+  const captureImage = async () => {
     try {
-      const permissionCamera =
-        await ImagePicker.requestCameraPermissionsAsync();
-      if (!permissionCamera.granted) {
-        toast.show("Camera permission denied!", { type: "error" });
-        return;
-      }
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        setLoading(true);
-        setScannedMeter(result.assets[0].uri);
-        setIsRescanClicked(scannedMeter !== null);
-
-        // Resize image
+      if (cameraRef.current) {
+        const photo = await cameraRef.current.takePictureAsync();
+        setCapturedImage(photo.uri);
+        setIsRescanClicked(capturedImage !== null);
+        setIsCameraOpen(false);
         const resizedImage = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [{ resize: { width: 800 } }],
+          photo.uri,
+          [{ resize: { width: 800, height: 600 } }],
           { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
         );
-
         const fileData = getFileData(resizedImage);
         await verifyNumber(fileData);
-      } else {
-        toast.show("Scan Cancelled", { type: "success" });
       }
     } catch (error) {
-      setLoading(false);
-      console.log("Error while scanning:", error);
-      toast.show("Failed to launch the camera", { type: "warning" });
+      toast.show("Unable to capture image", { type: "error" });
+      console.error(error);
+    } finally {
     }
   };
+
+  const handleScan = () => {
+    setIsCameraOpen(!isCameraOpen);
+    startScanningAnimation();
+    captureImage();
+  };
+
   const handleSubmit = () => {
     if (meterValue !== otp?.join("") || meterValue === null) {
       setReadingMismatchModalVisible(true);
@@ -214,17 +275,15 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
+      rescan: capturedImage !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
       ocr_reading: otp?.join(""),
       is_manual: meterValue !== otp?.join("") ? "1" : "0",
       note: completed_note ? completed_note : notes,
     };
-    console.log(data, "::::::::::not_manual");
     appApi
       .submitReading(data)
       .then((res) => {
         if (res?.status) {
-          setSubmitLoading(false);
           toast.show("Sucessfully Submitted", {
             type: "sucess",
             duration: 3000,
@@ -241,22 +300,21 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
-        setSubmitLoading(false);
       });
   };
+
   const handleManualReadingSubmit = () => {
     setManulLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: scannedMeter !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
+      rescan: capturedImage !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
       ocr_reading: otp?.join(""),
       is_manual: meterValue !== otp?.join("") ? "1" : "0",
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };
-    console.log(data, ":::::::datamanualreading");
     appApi
       .submitReading(data)
       .then((res) => {
@@ -283,28 +341,26 @@ function MeterReadingScanner({ navigation }) {
         setReadingMismatchModalVisible(false);
       });
   };
-  const handleSelectionOptionMeter = (meterId) => {
-    setSelectedReading(meterId);
-    setIsDropdownVisible(false);
-  };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // Reset the states when the screen comes into focus
-      setScannedMeter(null);
-      setMeterValue(null);
-      setModalInfo(false);
-      setOTP(Array(totalDigit).fill(""));
-      setLoading(false);
-      setSubmitLoading(false);
-      setDataId(null);
-      setSelectedReading(null);
-      setMeReasons([]);
-      setSelectedReading(null);
-      setNotes(completed_note || "");
-      setOTP(meterReading?.split("") || Array(totalDigit)?.fill(""));
-    }, [totalDigit, completed_note])
-  );
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>
+          We need your permission to show the camera
+        </Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+  const translateY = scanAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-200, 0], // Adjust these values to fit your design
+  });
 
   return (
     <KeyboardAvoidingView
@@ -328,17 +384,52 @@ function MeterReadingScanner({ navigation }) {
           </Text>
         </View>
       </View>
-      <ScrollView
-        contentContainerStyle={{ marginBottom: 50 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* scanner meter image display */}
-        <View style={styles.scannerView}>
+
+      {isCameraOpen ? (
+        <GestureHandlerRootView style={{}}>
+          <PinchGestureHandler
+            onGestureEvent={onPinchEvent}
+            onHandlerStateChange={onPinchStateChange}
+          >
+            <View>
+              <CameraView type={facing} zoom={zoom} ref={cameraRef}>
+                <Animated.View
+                  style={[
+                    styles.scanningOverlay,
+                    { transform: [{ translateY }] },
+                  ]}
+                />
+                <View>
+                  <TouchableOpacity style={{ height: 200 }}>
+                    <TouchableOpacity
+                      onPress={captureImage}
+                      style={{ position: "absolute", bottom: 20, right: 20 }}
+                    >
+                      <Image
+                        source={require("../assets/icons/shutter.png")}
+                        style={{ height: 30, width: 30 }}
+                      />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+              </CameraView>
+            </View>
+          </PinchGestureHandler>
+        </GestureHandlerRootView>
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            backgroundColor: "#414141",
+            height: 200,
+            alignItems: "center",
+          }}
+        >
           {loading ? (
             <ActivityIndicator size={"large"} />
-          ) : scannedMeter && scannedMeter ? (
+          ) : capturedImage && capturedImage ? (
             <Image
-              source={{ uri: scannedMeter }}
+              source={{ uri: capturedImage }}
               style={styles.scannedImage}
               resizeMode="cover"
             />
@@ -352,6 +443,12 @@ function MeterReadingScanner({ navigation }) {
             )
           )}
         </View>
+      )}
+
+      <ScrollView
+        contentContainerStyle={{ marginBottom: 50 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* scan button */}
         <View style={styles.scanheading}>
           <Text style={styles.scannerHeading}>
@@ -359,20 +456,22 @@ function MeterReadingScanner({ navigation }) {
           </Text>
           <TouchableOpacity
             style={{
-              backgroundColor: loading
-                ? colorCodes.submitButtonDisabled
-                : colorCodes.submitButtonEnabled,
+              backgroundColor:
+                isCameraOpen || loading
+                  ? colorCodes.submitButtonDisabled
+                  : colorCodes.submitButtonEnabled,
               paddingVertical: 10,
               paddingHorizontal: 25,
               borderRadius: 8,
             }}
             onPress={handleScan}
-            disabled={loading}
           >
             <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
-              {loading
-                ? "Scanning...."
-                : scannedMeter || meterImage
+              {isCameraOpen
+                ? "Stop"
+                : loading
+                ? "Scanning"
+                : capturedImage
                 ? "Rescan"
                 : "Scan"}
             </Text>
@@ -398,7 +497,6 @@ function MeterReadingScanner({ navigation }) {
                   keyboardType="numeric"
                   maxLength={1}
                   onChangeText={(value) => handleOTPChange(index, value)}
-                  // defaultValue={totalDigit}
                   value={totalDigit}
                   ref={otpFields?.current[index]}
                 />
@@ -755,7 +853,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   scannerView: {
-    marginVertical: 5,
+    // marginVertical: 5,
     backgroundColor: "#414141",
     height: 200,
     alignItems: "center",
@@ -766,6 +864,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical: 20,
     alignItems: "center",
+  },
+  scanningOverlay: {
+    position: "absolute",
+    top: "100%", // Adjust this value to position the overlay
+    left: 0,
+    right: 0,
+    height: 4, // Height of the scanning line
+    backgroundColor: colorCodes.heading, // Color of the scanning line
+    borderRadius: 2, // Optional: rounded edges
   },
   scannerHeading: {
     fontSize: 24,
