@@ -43,7 +43,7 @@ const MeterSection = ({ navigation }) => {
   const [avgUsage, setAvgUsage] = useState("");
   // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalValue, setisModalValue] = useState("");
+  const [dropdownNotes, setDropdownNotes] = useState("");
   //For Image
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
@@ -125,7 +125,6 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    console.log(option, "<<<<<<<<<<<<");
     completedImage(option?.id);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -136,7 +135,7 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibility = () => {
-    setisModalValue(meterMake?.meterNote);
+    setDropdownNotes(meterMake?.meterNote);
     setIsModalVisible(!isModalVisible);
   };
   const toggleModalVisibilitySubmit = () => {
@@ -149,7 +148,7 @@ const MeterSection = ({ navigation }) => {
       const data = {
         propertyId: PopertyId,
         meter_id: inputValuePending,
-        note: isModalValue,
+        note: dropdownNotes,
       };
       try {
         const res = await appApi.meternote(data);
@@ -192,13 +191,12 @@ const MeterSection = ({ navigation }) => {
     setModalVisibleUploadImage(true);
   };
   const color = isModalImage ? "#0F77AF" : "#FFFFFF";
-  // camera and ducument picker fuctionalitys
   const closeModal = () => {
     setModalVisibleUploadImage(false);
   };
 
   const ImageUpload = async (result) => {
-    // toast.show("Working on it...", { type: "sucess" });
+
     setnoteLoading(true);
     const newtry = getFileData(result);
     const postData = {
@@ -340,7 +338,6 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        console.log(res, "LLLLLLLLLLLLLL");
         setMeterCompletedImage(res?.iamge);
         setMeterReading(res?.reading);
         setCompletedDataId(res?.data_id);
@@ -601,8 +598,8 @@ const MeterSection = ({ navigation }) => {
                       placeholder="Enter your notes here"
                       multiline
                       numberOfLines={4}
-                      onChangeText={(text) => setisModalValue(text)}
-                      value={isModalValue}
+                      onChangeText={(text) => setDropdownNotes(text)}
+                      value={dropdownNotes}
                     />
                     <View style={{ width: "100%", alignItems: "flex-end" }}>
                       <TouchableOpacity

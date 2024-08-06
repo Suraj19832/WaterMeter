@@ -23,7 +23,6 @@ import { getFileData } from "../Helper/Helper";
 import { useToast } from "react-native-toast-notifications";
 import * as ImageManipulator from "expo-image-manipulator";
 import LoaderComponent from "../Components/LoaderComponent";
-
 import "react-native-gesture-handler";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import {
@@ -47,12 +46,12 @@ function MeterReadingScanner({ navigation }) {
     completed_dataId,
     completed_note,
   } = route.params ?? {};
+
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [otp, setOTP] = useState(
     meterReading?.split("") || Array(totalDigit)?.fill("")
   );
-
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -176,7 +175,7 @@ function MeterReadingScanner({ navigation }) {
   const [zoom, setZoom] = useState(0);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [isRescanClicked, setIsRescanClicked] = useState(false)
+  const [isRescanClicked, setIsRescanClicked] = useState(false);
   const cameraRef = useRef(null);
 
   const onPinchEvent = (event) => {
@@ -381,76 +380,75 @@ function MeterReadingScanner({ navigation }) {
         contentContainerStyle={{ marginBottom: 50 }}
         showsVerticalScrollIndicator={false}
       >
-      {/* heading title */}
-      <View style={{ paddingHorizontal: 4 }}>
-        <View style={styles.heading}>
-          <Text style={styles.headingText}>
-            {id} | {name}
-          </Text>
+        {/* heading title */}
+        <View style={{ paddingHorizontal: 4 }}>
+          <View style={styles.heading}>
+            <Text style={styles.headingText}>
+              {id} | {name}
+            </Text>
+          </View>
         </View>
-      </View>
 
-      {isCameraOpen ? (
-        <GestureHandlerRootView style={{}}>
-          <PinchGestureHandler
-            onGestureEvent={onPinchEvent}
-            onHandlerStateChange={onPinchStateChange}
-          >
-            <View>
-              <CameraView type={facing} zoom={zoom} ref={cameraRef}>
-                <Animated.View
-                  style={[
-                    styles.scanningOverlay,
-                    { transform: [{ translateY }] },
-                  ]}
-                />
-                <View>
-                  <TouchableOpacity style={{ height: 200 }}>
-                    <TouchableOpacity
-                      onPress={captureImage}
-                      style={{ position: "absolute", bottom: 20, right: 20 }}
-                    >
-                      <Image
-                        source={require("../assets/icons/shutter.png")}
-                        style={{ height: 30, width: 30 }}
-                      />
+        {isCameraOpen ? (
+          <GestureHandlerRootView style={{}}>
+            <PinchGestureHandler
+              onGestureEvent={onPinchEvent}
+              onHandlerStateChange={onPinchStateChange}
+            >
+              <View>
+                <CameraView type={facing} zoom={zoom} ref={cameraRef}>
+                  <Animated.View
+                    style={[
+                      styles.scanningOverlay,
+                      { transform: [{ translateY }] },
+                    ]}
+                  />
+                  <View>
+                    <TouchableOpacity style={{ height: 200 }}>
+                      <TouchableOpacity
+                        onPress={captureImage}
+                        style={{ position: "absolute", bottom: 20, right: 20 }}
+                      >
+                        <Image
+                          source={require("../assets/icons/shutter.png")}
+                          style={{ height: 30, width: 30 }}
+                        />
+                      </TouchableOpacity>
                     </TouchableOpacity>
-                  </TouchableOpacity>
-                </View>
-              </CameraView>
-            </View>
-          </PinchGestureHandler>
-        </GestureHandlerRootView>
-      ) : (
-        <View
-          style={{
-            justifyContent: "center",
-            backgroundColor: "#414141",
-            height: 200,
-            alignItems: "center",
-          }}
-        >
-          {loading ? (
-            <ActivityIndicator size={"large"} />
-          ) : capturedImage && capturedImage ? (
-            <Image
-              source={{ uri: capturedImage }}
-              style={styles.scannedImage}
-              resizeMode="cover"
-            />
-          ) : (
-            meterImage && (
+                  </View>
+                </CameraView>
+              </View>
+            </PinchGestureHandler>
+          </GestureHandlerRootView>
+        ) : (
+          <View
+            style={{
+              justifyContent: "center",
+              backgroundColor: "#414141",
+              height: 200,
+              alignItems: "center",
+            }}
+          >
+            {loading ? (
+              <ActivityIndicator size={"large"} />
+            ) : capturedImage && capturedImage ? (
               <Image
-                source={{ uri: meterImage }}
+                source={{ uri: capturedImage }}
                 style={styles.scannedImage}
                 resizeMode="cover"
               />
-            )
-          )}
-        </View>
-      )}
+            ) : (
+              meterImage && (
+                <Image
+                  source={{ uri: meterImage }}
+                  style={styles.scannedImage}
+                  resizeMode="cover"
+                />
+              )
+            )}
+          </View>
+        )}
 
-      
         {/* scan button */}
         <View style={styles.scanheading}>
           <Text style={styles.scannerHeading}>
@@ -473,7 +471,7 @@ function MeterReadingScanner({ navigation }) {
                 ? "Stop"
                 : loading
                 ? "Scanning"
-                : capturedImage
+                : capturedImage || meterImage
                 ? "Rescan"
                 : "Scan"}
             </Text>
@@ -856,7 +854,6 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   scannerView: {
-    // marginVertical: 5,
     backgroundColor: "#414141",
     height: 200,
     alignItems: "center",
