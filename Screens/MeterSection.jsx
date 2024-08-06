@@ -416,11 +416,28 @@ const MeterSection = ({ navigation }) => {
 
         <View style={styles.fields_main}>
           <Text style={styles.selectheading}>Meter :</Text>
-          <TouchableOpacity onPress={togglePendingDropdown}>
-            <View style={styles.input_box}>
+          <TouchableOpacity
+            onPress={togglePendingDropdown}
+            disabled={pendingMeterCount === 0 ? true : false}
+          >
+            <View
+              style={[
+                styles.input_box,
+                {
+                  borderColor: pendingMeterCount === 0 ? "#95c7db" : "#2198C9",
+                },
+              ]}
+            >
               <TextInput
-                style={styles.input}
-                placeholder="Select Pending Meters"
+                style={[
+                  styles.input,
+                  { color: pendingMeterCount === 0 ? "#e8e3e3" : "#989898" },
+                ]}
+                placeholder={
+                  pendingMeterCount === 0
+                    ? "No meters left!!"
+                    : "Select Pending Meters"
+                }
                 value={inputValuePending}
                 editable={false}
                 placeholderTextColor={"rgba(166, 166, 166, 1)"}
@@ -607,7 +624,9 @@ const MeterSection = ({ navigation }) => {
                   <View style={{ width: "100%", gap: 10 }}>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Last Reading :</Text>
-                      <Text style={styles.modalValueText}>{lastReading ? lastReading : "N/A"}</Text>
+                      <Text style={styles.modalValueText}>
+                        {lastReading ? lastReading : "N/A"}
+                      </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>
@@ -620,7 +639,10 @@ const MeterSection = ({ navigation }) => {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Avg Usage : </Text>
-                      <Text style={styles.modalValueText}> {avgUsage ? avgUsage : "N/A"}</Text>
+                      <Text style={styles.modalValueText}>
+                        {" "}
+                        {avgUsage ? avgUsage : "N/A"}
+                      </Text>
                     </View>
                   </View>
                 )}

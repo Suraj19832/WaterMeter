@@ -129,7 +129,7 @@ export async function sendAuthorizeGetRequest(url, params = []) {
     if (error.response) {
       if (error.response.status === 401) {
         console.log("Unauthorized: 401");
-        AsyncStorage.removeItem("token")
+        AsyncStorage.removeItem("token");
         store.dispatch(setAuthToken(null));
         throw new Error("Unauthorized: 401");
       }
@@ -380,18 +380,12 @@ export async function sendAuthorizePostFormData(url, obj) {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     if (error.response) {
-      // Request made and server responded
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
-      if (error.response.status === 401) {
-        console.log("Unauthorized: 401");
-        AsyncStorage.removeItem("token")
+      console.log(error.response.status, "respose status");
+      if (error.response.status === 500) {
+        AsyncStorage.removeItem("token");
         store.dispatch(setAuthToken(null));
         throw new Error("Unauthorized: 401");
       }
@@ -401,12 +395,8 @@ export async function sendAuthorizePostFormData(url, obj) {
         error.response.data.errors
       );
     } else if (error.request) {
-      // The request was made but no response was received
-      console.log(error.request);
       throw new Error("No response received from server");
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
       throw new Error(error.message);
     }
   }

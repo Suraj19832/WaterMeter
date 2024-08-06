@@ -376,6 +376,11 @@ function MeterReadingScanner({ navigation }) {
           style={{ height: 22, width: 12 }}
         />
       </TouchableOpacity>
+
+      <ScrollView
+        contentContainerStyle={{ marginBottom: 50 }}
+        showsVerticalScrollIndicator={false}
+      >
       {/* heading title */}
       <View style={{ paddingHorizontal: 4 }}>
         <View style={styles.heading}>
@@ -445,10 +450,7 @@ function MeterReadingScanner({ navigation }) {
         </View>
       )}
 
-      <ScrollView
-        contentContainerStyle={{ marginBottom: 50 }}
-        showsVerticalScrollIndicator={false}
-      >
+      
         {/* scan button */}
         <View style={styles.scanheading}>
           <Text style={styles.scannerHeading}>
@@ -590,6 +592,7 @@ function MeterReadingScanner({ navigation }) {
           </Modal>
         </View>
       </ScrollView>
+
       <Modal
         animationType="slide"
         transparent={true}
