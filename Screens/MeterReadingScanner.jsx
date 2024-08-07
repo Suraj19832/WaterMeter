@@ -14,8 +14,6 @@ import {
   Animated,
   Button,
 } from "react-native";
-
-import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
@@ -24,21 +22,27 @@ import { useToast } from "react-native-toast-notifications";
 import * as ImageManipulator from "expo-image-manipulator";
 import LoaderComponent from "../Components/LoaderComponent";
 import "react-native-gesture-handler";
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import {
   PinchGestureHandler,
   State,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from "react-native-confirmation-code-field";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
   const {
     id,
     name,
-    lastReading, // for info
-    lastReadingDate, // for info
-    avgUsage, // for info
+    lastReading,
+    lastReadingDate,
+    avgUsage,
     totalDigit,
     meterName,
     meterImage,
@@ -46,12 +50,9 @@ function MeterReadingScanner({ navigation }) {
     completed_dataId,
     completed_note,
   } = route.params ?? {};
-
+  const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
-  const [otp, setOTP] = useState(
-    meterReading?.split("") || Array(totalDigit)?.fill("")
-  );
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
@@ -65,6 +66,14 @@ function MeterReadingScanner({ navigation }) {
   const [selectedReading, setSelectedReading] = useState(null);
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
+  const [value, setValue] = useState(meterReading || "");
+  const [activeReadingButton, setActiveReadingButton] = useState(false);
+
+  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
 
   function formatDate(inputDate) {
     if (!inputDate) {
@@ -107,24 +116,15 @@ function MeterReadingScanner({ navigation }) {
 
     return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
   }
-  const otpFields = useRef(
-    Array(totalDigit)
-      ?.fill()
-      ?.map(() => React.createRef())
-  );
-  const handleOTPChange = (index, value) => {
-    const newOTP = [...otp];
-    newOTP[index] = value;
-    setOTP(newOTP);
-    if (value !== "" && index < totalDigit - 1) {
-      otpFields?.current[index + 1]?.current?.focus();
-    } else if (value === "" && index > 0) {
-      otpFields?.current[index - 1]?.current?.focus();
+
+  useEffect(() => {
+    if (value.length === CELL_COUNT) {
+      setActiveReadingButton(true);
+    } else {
+      setActiveReadingButton(false);
     }
-  };
-  const isOTPComplete = () => {
-    return otp?.every((digit) => digit !== "");
-  };
+  }, [value]);
+
   const meternotesubmit = (note) => {
     setnoteLoading(true);
     const data = {
@@ -154,11 +154,8 @@ function MeterReadingScanner({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      // Reset the states when the screen comes into focus
-
       setMeterValue(null);
       setModalInfo(false);
-      setOTP(meterReading?.split("") || Array(totalDigit)?.fill(""));
       setSubmitLoading(false);
       setDataId(null);
       setSelectedReading(null);
@@ -166,20 +163,19 @@ function MeterReadingScanner({ navigation }) {
       setSelectedReading(null);
       setNotes(completed_note || "");
       setCapturedImage(null);
-    }, [totalDigit, completed_note])
+      setValue(meterReading || "");
+    }, [totalDigit, completed_note, CELL_COUNT])
   );
 
-  const scanAnimation = useRef(new Animated.Value(3)).current;
+  const scanAnimation = useRef(new Animated.Value(1)).current;
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [zoom, setZoom] = useState(0);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [isRescanClicked, setIsRescanClicked] = useState(false);
   const cameraRef = useRef(null);
 
   const onPinchEvent = (event) => {
-    // Calculate the new zoom level based on the scale from the pinch gesture
     const newZoom = Math.min(
       Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
       1
@@ -187,7 +183,6 @@ function MeterReadingScanner({ navigation }) {
     setZoom(newZoom);
   };
   const onPinchStateChange = (event) => {
-    // Check if the pinch gesture has ended
     if (event.nativeEvent.oldState === State.ACTIVE) {
       const newZoom = Math.min(
         Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
@@ -206,7 +201,6 @@ function MeterReadingScanner({ navigation }) {
       })
     ).start();
   };
-
   const verifyNumber = async (imageFile) => {
     setLoading(true);
     try {
@@ -219,12 +213,10 @@ function MeterReadingScanner({ navigation }) {
       setMeterValue(res?.ocrReading);
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
+      console.log(res)
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
-        const newOTP = Array(totalDigit)
-          ?.fill("")
-          ?.map((_, index) => res?.ocrReading[index] || "");
-        setOTP(newOTP);
+        setValue(res?.ocrReading);
         setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
@@ -241,11 +233,10 @@ function MeterReadingScanner({ navigation }) {
       if (cameraRef.current) {
         const photo = await cameraRef.current.takePictureAsync();
         setCapturedImage(photo.uri);
-        setIsRescanClicked(capturedImage !== null);
         setIsCameraOpen(false);
         const resizedImage = await ImageManipulator.manipulateAsync(
           photo.uri,
-          [{ resize: { width: 800, height: 600 } }],
+          [{ resize: { width: 800 } }],
           { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
         );
         const fileData = getFileData(resizedImage);
@@ -265,7 +256,7 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleSubmit = () => {
-    if (meterValue !== otp?.join("") || meterValue === null) {
+    if (meterValue !== value || meterValue === null) {
       setReadingMismatchModalVisible(true);
       return;
     }
@@ -274,14 +265,16 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: capturedImage !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
-      ocr_reading: otp?.join(""),
-      is_manual: meterValue !== otp?.join("") ? "1" : "0",
+      rescan: capturedImage !== null ? "1" : "0",
+      ocr_reading: value,
+      is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
     };
+    console.log(data,"handlesubmit params")
     appApi
       .submitReading(data)
       .then((res) => {
+        console.log(res,"handlesubmit")
         if (res?.status) {
           toast.show("Sucessfully Submitted", {
             type: "sucess",
@@ -291,7 +284,7 @@ function MeterReadingScanner({ navigation }) {
             meterName,
             id,
             name,
-            otp: otp?.join(""),
+            otp: value,
             res,
             value: "ocr",
           });
@@ -309,14 +302,16 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
       rescan: capturedImage !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
-      ocr_reading: otp?.join(""),
-      is_manual: meterValue !== otp?.join("") ? "1" : "0",
+      ocr_reading: value,
+      is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };
+    console.log(data, "handlemanual paramas")
     appApi
       .submitReading(data)
       .then((res) => {
+        console.log(res,"handlemanualsubmit response")
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -328,7 +323,7 @@ function MeterReadingScanner({ navigation }) {
             meterName,
             id,
             name,
-            otp: otp?.join(""),
+            otp: value,
             res,
             value: "me",
           });
@@ -394,11 +389,7 @@ function MeterReadingScanner({ navigation }) {
               onHandlerStateChange={onPinchStateChange}
             >
               <View>
-                <CameraView
-                  type={facing}
-                  zoom={zoom}
-                  ref={cameraRef}
-                >
+                <CameraView type={facing} zoom={zoom} ref={cameraRef}>
                   <Animated.View
                     style={[
                       styles.scanningOverlay,
@@ -409,7 +400,12 @@ function MeterReadingScanner({ navigation }) {
                     <TouchableOpacity style={{ height: 200 }}>
                       <TouchableOpacity
                         onPress={captureImage}
-                        style={{ position: "absolute", bottom: 20, right: 20 ,zIndex:1}}
+                        style={{
+                          position: "absolute",
+                          bottom: 20,
+                          right: 20,
+                          zIndex: 1,
+                        }}
                       >
                         <Image
                           source={require("../assets/icons/shutter.png")}
@@ -490,22 +486,26 @@ function MeterReadingScanner({ navigation }) {
           }}
         >
           <Text style={styles.title}>Meter Reading :</Text>
-          <View style={styles.otp}>
-            {otp?.map((totalDigit, index) => {
-              return (
-                <TextInput
-                  key={index}
-                  style={styles.otpBox}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  onChangeText={(value) => handleOTPChange(index, value)}
-                  value={totalDigit}
-                  ref={otpFields?.current[index]}
-                />
-              );
-            })}
-          </View>
+          <CodeField
+            ref={ref}
+            {...props}
+            value={value}
+            onChangeText={(value) => setValue(value)}
+            cellCount={CELL_COUNT}
+            rootStyle={styles.codeFieldRoot}
+            keyboardType="number-pad"
+            renderCell={({ index, symbol, isFocused }) => (
+              <Text
+                key={index}
+                style={[styles.otpBox, isFocused && styles.focusCell]}
+                onLayout={getCellOnLayoutHandler(index)}
+              >
+                {symbol || (isFocused ? <Cursor /> : null)}
+              </Text>
+            )}
+          />
         </View>
+
         {/* info ,submit button, manual typing button */}
         <View style={styles.infoText}>
           <TouchableOpacity onPress={() => setModalInfo(true)}>
@@ -518,7 +518,7 @@ function MeterReadingScanner({ navigation }) {
           <TouchableOpacity
             onPress={handleSubmit}
             style={{
-              backgroundColor: isOTPComplete()
+              backgroundColor: activeReadingButton
                 ? colorCodes.submitButtonEnabled
                 : colorCodes.submitButtonDisabled,
               paddingHorizontal: 15,
@@ -526,7 +526,7 @@ function MeterReadingScanner({ navigation }) {
               borderRadius: 8,
               minWidth: 160,
             }}
-            disabled={!isOTPComplete()}
+            disabled={!activeReadingButton}
           >
             {submitLoading ? (
               <ActivityIndicator size={"small"} />
@@ -614,10 +614,7 @@ function MeterReadingScanner({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setNotesModalVisible(false);
-
                   meternotesubmit(notes);
-
-                  // setNotes("");
                 }}
               >
                 <Text style={styles.modalButtonText}>Submit Notes</Text>
@@ -704,6 +701,20 @@ function MeterReadingScanner({ navigation }) {
   );
 }
 const styles = StyleSheet.create({
+  root: { flex: 1, padding: 20 },
+  codeFieldRoot: { marginTop: 2 },
+  cell: {
+    width: 40,
+    height: 40,
+    lineHeight: 38,
+    fontSize: 24,
+    borderWidth: 2,
+    borderColor: "#00000030",
+    textAlign: "center",
+  },
+  focusCell: {
+    borderColor: "rgba(11, 158, 210, 0.3)",
+  },
   dropdownButton: {
     width: "100%",
     padding: 10,
@@ -819,7 +830,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   otpBox: {
-    height: 50,
+    paddingVertical: 4,
     width: "16%",
     borderWidth: 1,
     borderRadius: 10,
