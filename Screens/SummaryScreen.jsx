@@ -8,7 +8,7 @@ import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name,res} = route.params ?? {};
+  const { id, name} = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -16,7 +16,6 @@ export default function SummaryScreen({ navigation }) {
  
 
   const handleDropdownValue = (items) => {
-    console.log(items.id)
     setDropdownValue(items?.id);
     setToggleDropdown(false);
   };
@@ -29,7 +28,7 @@ export default function SummaryScreen({ navigation }) {
       appApi
         .summaryCompletion(data)
         .then((res) => {
-          console.log(res, ">>>>>>>response");
+          console.log(res)
           setData(res?.data);
           setDropdownData(res?.data?.completedMeters)
         })
@@ -37,7 +36,7 @@ export default function SummaryScreen({ navigation }) {
     },[])
   )
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{height:"100%"}}>
       <View style={styles.headArrow}>
         <TouchableOpacity onPress={navigation.goBack}>
           <Image
@@ -140,11 +139,10 @@ export default function SummaryScreen({ navigation }) {
                   scrollEnabled={true}
                   nestedScrollEnabled={true}
                   style={{
-                    maxHeight: 120,
+                    maxHeight: 150,
                   }}
                 >
                   {dropdownData?.map((item, index) => {
-                    console.log(item, ">>>>>>>>>>>>>>>");
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOptBox}
@@ -161,13 +159,13 @@ export default function SummaryScreen({ navigation }) {
           </View>
         </View>
 
-        <View style={styles.pending}>
+        {/* <View style={styles.pending}>
           <View style={styles.pendingMeters}>
             <Text style={styles.pendingMetersTxt}>
-              {res?.pendingMeterCount} Meters Pending
+              5 Meters Pending
             </Text>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -360,10 +358,9 @@ const styles = StyleSheet.create({
   completereading: {
     color: "rgba(152, 152, 152, 1)",
     fontSize: 18,
-    fontWeight: "400",
+    fontWeight: "600",
   },
   dropdownmain: {
-    height: "auto",
     alignItems: "center",
     width: "90%",
     alignSelf: "center",

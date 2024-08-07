@@ -10,7 +10,7 @@ export default function OcrCaptured({ navigation }) {
   const route = useRoute();
   const { meterName, id, name, otp, res,value } = route.params ?? {};
   const { meterDataParams } = useSelector((state) => state.MeterSlice);
-  console.log(res, "chekinggggggggggggggg");
+  console.log(res,otp, "chekinggggggggggggggg");
 
   const styles = StyleSheet.create({
     headArrow: {

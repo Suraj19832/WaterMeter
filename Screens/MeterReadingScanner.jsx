@@ -69,6 +69,8 @@ function MeterReadingScanner({ navigation }) {
   const [value, setValue] = useState(meterReading || "");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
 
+  console.log(getSubstring(value,totalDigit),">>>>>>>>>>>")
+
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -79,7 +81,7 @@ function MeterReadingScanner({ navigation }) {
     if (!inputDate) {
       return "";
     }
-
+    
     const months = [
       "Jan",
       "Feb",
@@ -117,8 +119,15 @@ function MeterReadingScanner({ navigation }) {
     return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
   }
 
+  function getSubstring(data, count) {
+    if (count > data?.length) {
+      return data; 
+    }
+    return data?.substring(0, count);
+  }
+
   useEffect(() => {
-    if (value.length === CELL_COUNT) {
+    if (value.length >= CELL_COUNT) {
       setActiveReadingButton(true);
     } else {
       setActiveReadingButton(false);
@@ -210,13 +219,13 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
       };
       const res = await appApi.meterScanner(data);
-      setMeterValue(res?.ocrReading);
+      setMeterValue(getSubstring(res?.ocrReading,totalDigit));
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
       console.log(res);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
-        setValue(res?.ocrReading);
+        setValue(getSubstring(res?.ocrReading,totalDigit));
         setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
@@ -265,9 +274,9 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: capturedImage !== null ? "1" : "0",
+      rescan: 0,   //not done
       ocr_reading: value,
-      is_manual: meterValue !== value ? "1" : "0",
+      is_manual: meterValue !== value ? "1" : "0", 
       note: completed_note ? completed_note : notes,
     };
     console.log(data, "handlesubmit params");
@@ -301,9 +310,9 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: capturedImage !== null ? "1" : "0", // Pass 1 if scannedMeter is not null, otherwise pass 0,
+      rescan: 0,   //not done
       ocr_reading: value,
-      is_manual: meterValue !== value ? "1" : "0",
+      is_manual: meterValue !== value ? "1" : "0",  // is_ocr in db 
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };

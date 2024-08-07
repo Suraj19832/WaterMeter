@@ -20,7 +20,6 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
-  console.log(items, "<<<<<<<<<<<<<<<<<<<<<<<<complete");
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -261,12 +260,11 @@ export default function DashboardCompletedCards({
       backgroundColor: colorCodes.bgLightGrey,
     },
   });
-
+console.log(items,">>>>>>resposne")
   function formatDate(inputDate) {
     if (!inputDate) {
       return "";
     }
-
     const months = [
       "Jan",
       "Feb",
@@ -319,7 +317,6 @@ export default function DashboardCompletedCards({
 
     return duration?.trim();
   }
-
   return (
     <>
       <View key={index} style={styles.propertyCards}>
@@ -350,9 +347,7 @@ export default function DashboardCompletedCards({
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.completedNextDate}>Next Reading Date : </Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                {items?.date?.next_reading
-                  ? formatDate(items?.date?.next_reading)
-                  : "N/A"}
+                {formatDate(items?.date?.next_reading)}
               </Text>
             </View>
           )}
@@ -439,7 +434,12 @@ export default function DashboardCompletedCards({
             >
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => navigation.navigate("SummaryScreen")}
+                onPress={() =>
+                  navigation.navigate("SummaryScreen", {
+                    id: items?.id,
+                    name: items?.name,
+                  })
+                }
               >
                 <SubmitButton
                   textSize={13}
