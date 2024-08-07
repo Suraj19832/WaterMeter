@@ -213,7 +213,7 @@ function MeterReadingScanner({ navigation }) {
       setMeterValue(res?.ocrReading);
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
-      console.log(res)
+      console.log(res);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
         setValue(res?.ocrReading);
@@ -270,11 +270,11 @@ function MeterReadingScanner({ navigation }) {
       is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
     };
-    console.log(data,"handlesubmit params")
+    console.log(data, "handlesubmit params");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res,"handlesubmit")
+        console.log(res, "handlesubmit");
         if (res?.status) {
           toast.show("Sucessfully Submitted", {
             type: "sucess",
@@ -307,11 +307,11 @@ function MeterReadingScanner({ navigation }) {
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };
-    console.log(data, "handlemanual paramas")
+    console.log(data, "handlemanual paramas");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res,"handlemanualsubmit response")
+        console.log(res, "handlemanualsubmit response");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -341,7 +341,7 @@ function MeterReadingScanner({ navigation }) {
   }
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={styles.permissionContainer}>
         <Text style={styles.message}>
           We need your permission to show the camera
         </Text>
@@ -840,6 +840,16 @@ const styles = StyleSheet.create({
     fontSize: 30,
     borderColor: colorCodes.otpbox,
     color: colorCodes.otp,
+  },
+  message:{
+fontSize:16,
+textAlign:"center",
+marginVertical:20
+  },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: "center",
+    marginHorizontal: 40,
   },
   container: {
     marginHorizontal: 20,

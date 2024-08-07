@@ -222,14 +222,14 @@ function DashboardScheduledCards({
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
-            <Text style={styles.expandContentSTxt}>{items?.meter?.total}</Text>
+            <Text style={styles.expandContentSTxt}>{items?.meter?.total ? items?.meter?.total : "N/A"}</Text>
           </View>
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters Pending :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.meter?.pending}
+              {items?.meter?.pending ? items?.meter?.pending : "N/A"}
             </Text>
           </View>
 
@@ -237,7 +237,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {formatDate(items?.reading_date?.next)}
+              {items?.reading_date?.next ? formatDate(items?.reading_date?.next) : "N/A"}
             </Text>
           </View>
 
@@ -246,6 +246,7 @@ function DashboardScheduledCards({
 
             <Text style={styles.expandContentSTxt}>
               {formatDate(items?.reading_date?.last)}
+              {items?.reading_date?.last ? formatDate(items?.reading_date?.last) : "N/A"}
             </Text>
           </View>
 
@@ -253,17 +254,15 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {convertToDuration(items?.estimate_time_in_sec)}
+              {items?.estimate_time_in_sec ? convertToDuration(items?.estimate_time_in_sec) : "N/A"}
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
               onPress={() => {
                 dispatch(setBooleanValue(true));
                 dispatch(setStringValue("MeterSelection"));
-                // navigation.navigate("MeterScreen", { PopertyId: items?.id ,date});
                 const meterData = {propertyId:items?.id, date: date}
                 dispatch(setMeterPropertyID(meterData))
-                // dispatch(setMeterPropertyID(meterData))
                 navigation.jumpTo("MeterScreen", {
                   PopertyId: items?.id,
                   date,
