@@ -4,6 +4,14 @@
     "slug": "water-meter",
     "plugins": [
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(Water Meter) to access your camera",
+          "microphonePermission": "Allow $(Water Meter) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."

@@ -196,7 +196,7 @@ const MeterSection = ({ navigation }) => {
   };
 
   const ImageUpload = async (result) => {
-
+    // toast.show("Working on it...", { type: "sucess" });
     setnoteLoading(true);
     const newtry = getFileData(result);
     const postData = {
@@ -727,7 +727,8 @@ const MeterSection = ({ navigation }) => {
           {isCompletedDropdown && (
             <View style={styles.dropdownContainer}>
               <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
-                {meterDataByApi?.length > 0 &&
+                {meterDataByApi?.filter((item) => item.status === "completed")
+                  .length > 0 ? (
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
@@ -740,7 +741,13 @@ const MeterSection = ({ navigation }) => {
                           <Text style={styles.input}>{option?.id}</Text>
                         </TouchableOpacity>
                       );
-                    })}
+                    })
+                ) : (
+                  <TouchableOpacity onPress={()=>  setIsCompletedDropdown(false)}>
+
+                    <Text style={[styles.input,{paddingLeft:10,paddingVertical:6}]}>No meters available!</Text>
+                  </TouchableOpacity>
+                )}
               </ScrollView>
             </View>
           )}

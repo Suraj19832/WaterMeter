@@ -18,7 +18,7 @@ export default function DashboardCompletedCards({
   index,
   onPress,
   expandCompleted,
-  navigation
+  navigation,
 }) {
   console.log(items, "<<<<<<<<<<<<<<<<<<<<<<<<complete");
   const styles = StyleSheet.create({
@@ -225,7 +225,7 @@ export default function DashboardCompletedCards({
       color: "grey",
       fontWeight: "400",
       fontSize: 12,
-      height: 30,
+      height: 26,
       paddingLeft: 10,
     },
     expandContentButton: {
@@ -264,7 +264,7 @@ export default function DashboardCompletedCards({
 
   function formatDate(inputDate) {
     if (!inputDate) {
-      return ""; // or any default value you prefer
+      return "";
     }
 
     const months = [
@@ -347,10 +347,12 @@ export default function DashboardCompletedCards({
               ></Text>
             </View>
           ) : (
-            <View>
-              <Text style={styles.completedNextDate}>Next Reading Date :</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.completedNextDate}>Next Reading Date : </Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                {formatDate(items?.date?.next_reading)}
+                {items?.date?.next_reading
+                  ? formatDate(items?.date?.next_reading)
+                  : "N/A"}
               </Text>
             </View>
           )}
@@ -418,7 +420,9 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {formatDate(items?.date?.next_reading)}
+                {items?.date?.next_reading
+                  ? formatDate(items?.date?.next_reading)
+                  : "N/A"}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
@@ -435,7 +439,7 @@ export default function DashboardCompletedCards({
             >
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() =>navigation.navigate("SummaryScreen")}
+                onPress={() => navigation.navigate("SummaryScreen")}
               >
                 <SubmitButton
                   textSize={13}

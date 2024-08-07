@@ -342,11 +342,9 @@ function MeterReadingScanner({ navigation }) {
   };
 
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
         <Text style={styles.message}>
@@ -358,7 +356,7 @@ function MeterReadingScanner({ navigation }) {
   }
   const translateY = scanAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [-200, 0], // Adjust these values to fit your design
+    outputRange: [-200, 0],
   });
 
   return (
@@ -396,7 +394,11 @@ function MeterReadingScanner({ navigation }) {
               onHandlerStateChange={onPinchStateChange}
             >
               <View>
-                <CameraView type={facing} zoom={zoom} ref={cameraRef}>
+                <CameraView
+                  type={facing}
+                  zoom={zoom}
+                  ref={cameraRef}
+                >
                   <Animated.View
                     style={[
                       styles.scanningOverlay,
@@ -407,7 +409,7 @@ function MeterReadingScanner({ navigation }) {
                     <TouchableOpacity style={{ height: 200 }}>
                       <TouchableOpacity
                         onPress={captureImage}
-                        style={{ position: "absolute", bottom: 20, right: 20 }}
+                        style={{ position: "absolute", bottom: 20, right: 20 ,zIndex:1}}
                       >
                         <Image
                           source={require("../assets/icons/shutter.png")}
