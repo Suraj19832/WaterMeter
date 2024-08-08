@@ -1,42 +1,93 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  Modal,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name} = route.params ?? {};
+  const { id, name } = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
-  const [dropdownData, setDropdownData] = useState([])
- 
+  const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false)
+  const [dropdownData, setDropdownData] = useState([]);
+  const [hideIcon, setHideIcon] = useState(false);
+  const [showImage, setShowImage] = useState(null);
+  const [completeModal, setCompleteModal] = useState(false);
+  const [completedUnit, setCompletedUnit] = useState({
+    reading: "",
+    readingType: "",
+    readingDate: "",
+  });
+
+  const meterDetails = (meterId) => {
+    setLoading(true);
+    setImageLoading(true)
+    const data = {
+      property_id: id,
+      meter_id: meterId,
+    };
+    appApi
+      .completedImage(data)
+      .then((res) => {
+        setCompletedUnit({
+          reading: res?.reading,
+          readingType: res?.readingType,
+          readingDate: res?.readingDate,
+        });
+        setShowImage(res?.iamge);
+        setLoading(false);
+        setImageLoading(false)
+      })
+      .catch((err) => {
+        console.log(err, "error from complete");
+        setLoading(false);
+        setImageLoading(false)
+      });
+  };
 
   const handleDropdownValue = (items) => {
     setDropdownValue(items?.id);
     setToggleDropdown(false);
+    meterDetails(items.id);
+    setHideIcon(true);
   };
 
   useFocusEffect(
-    React.useCallback(()=>{
+    React.useCallback(() => {
       const data = {
         property_id: id,
       };
       appApi
         .summaryCompletion(data)
         .then((res) => {
-          console.log(res)
           setData(res?.data);
-          setDropdownData(res?.data?.completedMeters)
+          setDropdownData(res?.data?.completedMeters);
         })
-        .catch((err) => [console.log(err, ">>>>>>>error")]);
-    },[])
-  )
+        .catch((err) => {
+          console.log(err);
+        });
+      setCompletedUnit({});
+      setDropdownValue(null);
+      setHideIcon(false);
+    }, [])
+  );
   return (
-    <SafeAreaView style={{height:"100%"}}>
+    <SafeAreaView style={{ height: "100%" }}>
       <View style={styles.headArrow}>
         <TouchableOpacity onPress={navigation.goBack}>
           <Image
@@ -45,13 +96,13 @@ export default function SummaryScreen({ navigation }) {
           />
         </TouchableOpacity>
       </View>
-      <View style={{ paddingHorizontal: 4,marginHorizontal:16 }}>
-          <View style={styles.heading}>
-            <Text style={styles.headingText}>
-              {id} | {name}
-            </Text>
-          </View>
+      <View style={{ paddingHorizontal: 4, marginHorizontal: 16 }}>
+        <View style={styles.heading}>
+          <Text style={styles.headingText}>
+            {id} | {name}
+          </Text>
         </View>
+      </View>
       <ScrollView>
         <View style={styles.mainView}>
           <Text style={styles.summaryText}>Summary</Text>
@@ -123,7 +174,9 @@ export default function SummaryScreen({ navigation }) {
               style={styles.input_box}
               onPress={() => setToggleDropdown(!toggleDropdown)}
             >
-              <Text style={styles.completereading}>{dropdownValue ? `${dropdownValue}` : "Completed Readings"}</Text>
+              <Text style={styles.completereading}>
+                {dropdownValue ? `${dropdownValue}` : "Completed Readings"}
+              </Text>
               <TouchableOpacity>
                 <AntDesign
                   name="down"
@@ -157,21 +210,116 @@ export default function SummaryScreen({ navigation }) {
               </View>
             )}
           </View>
-        </View>
 
-        {/* <View style={styles.pending}>
-          <View style={styles.pendingMeters}>
-            <Text style={styles.pendingMetersTxt}>
-              5 Meters Pending
-            </Text>
+          <View style={{ marginVertical: 10 }}>
+            {loading ? (
+              <ActivityIndicator size={"small"} />
+            ) : (
+              <View style={{ flexDirection: "row", gap: 25 }}>
+                {hideIcon && (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "#197AB6",
+                      paddingVertical: 6,
+                      borderRadius: 15,
+                      paddingHorizontal: 16,
+                    }}
+                    onPress={() => setCompleteModal(true)}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontWeight: 700,
+                        textAlign: "center",
+                      }}
+                    >
+                      Image
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "500",
+                    color: "rgba(33, 152, 201, 1)",
+                  }}
+                >
+                  {completedUnit.reading} {completedUnit.readingType}{" "}
+                  {completedUnit.readingDate}
+                </Text>
+              </View>
+            )}
           </View>
-        </View> */}
+        </View>
+        <Modal
+          transparent={true}
+          visible={completeModal}
+          onRequestClose={() => setCompleteModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContentt}>
+              <TouchableWithoutFeedback
+                style={styles.closeButtonn}
+                onPress={() => {
+                  setCompleteModal(false);
+                  console.log("clicked");
+                }}
+              >
+                <Image
+                  source={require("../assets/icons/close.png")}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    alignSelf: "flex-end",
+                    marginHorizontal:20,
+                    marginBottom:10
+                  }}
+                />
+              </TouchableWithoutFeedback>
+              <View style={styles.imageBox}>
+                {imageLoading ? (
+                  <ActivityIndicator
+                    size="medium"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  />
+                ) : (
+                  showImage && (
+                    <Image
+                      source={{ uri: showImage }}
+                      style={{ height: "100%", width: "100%" }}
+                    />
+                  )
+                )}
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    backgroundColor: "rgba(0,0,0,0.5)",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContentt: {
+    height: Dimensions.get("window").height * 0.3,
+    width: "100%",
+  },
+  imageBox: {
+    height: 200,
+    width: "100%",
+    backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  closeButtonn: {},
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
