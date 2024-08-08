@@ -8,9 +8,8 @@ import { useSelector } from "react-redux";
 
 export default function OcrCaptured({ navigation }) {
   const route = useRoute();
-  const { meterName, id, name, otp, res,value } = route.params ?? {};
+  const { meterName, id, name, otp, res, value } = route.params ?? {};
   const { meterDataParams } = useSelector((state) => state.MeterSlice);
-  console.log(res,otp, "chekinggggggggggggggg");
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -90,8 +89,12 @@ export default function OcrCaptured({ navigation }) {
         <View style={styles.headArrow}>
           <TouchableOpacity
             style={{ marginTop: 5 }}
-            onPress={() => navigation.navigate("MeterScreen",{PopertyId: meterDataParams?.propertyId,
-              date: meterDataParams?.date,})}
+            onPress={() =>
+              navigation.navigate("MeterScreen", {
+                PopertyId: meterDataParams?.propertyId,
+                date: meterDataParams?.date,
+              })
+            }
           >
             <Image
               source={require("../assets/left-arrow (1).png")}
@@ -187,9 +190,13 @@ export default function OcrCaptured({ navigation }) {
                 },
               ]}
             >
-              <Text style={styles.pendingMetersTxt}>
-                {res?.pendingMeterCount} Meters Pending
-              </Text>
+              {res?.pendingMeterCount === 0 ? (
+                <Text style={styles.pendingMetersTxt}>Completed</Text>
+              ) : (
+                <Text style={styles.pendingMetersTxt}>
+                  {res?.pendingMeterCount} Meters Pending
+                </Text>
+              )}
             </View>
           </View>
         </View>

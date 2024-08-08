@@ -432,7 +432,7 @@ const MeterSection = ({ navigation }) => {
                 ]}
                 placeholder={
                   pendingMeterCount === 0
-                    ? "No meters left!!"
+                    ? "No Pending Meters"
                     : "Select Pending Meters"
                 }
                 value={inputValuePending}
@@ -743,9 +743,17 @@ const MeterSection = ({ navigation }) => {
                       );
                     })
                 ) : (
-                  <TouchableOpacity onPress={()=>  setIsCompletedDropdown(false)}>
-
-                    <Text style={[styles.input,{paddingLeft:10,paddingVertical:6}]}>No meters available!</Text>
+                  <TouchableOpacity
+                    onPress={() => setIsCompletedDropdown(false)}
+                  >
+                    <Text
+                      style={[
+                        styles.input,
+                        { paddingLeft: 10, paddingVertical: 6 },
+                      ]}
+                    >
+                      No completed Meters
+                    </Text>
                   </TouchableOpacity>
                 )}
               </ScrollView>
@@ -794,9 +802,13 @@ const MeterSection = ({ navigation }) => {
               paddingHorizontal: 16,
             }}
           >
-            <Text style={{ color: "white", fontWeight: 700 }}>
-              {pendingMeterCount} Meters Pending
-            </Text>
+            {pendingMeterCount === 0 ? (
+              <Text style={{ color: "white", fontWeight: 700 }}>Completed</Text>
+            ) : (
+              <Text style={{ color: "white", fontWeight: 700 }}>
+                {pendingMeterCount} Meters Pending
+              </Text>
+            )}
           </View>
         </View>
 
@@ -904,7 +916,7 @@ const MeterSection = ({ navigation }) => {
                   avgUsage,
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
-                  completed_note: dropdownNotes
+                  completed_note: dropdownNotes,
                 });
               }}
             >
