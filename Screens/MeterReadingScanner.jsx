@@ -262,7 +262,11 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     startScanningAnimation();
     captureImage();
-    setIsRescan(true);
+    if (capturedImage) {
+      setIsRescan(true);
+    } else {
+      setIsRescan(false);
+    }
   };
 
   const handleSubmit = () => {
@@ -275,7 +279,7 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: isRescan ? "1" : "0",   //not done
+      rescan: isRescan ? "yes" : "no",   
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0", 
       note: completed_note ? completed_note : notes,
@@ -311,7 +315,7 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: isRescan ? "1" : "0",   //not done
+      rescan: isRescan ? "yes" : "no",  
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",  // is_ocr in db 
       note: completed_note ? completed_note : notes,
