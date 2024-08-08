@@ -68,7 +68,7 @@ function MeterReadingScanner({ navigation }) {
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
-
+  const [isRescan, setIsRescan] = useState(false);
   console.log(getSubstring(value,totalDigit),">>>>>>>>>>>")
 
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
@@ -262,6 +262,7 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     startScanningAnimation();
     captureImage();
+    setIsRescan(true);
   };
 
   const handleSubmit = () => {
@@ -274,7 +275,7 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: 0,   //not done
+      rescan: isRescan ? "1" : "0",   //not done
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0", 
       note: completed_note ? completed_note : notes,
@@ -310,7 +311,7 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: 0,   //not done
+      rescan: isRescan ? "1" : "0",   //not done
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",  // is_ocr in db 
       note: completed_note ? completed_note : notes,
