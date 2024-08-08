@@ -904,6 +904,7 @@ const MeterSection = ({ navigation }) => {
                   avgUsage,
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
+                  completed_note: dropdownNotes
                 });
               }}
             >

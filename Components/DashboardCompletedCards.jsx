@@ -260,7 +260,6 @@ export default function DashboardCompletedCards({
       backgroundColor: colorCodes.bgLightGrey,
     },
   });
-console.log(items,">>>>>>resposne")
   function formatDate(inputDate) {
     if (!inputDate) {
       return "";
@@ -338,13 +337,13 @@ console.log(items,">>>>>>resposne")
         <View style={styles.belowContentCompleted}>
           {index == expandCompleted ? (
             <View style={{ width: "37.5%" }}>
-              <Text style={styles.completedNextDate}></Text>
+              {/* <Text style={styles.completedNextDate}></Text>
               <Text
                 style={[styles.completedNextDate, { color: "#989898" }]}
-              ></Text>
+              ></Text> */}
             </View>
           ) : (
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection:"column" }}>
               <Text style={styles.completedNextDate}>Next Reading Date : </Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
                 {formatDate(items?.date?.next_reading)}

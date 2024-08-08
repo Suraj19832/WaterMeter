@@ -17,7 +17,7 @@ import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 import { useDispatch } from "react-redux";
 import { setBooleanValue, setStringValue } from "../redux/slices/UniqueSlice";
-import {setMeterPropertyID} from "../redux/slices/MeterSlice"
+import { setMeterPropertyID } from "../redux/slices/MeterSlice";
 import axios from "axios";
 
 function DashboardScheduledCards({
@@ -32,7 +32,6 @@ function DashboardScheduledCards({
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
-
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
     for (let i = 0; i < words?.length; i++) {
@@ -222,7 +221,9 @@ function DashboardScheduledCards({
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
-            <Text style={styles.expandContentSTxt}>{items?.meter?.total ? items?.meter?.total : "N/A"}</Text>
+            <Text style={styles.expandContentSTxt}>
+              {items?.meter?.total ? items?.meter?.total : "N/A"}
+            </Text>
           </View>
 
           <View style={styles.expandContentHeading}>
@@ -237,7 +238,9 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.reading_date?.next ? formatDate(items?.reading_date?.next) : "N/A"}
+              {items?.reading_date?.next
+                ? formatDate(items?.reading_date?.next)
+                : "N/A"}
             </Text>
           </View>
 
@@ -245,8 +248,9 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {formatDate(items?.reading_date?.last)}
-              {items?.reading_date?.last ? formatDate(items?.reading_date?.last) : "N/A"}
+              {items?.reading_date?.last
+                ? formatDate(items?.reading_date?.last)
+                : "N/A"}
             </Text>
           </View>
 
@@ -254,15 +258,17 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.estimate_time_in_sec ? convertToDuration(items?.estimate_time_in_sec) : "N/A"}
+              {items?.estimate_time_in_sec
+                ? convertToDuration(items?.estimate_time_in_sec)
+                : "N/A"}
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
               onPress={() => {
                 dispatch(setBooleanValue(true));
                 dispatch(setStringValue("MeterSelection"));
-                const meterData = {propertyId:items?.id, date: date}
-                dispatch(setMeterPropertyID(meterData))
+                const meterData = { propertyId: items?.id, date: date };
+                dispatch(setMeterPropertyID(meterData));
                 navigation.jumpTo("MeterScreen", {
                   PopertyId: items?.id,
                   date,
@@ -288,7 +294,7 @@ function DashboardScheduledCards({
           <View style={styles.modalContent}>
             {image != null ? (
               imageLoading ? (
-                <ActivityIndicator size={"large"} color={"white"}/>
+                <ActivityIndicator size={"large"} color={"white"} />
               ) : (
                 <Image
                   source={{
