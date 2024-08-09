@@ -20,6 +20,7 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
+  console.log(items, ">>>>>>>>>>>");
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -260,45 +261,14 @@ export default function DashboardCompletedCards({
       backgroundColor: colorCodes.bgLightGrey,
     },
   });
-  function formatDate(inputDate) {
-    if (!inputDate) {
-      return "";
-    }
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    const dateParts = inputDate.split("-");
-    const year = dateParts[0];
-    const month = months[parseInt(dateParts[1], 10) - 1];
-    const day = parseInt(dateParts[2], 10); // Convert day to integer
+  function convertDateToDDMMYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
 
-    const date = new Date(inputDate);
-    const dayOfWeek = days[date.getDay()];
-
-    const suffixes = ["th", "st", "nd", "rd"];
-    const daySuffix =
-      day % 10 === 1 && day !== 11
-        ? suffixes[1]
-        : day % 10 === 2 && day !== 12
-        ? suffixes[2]
-        : day % 10 === 3 && day !== 13
-        ? suffixes[3]
-        : suffixes[0];
-
-    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+    return `${day}/${month}/${year}`;
   }
 
   function convertToDuration(seconds) {
@@ -329,7 +299,7 @@ export default function DashboardCompletedCards({
 
           <View>
             <Text style={styles.contentDateTxt}>
-              {formatDate(items?.date?.completed)}
+              {convertDateToDDMMYY(items?.date?.completed)}
             </Text>
           </View>
         </View>
@@ -343,10 +313,10 @@ export default function DashboardCompletedCards({
               ></Text> */}
             </View>
           ) : (
-            <View style={{ flexDirection:"column" }}>
+            <View style={{ flexDirection: "column" }}>
               <Text style={styles.completedNextDate}>Next Reading Date : </Text>
               <Text style={[styles.completedNextDate, { color: "#989898" }]}>
-                {formatDate(items?.date?.next_reading)}
+                {convertDateToDDMMYY(items?.date?.next_reading)}
               </Text>
             </View>
           )}
@@ -398,7 +368,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Date Completed :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {formatDate(items?.date?.completed)}
+                {convertDateToDDMMYY(items?.date?.completed)}
               </Text>
             </View>
 
@@ -415,7 +385,7 @@ export default function DashboardCompletedCards({
 
               <Text style={styles.expandContentSTxt}>
                 {items?.date?.next_reading
-                  ? formatDate(items?.date?.next_reading)
+                  ? convertDateToDDMMYY(items?.date?.next_reading)
                   : "N/A"}
               </Text>
             </View>

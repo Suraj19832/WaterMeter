@@ -77,47 +77,13 @@ function MeterReadingScanner({ navigation }) {
     setValue,
   });
 
-  function formatDate(inputDate) {
-    if (!inputDate) {
-      return "";
-    }
-    
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-    const dateParts = inputDate?.split("-");
-    const year = dateParts[0];
-    const month = months[parseInt(dateParts[1], 10) - 1];
-    const day = parseInt(dateParts[2], 10); // Convert day to integer
-
-    const date = new Date(inputDate);
-    const dayOfWeek = days[date.getDay()];
-
-    const suffixes = ["th", "st", "nd", "rd"];
-    const daySuffix =
-      day % 10 === 1 && day !== 11
-        ? suffixes[1]
-        : day % 10 === 2 && day !== 12
-        ? suffixes[2]
-        : day % 10 === 3 && day !== 13
-        ? suffixes[3]
-        : suffixes[0];
-
-    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
-  }
+  function convertDateToDDMMYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
+    return `${day}/${month}/${year}`;
+}
 
   function getSubstring(data, count) {
     if (count > data?.length) {
@@ -578,13 +544,13 @@ function MeterReadingScanner({ navigation }) {
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading :
                   </Text>{" "}
-                  {lastReading ? lastReading : "N/A"}
+                  {lastReading ? convertDateToDDMMYY(lastReading) : "N/A"}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading Date :
                   </Text>{" "}
-                  {lastReadingDate ? formatDate(lastReadingDate) : "N/A"}
+                  {lastReadingDate ? convertDateToDDMMYY(lastReadingDate) : "N/A"}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>

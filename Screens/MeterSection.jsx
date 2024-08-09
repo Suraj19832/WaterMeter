@@ -797,7 +797,7 @@ const MeterSection = ({ navigation }) => {
               backgroundColor: pendingMeterCount === 0 ? "#2F8A16" : "#197AB6",
               paddingVertical: 6,
               borderRadius: 15,
-              width: 160,
+              // width: 160,
               alignSelf: "flex-end",
               paddingHorizontal: 16,
             }}

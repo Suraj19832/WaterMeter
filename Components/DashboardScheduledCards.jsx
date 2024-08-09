@@ -39,46 +39,14 @@ function DashboardScheduledCards({
     }
     return words?.join(" ");
   };
-  function formatDate(inputDate) {
-    if (!inputDate) {
-      return ""; // or any default value you prefer
-    }
 
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  function convertDateToDDMMYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
 
-    const dateParts = inputDate.split("-");
-    const year = dateParts[0];
-    const month = months[parseInt(dateParts[1], 10) - 1];
-    const day = parseInt(dateParts[2], 10); // Convert day to integer
-
-    const date = new Date(inputDate);
-    const dayOfWeek = days[date.getDay()];
-
-    const suffixes = ["th", "st", "nd", "rd"];
-    const daySuffix =
-      day % 10 === 1 && day !== 11
-        ? suffixes[1]
-        : day % 10 === 2 && day !== 12
-        ? suffixes[2]
-        : day % 10 === 3 && day !== 13
-        ? suffixes[3]
-        : suffixes[0];
-
-    return `${dayOfWeek} ${month} ${day}${daySuffix}, ${year}`;
+    return `${day}/${month}/${year}`;
   }
 
   function convertToDuration(seconds) {
@@ -138,9 +106,9 @@ function DashboardScheduledCards({
           </Text>
         </View>
 
-        <View style={{ width: "23%" }}>
+        <View style={{ width: "18%" }}>
           <Text style={styles.contentDateTxt}>
-            {formatDate(items?.reading_date?.on)}
+            {convertDateToDDMMYY(items?.reading_date?.on)}
           </Text>
         </View>
       </View>
@@ -239,7 +207,7 @@ function DashboardScheduledCards({
 
             <Text style={styles.expandContentSTxt}>
               {items?.reading_date?.next
-                ? formatDate(items?.reading_date?.next)
+                ? convertDateToDDMMYY(items?.reading_date?.next)
                 : "N/A"}
             </Text>
           </View>
@@ -249,7 +217,7 @@ function DashboardScheduledCards({
 
             <Text style={styles.expandContentSTxt}>
               {items?.reading_date?.last
-                ? formatDate(items?.reading_date?.last)
+                ? convertDateToDDMMYY(items?.reading_date?.last)
                 : "N/A"}
             </Text>
           </View>
@@ -388,6 +356,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "500",
     color: colorCodes.secondaryLightGray,
+    marginBottom:5
   },
   belowContentMain: {
     flexDirection: "row",
