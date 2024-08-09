@@ -69,6 +69,8 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
 
+  console.log(completedUnit)
+
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
   // for user selected image
@@ -316,6 +318,14 @@ const MeterSection = ({ navigation }) => {
       setloading(false);
     }
   };
+
+  function convertDateToDDMMYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
+    return `${day}/${month}/${year}`;
+  }
 
   // useEffect(()=>{
   //   fetchData()
@@ -622,7 +632,7 @@ const MeterSection = ({ navigation }) => {
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Last Reading :</Text>
                       <Text style={styles.modalValueText}>
-                        {lastReading ? lastReading : "N/A"}
+                        {lastReading ? convertDateToDDMMYY(lastReading) : "N/A"}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
@@ -631,7 +641,7 @@ const MeterSection = ({ navigation }) => {
                       </Text>
                       <Text style={styles.modalValueText}>
                         {" "}
-                        {lastReadingDate ? lastReadingDate : "N/A"}
+                        {lastReadingDate ? convertDateToDDMMYY(lastReadingDate) : "N/A"}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>

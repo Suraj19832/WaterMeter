@@ -23,7 +23,7 @@ export default function SummaryScreen({ navigation }) {
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false)
+  const [imageLoading, setImageLoading] = useState(false);
   const [dropdownData, setDropdownData] = useState([]);
   const [hideIcon, setHideIcon] = useState(false);
   const [showImage, setShowImage] = useState(null);
@@ -36,7 +36,7 @@ export default function SummaryScreen({ navigation }) {
 
   const meterDetails = (meterId) => {
     setLoading(true);
-    setImageLoading(true)
+    setImageLoading(true);
     const data = {
       property_id: id,
       meter_id: meterId,
@@ -51,12 +51,12 @@ export default function SummaryScreen({ navigation }) {
         });
         setShowImage(res?.iamge);
         setLoading(false);
-        setImageLoading(false)
+        setImageLoading(false);
       })
       .catch((err) => {
         console.log(err, "error from complete");
         setLoading(false);
-        setImageLoading(false)
+        setImageLoading(false);
       });
   };
 
@@ -211,6 +211,19 @@ export default function SummaryScreen({ navigation }) {
             )}
           </View>
 
+          <View
+            style={{
+              backgroundColor: "#2F8A16",
+              paddingVertical: 6,
+              borderRadius: 15,
+              paddingHorizontal: 16,
+              marginTop:10,
+              alignSelf: "flex-end",
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: 700 }}>Completed</Text>
+          </View>
+
           <View style={{ marginVertical: 10 }}>
             {loading ? (
               <ActivityIndicator size={"small"} />
@@ -271,8 +284,8 @@ export default function SummaryScreen({ navigation }) {
                     height: 20,
                     width: 20,
                     alignSelf: "flex-end",
-                    marginHorizontal:20,
-                    marginBottom:10
+                    marginHorizontal: 20,
+                    marginBottom: 10,
                   }}
                 />
               </TouchableWithoutFeedback>
