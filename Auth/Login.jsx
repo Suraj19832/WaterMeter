@@ -324,6 +324,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+    height:Dimensions.get("window").height * 1,
   },
   content: {
     position: "relative",
