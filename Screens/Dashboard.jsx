@@ -55,6 +55,7 @@ function Dashboard({ navigation }) {
     }
   }, [month, monthArr, monthIndex, year]);
 
+  console.log(`${year}-${String(monthIndex + 1).padStart(2, "0")}-01`);
   const previous = useCallback(() => {
     if (month === "January") {
       setMonth(monthArr[11]);
@@ -82,7 +83,7 @@ function Dashboard({ navigation }) {
       .catch((err) => {
         setLoading(false);
         setRefreshing(false);
-        console.log(err,"dashoard app error")
+        console.log(err, "dashoard app error");
       });
   }, [toggleScheduleCompleted, monthIndex, year]);
 
@@ -171,7 +172,13 @@ function Dashboard({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refreshApp}/>}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={refreshApp} />
+        }
+      >
         {loading ? (
           <ActivityIndicator
             size="large"

@@ -69,7 +69,6 @@ function MeterReadingScanner({ navigation }) {
   const [value, setValue] = useState(meterReading || "");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const [isRescan, setIsRescan] = useState(false);
-  console.log(getSubstring(value,totalDigit),">>>>>>>>>>>")
 
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -79,15 +78,15 @@ function MeterReadingScanner({ navigation }) {
 
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
     return `${day}/${month}/${year}`;
-}
+  }
 
   function getSubstring(data, count) {
     if (count > data?.length) {
-      return data; 
+      return data;
     }
     return data?.substring(0, count);
   }
@@ -101,6 +100,10 @@ function MeterReadingScanner({ navigation }) {
   }, [value]);
 
   const meternotesubmit = (note) => {
+    console.log(note,"<<<<<<<$$$$$$$$")
+    if (note === "") {
+      return;
+    }
     setnoteLoading(true);
     const data = {
       propertyId: id,
@@ -185,13 +188,13 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
       };
       const res = await appApi.meterScanner(data);
-      setMeterValue(getSubstring(res?.ocrReading,totalDigit));
+      setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
       console.log(res);
       toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
-        setValue(getSubstring(res?.ocrReading,totalDigit));
+        setValue(getSubstring(res?.ocrReading, totalDigit));
         setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
@@ -245,9 +248,9 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: isRescan ? "yes" : "no",   
+      rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
-      is_manual: meterValue !== value ? "1" : "0", 
+      is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
     };
     console.log(data, "handlesubmit params");
@@ -281,9 +284,9 @@ function MeterReadingScanner({ navigation }) {
       property_id: id,
       meter_id: meterName,
       data_id: completed_dataId ? completed_dataId : dataId,
-      rescan: isRescan ? "yes" : "no",  
+      rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
-      is_manual: meterValue !== value ? "1" : "0",  // is_ocr in db 
+      is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
     };
@@ -468,7 +471,7 @@ function MeterReadingScanner({ navigation }) {
           <Text style={styles.title}>Meter Reading :</Text>
           <CodeField
             ref={ref}
-            {...props}
+            // {...props} //can remove for delete from end always
             value={value}
             onChangeText={(value) => setValue(value)}
             cellCount={CELL_COUNT}
@@ -550,7 +553,9 @@ function MeterReadingScanner({ navigation }) {
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
                     Last Reading Date :
                   </Text>{" "}
-                  {lastReadingDate ? convertDateToDDMMYY(lastReadingDate) : "N/A"}
+                  {lastReadingDate
+                    ? convertDateToDDMMYY(lastReadingDate)
+                    : "N/A"}
                 </Text>
                 <Text style={{ color: "#989898" }}>
                   <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
@@ -821,10 +826,10 @@ const styles = StyleSheet.create({
     borderColor: colorCodes.otpbox,
     color: colorCodes.otp,
   },
-  message:{
-fontSize:16,
-textAlign:"center",
-marginVertical:20
+  message: {
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 20,
   },
   permissionContainer: {
     flex: 1,

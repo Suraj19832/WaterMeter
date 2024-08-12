@@ -69,7 +69,6 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
 
-  console.log(completedUnit)
 
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
@@ -507,6 +506,7 @@ const MeterSection = ({ navigation }) => {
                     justifyContent: "center",
                     borderRadius: 0,
                     borderWidth: 0,
+                   
                   },
                 ]}
               >
@@ -570,6 +570,7 @@ const MeterSection = ({ navigation }) => {
                       width: "90%",
                       alignItems: "flex-end",
                       marginTop: 15,
+                      
                     }}
                   >
                     <TouchableOpacity

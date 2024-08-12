@@ -1,11 +1,13 @@
 import {
-  sendAuthorizeGetRequest,  
-  sendAuthorizePostFormData, 
-  sendGetRequest, 
+  sendAuthorizeGetRequest,
+  sendAuthorizePostFormData,
+  sendGetRequest,
   sendPostFormData,
 } from "./Helper";
-// const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";    //for devs
-const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
+// const baseURL =
+  // "https://704d-2405-201-8015-610b-c79-71f8-5c55-1d1.ngrok-free.app";   // rough use
+const baseURL = "https://ehostingguru.com/stage/water-meter/api/public";    //for devs
+// const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
 // const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat
 
 const appApi = {
@@ -73,9 +75,9 @@ const appApi = {
     const url = `${baseURL}/api/reading/completed`;
     return sendAuthorizeGetRequest(url, data);
   },
-  summaryCompletion :function (data){
+  summaryCompletion: function (data) {
     const url = `${baseURL}/api/summary/completion`;
     return sendAuthorizeGetRequest(url, data);
-  }
+  },
 };
 export default appApi;
