@@ -78,15 +78,12 @@ function MeterReadingScanner({ navigation }) {
 
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
-
     if (isNaN(date.getTime())) {
-      return ""; // Return an empty string or a default value if the date is invalid
+      return "";
     }
-
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
-
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
   }
 
@@ -115,6 +112,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
+
     appApi
       .meternote(data)
       .then((res) => {
@@ -147,7 +145,7 @@ function MeterReadingScanner({ navigation }) {
       setNotes(completed_note || "");
       setCapturedImage(null);
       setValue(meterReading || "");
-    }, [totalDigit, completed_note, CELL_COUNT,meterReading])
+    }, [totalDigit, completed_note, CELL_COUNT, meterReading])
   );
 
   const scanAnimation = useRef(new Animated.Value(1)).current;

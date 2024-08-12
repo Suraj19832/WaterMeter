@@ -40,7 +40,6 @@ function DashboardScheduledCards({
     return words?.join(" ");
   };
 
-
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
 
@@ -221,32 +220,35 @@ function DashboardScheduledCards({
               {convertDateToDDMMYY(items?.reading_date?.last)}
             </Text>
           </View>
+          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+            <View style={[styles.expandContentBottomPart, {}]}>
+              <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
-          <View style={[styles.expandContentBottomPart, {}]}>
-            <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
-
-            <Text style={styles.expandContentSTxt}>
-              {convertToDuration(items?.estimate_time_in_sec)}
-            </Text>
-            <TouchableOpacity
-              style={{ marginLeft: 20, marginBottom: 6 }}
-              onPress={() => {
-                dispatch(setBooleanValue(true));
-                dispatch(setStringValue("MeterSelection"));
-                const meterData = { propertyId: items?.id, date: date };
-                dispatch(setMeterPropertyID(meterData));
-                navigation.jumpTo("MeterScreen", {
-                  PopertyId: items?.id,
-                  date,
-                });
-              }}
-            >
-              <SubmitButton
-                textSize={14}
-                bgColor={colorCodes.submitButtonEnabled}
-                text="Start Reading"
-              />
-            </TouchableOpacity>
+              <Text style={styles.expandContentSTxt}>
+                {convertToDuration(items?.estimate_time_in_sec)}
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={{ marginBottom: 6 }}
+                onPress={() => {
+                  dispatch(setBooleanValue(true));
+                  dispatch(setStringValue("MeterSelection"));
+                  const meterData = { propertyId: items?.id, date: date };
+                  dispatch(setMeterPropertyID(meterData));
+                  navigation.jumpTo("MeterScreen", {
+                    PopertyId: items?.id,
+                    date,
+                  });
+                }}
+              >
+                <SubmitButton
+                  textSize={14}
+                  bgColor={colorCodes.submitButtonEnabled}
+                  text="Start Reading"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       ) : null}
@@ -473,7 +475,7 @@ const styles = StyleSheet.create({
   },
   expandContentBottomPart: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     paddingRight: 10,
   },
