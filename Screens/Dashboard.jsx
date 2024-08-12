@@ -8,6 +8,8 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
@@ -55,7 +57,6 @@ function Dashboard({ navigation }) {
     }
   }, [month, monthArr, monthIndex, year]);
 
-  console.log(`${year}-${String(monthIndex + 1).padStart(2, "0")}-01`);
   const previous = useCallback(() => {
     if (month === "January") {
       setMonth(monthArr[11]);
@@ -157,14 +158,14 @@ function Dashboard({ navigation }) {
           <Text style={styles.prevNextTxt}>Prev</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => navigate.openDrawer()}
+        <TouchableHighlight
+          // onPress={() => navigate.openDrawer()}
           style={styles.dateView}
         >
           <Text style={styles.dateTxt}>
             {month} {year}
           </Text>
-        </TouchableOpacity>
+        </TouchableHighlight>
 
         <TouchableOpacity onPress={nextDate} style={styles.prevBtn}>
           <Text style={styles.prevNextTxt}>Next</Text>

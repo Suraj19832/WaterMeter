@@ -28,7 +28,6 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
-  console.log(date,"<<<<<<date")
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
@@ -41,8 +40,14 @@ function DashboardScheduledCards({
     return words?.join(" ");
   };
 
+
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return ""; // Return an empty string or a default value if the date is invalid
+    }
+
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
@@ -190,16 +195,14 @@ function DashboardScheduledCards({
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
-            <Text style={styles.expandContentSTxt}>
-              {items?.meter?.total ? items?.meter?.total : "N/A"}
-            </Text>
+            <Text style={styles.expandContentSTxt}>{items?.meter?.total}</Text>
           </View>
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters Pending :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.meter?.pending ? items?.meter?.pending : "N/A"}
+              {items?.meter?.pending}
             </Text>
           </View>
 
@@ -207,9 +210,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.reading_date?.next
-                ? convertDateToDDMMYY(items?.reading_date?.next)
-                : "N/A"}
+              {convertDateToDDMMYY(items?.reading_date?.next)}
             </Text>
           </View>
 
@@ -217,9 +218,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.reading_date?.last
-                ? convertDateToDDMMYY(items?.reading_date?.last)
-                : "N/A"}
+              {convertDateToDDMMYY(items?.reading_date?.last)}
             </Text>
           </View>
 
@@ -227,9 +226,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {items?.estimate_time_in_sec
-                ? convertToDuration(items?.estimate_time_in_sec)
-                : "N/A"}
+              {convertToDuration(items?.estimate_time_in_sec)}
             </Text>
             <TouchableOpacity
               style={{ marginLeft: 20, marginBottom: 6 }}
@@ -357,7 +354,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "500",
     color: colorCodes.secondaryLightGray,
-    marginBottom:5
+    marginBottom: 5,
   },
   belowContentMain: {
     flexDirection: "row",

@@ -12,7 +12,6 @@ const meterSlice = createSlice({
   reducers: {
     setMeterPropertyID: (state, action) => {
       state.meterDataParams = action.payload;
-      // console.log(action.payload,">>>>>>>>>>>>>>>payload")
     },
 
   },

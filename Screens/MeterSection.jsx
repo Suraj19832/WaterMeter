@@ -69,7 +69,6 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
 
-
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
   // for user selected image
@@ -320,9 +319,15 @@ const MeterSection = ({ navigation }) => {
 
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return ""; // Return an empty string or a default value if the date is invalid
+    }
+
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
+
     return `${day}/${month}/${year}`;
   }
 
@@ -506,7 +511,6 @@ const MeterSection = ({ navigation }) => {
                     justifyContent: "center",
                     borderRadius: 0,
                     borderWidth: 0,
-                   
                   },
                 ]}
               >
@@ -570,7 +574,6 @@ const MeterSection = ({ navigation }) => {
                       width: "90%",
                       alignItems: "flex-end",
                       marginTop: 15,
-                      
                     }}
                   >
                     <TouchableOpacity
@@ -633,24 +636,20 @@ const MeterSection = ({ navigation }) => {
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Last Reading :</Text>
                       <Text style={styles.modalValueText}>
-                        {lastReading ? convertDateToDDMMYY(lastReading) : "N/A"}
+                        {convertDateToDDMMYY(lastReading)}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>
-                        Last Reading Date :{" "}
+                        Last Reading Date : 
                       </Text>
-                      <Text style={styles.modalValueText}>
-                        {" "}
-                        {lastReadingDate ? convertDateToDDMMYY(lastReadingDate) : "N/A"}
+                      <Text style={styles.modalValueText}> 
+                        {convertDateToDDMMYY(lastReadingDate)}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>Avg Usage : </Text>
-                      <Text style={styles.modalValueText}>
-                        {" "}
-                        {avgUsage ? avgUsage : "N/A"}
-                      </Text>
+                      <Text style={styles.modalValueText}> {avgUsage}</Text>
                     </View>
                   </View>
                 )}

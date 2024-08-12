@@ -264,6 +264,11 @@ export default function DashboardCompletedCards({
 
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return ""; // Return an empty string or a default value if the date is invalid
+    }
+
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
@@ -384,9 +389,7 @@ export default function DashboardCompletedCards({
               <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {items?.date?.next_reading
-                  ? convertDateToDDMMYY(items?.date?.next_reading)
-                  : "N/A"}
+                {convertDateToDDMMYY(items?.date?.next_reading)}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
