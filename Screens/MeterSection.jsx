@@ -71,6 +71,7 @@ const MeterSection = ({ navigation }) => {
     readingType: "",
     readingDate: "",
   });
+console.log(billingId)
 
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
@@ -856,6 +857,8 @@ const MeterSection = ({ navigation }) => {
                         meterReading: meterReading,
                         completed_dataId: completedDataId,
                         completed_note: completedNotes,
+                        billingId: billingId,
+                        date: date,
                       })
                     }
                   >

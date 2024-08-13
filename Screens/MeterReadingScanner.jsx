@@ -53,7 +53,7 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     date
   } = route.params ?? {};
-  console.log(billingId,date,"KKKKKKKKKKKKK")
+  console.log(billingId,date,id,meterName,"KKKKKKKKKKKKK")
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
@@ -187,6 +187,7 @@ function MeterReadingScanner({ navigation }) {
     ).start();
   };
   const verifyNumber = async (imageFile) => {
+    console.log(imageFile,"imagefier")
     setLoading(true);
     try {
       const data = {
@@ -195,6 +196,7 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
         property_billing_cycle_id:billingId
       };
+console.log(data,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<dateeeeeeeeeeeeeeeeeeee<<<<<<<<<<<<<<<")
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setDataId(res?.dataId);
@@ -209,6 +211,7 @@ function MeterReadingScanner({ navigation }) {
         setLoading(false);
       }
     } catch (err) {
+      toast.show("Something went wrong");
       console.error(err, "Error while uploading image");
       setLoading(false);
     }
