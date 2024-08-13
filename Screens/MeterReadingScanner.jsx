@@ -586,7 +586,6 @@ function MeterReadingScanner({ navigation }) {
           </Modal>
         </View>
       </ScrollView>
-
       <Modal
         animationType="slide"
         transparent={true}

@@ -65,7 +65,7 @@ const MeterSection = ({ navigation }) => {
   const [completeLoading, setCompleteLoading] = useState(false);
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
   const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
-  const [billingId, setBillingId] = useState(null)
+  const [billingId, setBillingId] = useState(null);
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -107,8 +107,8 @@ const MeterSection = ({ navigation }) => {
     setCompleteImage(null);
     setCompletedUnit({});
   };
-  const handleSelectionOptionMeter = (all_data, option,billingId) => {
-    setBillingId(billingId)
+  const handleSelectionOptionMeter = (all_data, option, billingId) => {
+    setBillingId(billingId);
     setUserSelectedImage(null);
     setinputValuePending(option);
     setmeterData(option);
@@ -596,40 +596,31 @@ const MeterSection = ({ navigation }) => {
               </View>
             )}
             {!isModalImage && (
-              <View style={styles.modalContainer}>
+              <View style={styles.modalContainerNotes}>
                 {isModalVisible && (
                   <>
-                    <View style={{ width: "100%" }}>
-                      <TouchableOpacity onPress={toggleModalVisibilitySubmit}>
-                        <Entypo
-                          style={{ alignSelf: "flex-end" }}
-                          name="cross"
-                          size={24}
-                          color="#197AB6"
-                        />
-                      </TouchableOpacity>
-                    </View>
-
+                    <Text style={styles.addNotes}>Add Notes</Text>
                     <TextInput
-                      style={styles.modalInput}
-                      placeholder="Enter your notes here"
-                      multiline
+                      style={styles.notesInput}
+                      placeholder="Enter your notes here..."
                       numberOfLines={4}
                       onChangeText={(text) => setDropdownNotes(text)}
                       value={dropdownNotes}
+                      multiline
                     />
-                    <View style={{ width: "100%", alignItems: "flex-end" }}>
+
+                    <View style={styles.buttonsNotes}>
                       <TouchableOpacity
-                        style={{
-                          width: 63,
-                          height: 32,
-                          backgroundColor: "#FF8902",
-                          borderRadius: 8,
-                          justifyContent: "center",
-                        }}
+                        style={styles.submitNotes}
                         onPress={meternotesubmit}
                       >
-                        <Text style={styles.closeButton}>Submit</Text>
+                        <Text style={styles.submitNotesText}>Submit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.submitNotes}
+                        onPress={toggleModalVisibilitySubmit}
+                      >
+                        <Text style={styles.submitNotesText}>Cancel</Text>
                       </TouchableOpacity>
                     </View>
                   </>
@@ -930,8 +921,8 @@ const MeterSection = ({ navigation }) => {
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
                   completed_note: dropdownNotes,
-                  billingId:billingId,
-                  date:date
+                  billingId: billingId,
+                  date: date,
                 });
               }}
             >
@@ -969,77 +960,6 @@ const MeterSection = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-
-        {/* notes modal */}
-        {/* <Modal
-          animationType="slide"
-          transparent={true}
-          visible={notesModalVisible}
-          onRequestClose={() => setNotesModalVisible(false)}
-        >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "rgba(0,0,0,0.5)",
-            }}
-          >
-            <View
-              style={{
-                width: "80%",
-                backgroundColor: "white",
-                borderRadius: 10,
-                padding: 20,
-              }}
-            >
-              <Text
-                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
-              >
-                Add Notes
-              </Text>
-              <TextInput
-                style={{
-                  height: 100,
-                  borderColor: "#0B9ED2",
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  padding: 10,
-                  marginBottom: 10,
-                }}
-                placeholder="Enter your notes here..."
-                value={notes}
-                onChangeText={(text) => setNotes(text)}
-                multiline
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setNotesModalVisible(false);
-                    meternotesubmit(notes);
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Submit Notes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setNotesModalVisible(false);
-                    setNotes(completed_note || "");
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal> */}
 
         {/* complete image */}
         <Modal
@@ -1230,6 +1150,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  modalContainerNotes: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+  },
   modalContainer: {
     width: "100%",
     backgroundColor: "rgba(255, 255, 255, 1)",
@@ -1291,6 +1217,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+
   // loader
   loader: {
     height: "100%",
@@ -1299,6 +1226,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(242, 242, 242, 1)",
   },
+  addNotes: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  notesInput: {
+    height: 100,
+    borderColor: "#0B9ED2",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  buttonsNotes: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  submitNotes: {
+    backgroundColor: colorCodes.submitButtonEnabled,
+    padding: 10,
+    borderRadius: 5,
+    width: "48%",
+    alignItems: "center",
+  },
+  submitNotesText: { color: "#fff", fontWeight: "bold" },
 });
 
 //

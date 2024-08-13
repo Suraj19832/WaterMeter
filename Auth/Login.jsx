@@ -156,10 +156,6 @@ function Login({ navigation }) {
             toast.show(res?.message, { type: "sucess" });
             await AsyncStorage.setItem("token", res?.authorization?.token);
             dispatch(setAuthToken(res?.authorization?.token));
-            // dispatch(setAuthToken(null));
-        
-            const savedEmail = await AsyncStorage.getItem("token")
-   console.log(savedEmail,"flflflflflflflflflflflflfl")
             saveLocationApi();
             if (checked) {
               await AsyncStorage.setItem("email", email);

@@ -51,7 +51,6 @@ const DrawerNavigation = ({ navigation }) => {
   // const handleYesLogout = async () => {
   //   await AsyncStorage.removeItem("token");
   //   const savedEmail = await AsyncStorage.getItem("token");
-  //   console.log(savedEmail, "flflflflflflflflflflflflfl");
 
   //   try {
   //     setModal(false);
