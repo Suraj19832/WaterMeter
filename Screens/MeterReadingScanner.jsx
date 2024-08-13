@@ -15,6 +15,7 @@ import {
   Button,
 } from "react-native";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
 import { getFileData } from "../Helper/Helper";
@@ -49,7 +50,10 @@ function MeterReadingScanner({ navigation }) {
     meterReading,
     completed_dataId,
     completed_note,
+    billingId,
+    date
   } = route.params ?? {};
+  console.log(billingId,date,"KKKKKKKKKKKKK")
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
@@ -189,6 +193,7 @@ function MeterReadingScanner({ navigation }) {
         file: imageFile,
         property_id: id,
         meter_id: meterName,
+        property_billing_cycle_id:billingId
       };
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
@@ -255,6 +260,8 @@ function MeterReadingScanner({ navigation }) {
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
+      property_billing_cycle_id:billingId,
+      date:date
     };
     console.log(data, "handlesubmit params");
     appApi
@@ -292,12 +299,14 @@ function MeterReadingScanner({ navigation }) {
       is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
+      property_billing_cycle_id:billingId,
+      date:date
     };
     console.log(data, "handlemanual paramas");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, "handlemanualsubmit response");
+        console.log(res, "handle manual submit response");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -542,7 +551,6 @@ function MeterReadingScanner({ navigation }) {
             transparent={true}
             visible={modalInfo}
             onRequestClose={() => setModalInfo(false)}
-            F
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
@@ -586,7 +594,7 @@ function MeterReadingScanner({ navigation }) {
         onRequestClose={() => setNotesModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={styles.modalContentNotes}>
             <Text style={styles.modalTitle}>Add Notes</Text>
             <TextInput
               style={styles.notesInput}
@@ -618,6 +626,7 @@ function MeterReadingScanner({ navigation }) {
           </View>
         </View>
       </Modal>
+
       <Modal
         visible={readingMismatchModalVisible}
         transparent={true}
@@ -625,12 +634,12 @@ function MeterReadingScanner({ navigation }) {
         animationType="slide"
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={styles.modalContentExcuse}>
             <TouchableOpacity
               onPress={() => setReadingMismatchModalVisible(false)}
               style={styles.modalCloseButton}
             >
-              <Text>X</Text>
+              <AntDesign name="close" size={22} color="black" />
             </TouchableOpacity>
             <Text style={styles.modalHeading}>Select Reading</Text>
             <TouchableOpacity
@@ -749,7 +758,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
-  modalContent: {
+  modalContentExcuse: {
     width: "80%",
     backgroundColor: "#fff",
     borderRadius: 8,
@@ -769,6 +778,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 16,
+    alignSelf: "flex-start",
   },
   modalInput: {
     width: "100%",
@@ -795,7 +805,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   closeBtn: {
-    bottom: 130,
+    bottom: 90,
     left: 140,
   },
   otp: {
@@ -845,12 +855,11 @@ const styles = StyleSheet.create({
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
-    // Adding shadow properties
     shadowColor: "#2198C9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 2,
-    elevation: 7, // For Android shadow
+    elevation: 7,
     borderRadius: 10,
   },
   headingText: {
@@ -876,12 +885,12 @@ const styles = StyleSheet.create({
   },
   scanningOverlay: {
     position: "absolute",
-    top: "100%", // Adjust this value to position the overlay
+    top: "100%",
     left: 0,
     right: 0,
-    height: 4, // Height of the scanning line
-    backgroundColor: colorCodes.heading, // Color of the scanning line
-    borderRadius: 2, // Optional: rounded edges
+    height: 4,
+    backgroundColor: colorCodes.heading,
+    borderRadius: 2,
   },
   scannerHeading: {
     fontSize: 24,
@@ -893,13 +902,7 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
+  modalContentNotes: {
     width: "80%",
     backgroundColor: "white",
     borderRadius: 10,

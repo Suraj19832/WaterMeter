@@ -28,6 +28,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
+import { colorCodes } from "../ColorCodes/Colors";
+import { all } from "axios";
 
 const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
@@ -63,6 +65,7 @@ const MeterSection = ({ navigation }) => {
   const [completeLoading, setCompleteLoading] = useState(false);
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
   const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
+  const [billingId, setBillingId] = useState(null)
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -104,7 +107,8 @@ const MeterSection = ({ navigation }) => {
     setCompleteImage(null);
     setCompletedUnit({});
   };
-  const handleSelectionOptionMeter = (all_data, option) => {
+  const handleSelectionOptionMeter = (all_data, option,billingId) => {
+    setBillingId(billingId)
     setUserSelectedImage(null);
     setinputValuePending(option);
     setmeterData(option);
@@ -475,7 +479,8 @@ const MeterSection = ({ navigation }) => {
                         onPress={() =>
                           handleSelectionOptionMeter(
                             meterDataByApi,
-                            meterid?.id
+                            meterid?.id,
+                            meterid?.property_billing_cycle_id
                           )
                         }
                         key={index}
@@ -509,8 +514,6 @@ const MeterSection = ({ navigation }) => {
                     padding: 0,
                     height: 326,
                     justifyContent: "center",
-                    borderRadius: 0,
-                    borderWidth: 0,
                   },
                 ]}
               >
@@ -641,9 +644,9 @@ const MeterSection = ({ navigation }) => {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>
-                        Last Reading Date : 
+                        Last Reading Date :
                       </Text>
-                      <Text style={styles.modalValueText}> 
+                      <Text style={styles.modalValueText}>
                         {convertDateToDDMMYY(lastReadingDate)}
                       </Text>
                     </View>
@@ -927,6 +930,8 @@ const MeterSection = ({ navigation }) => {
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
                   completed_note: dropdownNotes,
+                  billingId:billingId,
+                  date:date
                 });
               }}
             >
@@ -965,8 +970,78 @@ const MeterSection = ({ navigation }) => {
           </View>
         </Modal>
 
-        {/* complete image */}
+        {/* notes modal */}
+        {/* <Modal
+          animationType="slide"
+          transparent={true}
+          visible={notesModalVisible}
+          onRequestClose={() => setNotesModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
+            }}
+          >
+            <View
+              style={{
+                width: "80%",
+                backgroundColor: "white",
+                borderRadius: 10,
+                padding: 20,
+              }}
+            >
+              <Text
+                style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}
+              >
+                Add Notes
+              </Text>
+              <TextInput
+                style={{
+                  height: 100,
+                  borderColor: "#0B9ED2",
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  padding: 10,
+                  marginBottom: 10,
+                }}
+                placeholder="Enter your notes here..."
+                value={notes}
+                onChangeText={(text) => setNotes(text)}
+                multiline
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setNotesModalVisible(false);
+                    meternotesubmit(notes);
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>Submit Notes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setNotesModalVisible(false);
+                    setNotes(completed_note || "");
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal> */}
 
+        {/* complete image */}
         <Modal
           transparent={true}
           visible={completeModal}
@@ -1022,6 +1097,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  modalButton: {
+    backgroundColor: colorCodes.submitButtonEnabled,
+    padding: 10,
+    borderRadius: 5,
+    width: "48%",
+    alignItems: "center",
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
   modalContentt: {
     height: Dimensions.get("window").height * 0.3,
     width: "100%",
@@ -1068,7 +1154,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontWeight: "700",
     fontSize: 18,
-    lineHeight: 21.09,
+    // lineHeight: 21.09,
     color: "#0B9ED2",
   },
   select: {

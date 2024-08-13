@@ -384,7 +384,7 @@ export async function sendAuthorizePostFormData(url, obj) {
   } catch (error) {
     if (error.response) {
       console.log(error.response.status, "respose status");
-      if (error.response.status === 401 || 500) {
+      if (error.response.status === 401) {
         AsyncStorage.removeItem("token");
         store.dispatch(setAuthToken(null));
         throw new Error("Unauthorized: 401");
