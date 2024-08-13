@@ -34,6 +34,7 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
+  console.log(billingAddress,">>>>>>>billingAdress")
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
@@ -148,6 +149,8 @@ const MeterSection = ({ navigation }) => {
   const toggleModalVisibilitySubmit = () => {
     setIsModalVisible(false);
   };
+
+  
   const meternotesubmit = () => {
     setnoteLoading(true);
     toast.show("wait while updating", { type: "sucess" });
@@ -159,6 +162,7 @@ const MeterSection = ({ navigation }) => {
       };
       try {
         const res = await appApi.meternote(data);
+        console.log(res,"><<<<<<<<<<<<meter")
         if (res?.status) {
           setnoteLoading(false);
           toast.show(res?.message, { type: "sucess" });

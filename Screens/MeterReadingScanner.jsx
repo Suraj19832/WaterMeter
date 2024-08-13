@@ -64,6 +64,7 @@ function MeterReadingScanner({ navigation }) {
   const [notes, setNotes] = useState(completed_note || "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
+  const [updateNotes, setUpdateNotes] = useState("")
   const toast = useToast();
   const [readingMismatchModalVisible, setReadingMismatchModalVisible] =
     useState(false);
@@ -108,6 +109,7 @@ function MeterReadingScanner({ navigation }) {
   }, [value]);
 
   const meternotesubmit = (note) => {
+    console.log(note)
     if (note === "") {
       return;
     }
@@ -121,6 +123,8 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .meternote(data)
       .then((res) => {
+        console.log(res?.data?.note,"<<<<<<<<<<<<")
+        setNotes(res?.data?.note)
         if (res?.status) {
           toast.show(res?.message, { type: "success" });
           setnoteLoading(false);
