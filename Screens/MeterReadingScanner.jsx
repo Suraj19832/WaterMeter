@@ -51,9 +51,10 @@ function MeterReadingScanner({ navigation }) {
     completed_dataId,
     completed_note,
     billingId,
-    date
+    date,
   } = route.params ?? {};
-  console.log(billingId,date,id,meterName,"KKKKKKKKKKKKK")
+  console.log(billingId, date, id, meterName, "KKKKKKKKKKKKK");
+
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
@@ -187,22 +188,21 @@ function MeterReadingScanner({ navigation }) {
     ).start();
   };
   const verifyNumber = async (imageFile) => {
-    console.log(imageFile,"imagefier")
     setLoading(true);
     try {
       const data = {
         file: imageFile,
         property_id: id,
         meter_id: meterName,
-        property_billing_cycle_id:billingId
+        property_billing_cycle_id: billingId,
       };
-console.log(data,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<dateeeeeeeeeeeeeeeeeeee<<<<<<<<<<<<<<<")
+      console.log(data, "<<<<<resposeeeeeeeeeeeee parasm");
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
-      console.log(res);
-      toast.show(res?.ocrReading, { type: "sucess", duration: 2000 });
+      console.log(res,"data fromn respose please check");
+      toast.show(getSubstring(res?.ocrReading, totalDigit), { type: "sucess", duration: 2000 });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
         setLoading(false);
@@ -263,8 +263,8 @@ console.log(data,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<dateeeeeeeeeeeeeeeeeeee<<<
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
       note: completed_note ? completed_note : notes,
-      property_billing_cycle_id:billingId,
-      date:date
+      property_billing_cycle_id: billingId,
+      date: date,
     };
     console.log(data, "handlesubmit params");
     appApi
@@ -302,8 +302,8 @@ console.log(data,"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<dateeeeeeeeeeeeeeeeeeee<<<
       is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
       note: completed_note ? completed_note : notes,
       me_reason: selectedReading,
-      property_billing_cycle_id:billingId,
-      date:date
+      property_billing_cycle_id: billingId,
+      date: date,
     };
     console.log(data, "handlemanual paramas");
     appApi

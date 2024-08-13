@@ -26,12 +26,14 @@ import LoaderComponent from "../Components/LoaderComponent";
 import { getFileData } from "../Helper/Helper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
 import { colorCodes } from "../ColorCodes/Colors";
 import { all } from "axios";
+import { setBillingAddress } from "../redux/slices/BillingSlice";
 
 const MeterSection = ({ navigation }) => {
+  const { billingAddress } = useSelector((state) => state.billingSlice);
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
@@ -71,7 +73,6 @@ const MeterSection = ({ navigation }) => {
     readingType: "",
     readingDate: "",
   });
-console.log(billingId)
 
   //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
@@ -109,6 +110,7 @@ console.log(billingId)
     setCompletedUnit({});
   };
   const handleSelectionOptionMeter = (all_data, option, billingId) => {
+    dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(null);
     setinputValuePending(option);
@@ -357,6 +359,7 @@ console.log(billingId)
     appApi
       .completedImage(data)
       .then((res) => {
+        dispatch(setBillingAddress(res?.property_billing_cycle_id));
         setMeterCompletedImage(res?.iamge);
         setMeterReading(res?.reading);
         setCompletedDataId(res?.data_id);
@@ -857,7 +860,7 @@ console.log(billingId)
                         meterReading: meterReading,
                         completed_dataId: completedDataId,
                         completed_note: completedNotes,
-                        billingId: billingId,
+                        billingId: billingAddress,
                         date: date,
                       })
                     }
@@ -924,7 +927,7 @@ console.log(billingId)
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
                   completed_note: dropdownNotes,
-                  billingId: billingId,
+                  billingId: billingAddress,
                   date: date,
                 });
               }}
