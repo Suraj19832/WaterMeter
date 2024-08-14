@@ -54,7 +54,6 @@ function MeterReadingScanner({ navigation }) {
     date,
   } = route.params ?? {};
   console.log(billingId, date, id, meterName, "KKKKKKKKKKKKK");
-
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);

@@ -34,7 +34,6 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
-  console.log(billingAddress,">>>>>>>billingAdress")
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
@@ -49,7 +48,6 @@ const MeterSection = ({ navigation }) => {
   // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dropdownNotes, setDropdownNotes] = useState("");
-  //For Image
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
 
@@ -74,10 +72,7 @@ const MeterSection = ({ navigation }) => {
     readingType: "",
     readingDate: "",
   });
-
-  //30/07/2024
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  // for user selected image
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -110,7 +105,8 @@ const MeterSection = ({ navigation }) => {
     setCompleteImage(null);
     setCompletedUnit({});
   };
-  const handleSelectionOptionMeter = (all_data, option, billingId) => {
+  const handleSelectionOptionMeter = (all_data, option, billingId,note) => {
+    console.log(billingId,"<=================option");
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(null);
@@ -118,6 +114,7 @@ const MeterSection = ({ navigation }) => {
     setmeterData(option);
     setIsPendingDropdown(false);
     setmeterMake(getNameById(all_data, option));
+    setDropdownNotes(note)
 
     const meterMakevalue = getNameById(all_data, option);
     if (userSelectedImage) {
@@ -143,7 +140,7 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibility = () => {
-    setDropdownNotes(meterMake?.meterNote);
+    // setDropdownNotes(meterMake?.meterNote);
     setIsModalVisible(!isModalVisible);
   };
   const toggleModalVisibilitySubmit = () => {
@@ -158,10 +155,10 @@ const MeterSection = ({ navigation }) => {
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
-      console.log(data,"<<<<<<<<<<<LLLLLLLLLLLLLL")
+      // console.log(data,"<<<<<<<<<<<LLLLLLLLLLLLLL")
       try {
         const res = await appApi.meternote(data);
-        console.log(res.data.note,"><<<<<<<<<<<<meter")
+        // console.log(res,"><<<<<<<<<<<<meter")
         if (res?.status) {
           setnoteLoading(false);
           toast.show(res?.message, { type: "sucess" });
@@ -170,7 +167,7 @@ const MeterSection = ({ navigation }) => {
         setnoteLoading(false);
         toast.show("Unexpected Error Occur", { type: "sucess" });
       } finally {
-        fetchData();
+        // fetchData();
         setnoteLoading(false);
       }
     };
@@ -224,7 +221,7 @@ const MeterSection = ({ navigation }) => {
       setnoteLoading(false);
       toast.show("Unexpected Error Occur", { type: "sucess" });
     } finally {
-      fetchData();
+      // fetchData();
       setnoteLoading(false);
     }
   };
@@ -474,6 +471,7 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
+                    console.log(meterid,"<<<<<<<")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -481,7 +479,8 @@ const MeterSection = ({ navigation }) => {
                           handleSelectionOptionMeter(
                             meterDataByApi,
                             meterid?.id,
-                            meterid?.property_billing_cycle_id
+                            meterid?.property_billing_cycle_id,
+                            meterid?.note
                           )
                         }
                         key={index}
