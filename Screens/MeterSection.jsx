@@ -471,7 +471,7 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
-                    console.log(meterid,"<<<<<<<")
+                    // console.log(meterid,"<<<<<<<")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}

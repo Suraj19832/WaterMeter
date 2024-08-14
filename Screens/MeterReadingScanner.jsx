@@ -60,7 +60,7 @@ function MeterReadingScanner({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
-  const [notes, setNotes] = useState(completed_note || "");
+  const [notes, setNotes] = useState(completed_note ? completed_note :  "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
   const [updateNotes, setUpdateNotes] = useState("")
@@ -122,7 +122,6 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .meternote(data)
       .then((res) => {
-        console.log(res?.data?.note,"<<<<<<<<<<<<")
         setNotes(res?.data?.note)
         if (res?.status) {
           toast.show(res?.message, { type: "success" });
@@ -622,7 +621,7 @@ function MeterReadingScanner({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setNotesModalVisible(false);
-                  setNotes(completed_note || "");
+                  // setNotes(completed_note || "");
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>

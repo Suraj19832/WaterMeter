@@ -366,7 +366,7 @@ export async function sendAuthorizePostFormData(url, obj) {
   console.log(url, obj);
   try {
     let token = await AsyncStorage.getItem("token");
-    console.log(token, "<=====================");
+    // console.log(token, "<=====================");
 
     if (!token) {
       throw new Error("No token found");

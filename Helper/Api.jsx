@@ -8,7 +8,7 @@ import {
 // const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
 // const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
 const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat/
-// const baseURL = "https://7af5-2405-201-8015-610b-e4cd-d52-8c69-dc47.ngrok-free.app"  
+// const baseURL = "https://9cbd-2405-201-8015-610b-c965-aee3-5a57-ad4f.ngrok-free.app"  
 
 const appApi = {
   login: function (data) {
