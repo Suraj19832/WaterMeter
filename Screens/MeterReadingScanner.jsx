@@ -215,7 +215,7 @@ function MeterReadingScanner({ navigation }) {
         setLoading(false);
       }
     } catch (err) {
-      toast.show("Something went wrong");
+      toast.show("Something went wrong,please reselect meter again");
       console.error(err, "Error while uploading image");
       setLoading(false);
     }
