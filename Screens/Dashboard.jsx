@@ -8,14 +8,12 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
-  TouchableWithoutFeedback,
   TouchableHighlight,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { colorCodes } from "../ColorCodes/Colors";
 import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
-import { useNavigation } from "@react-navigation/native";
 import appApi from "../Helper/Api";
 
 function Dashboard({ navigation }) {
@@ -35,6 +33,7 @@ function Dashboard({ navigation }) {
   ];
   const currentMonthIndex = new Date().getMonth();
   const currentYear = new Date().getFullYear();
+  const currentDay = new Date().getDate();
   const [toggleScheduleCompleted, setToggleScheduleCompleted] = useState(false);
   const [expandSchedule, setExpandSchedule] = useState(999999999);
   const [expandCompleted, setExpandCompleted] = useState(999999999);
@@ -44,7 +43,6 @@ function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const navigate = useNavigation();
 
   const nextDate = useCallback(() => {
     if (month === "December") {
@@ -70,9 +68,10 @@ function Dashboard({ navigation }) {
 
   const fetchData = useCallback(() => {
     setLoading(true);
+   
     const params = {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
-      date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-01`,
+      date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`,
     };
     appApi
       .dashboard(params)
@@ -159,7 +158,6 @@ function Dashboard({ navigation }) {
         </TouchableOpacity>
 
         <TouchableHighlight
-          // onPress={() => navigate.openDrawer()}
           style={styles.dateView}
         >
           <Text style={styles.dateTxt}>
@@ -221,7 +219,7 @@ function Dashboard({ navigation }) {
                       date={`${year}-${String(monthIndex + 1).padStart(
                         2,
                         "0"
-                      )}-01`}
+                      )}-${String(currentDay).padStart(2, "0")}`}
                     />
                   </View>
                 ))}

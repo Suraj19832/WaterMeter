@@ -28,6 +28,7 @@ export default function SummaryScreen({ navigation }) {
   const [hideIcon, setHideIcon] = useState(false);
   const [showImage, setShowImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
+  const [resfreshing, setResfreshing] = useState(false);
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -69,6 +70,7 @@ export default function SummaryScreen({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      setResfreshing(true);
       const data = {
         property_id: id,
       };
@@ -76,16 +78,26 @@ export default function SummaryScreen({ navigation }) {
         .summaryCompletion(data)
         .then((res) => {
           setData(res?.data);
+          setResfreshing(false);
           setDropdownData(res?.data?.completedMeters);
         })
         .catch((err) => {
           console.log(err);
+          setResfreshing(false);
         });
       setCompletedUnit({});
       setDropdownValue(null);
       setHideIcon(false);
     }, [])
   );
+
+  if (resfreshing) {
+    return (
+      <View style={styles.resfreshing}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={{ height: "100%" }}>
       <View style={styles.headArrow}>
@@ -217,7 +229,7 @@ export default function SummaryScreen({ navigation }) {
               paddingVertical: 6,
               borderRadius: 15,
               paddingHorizontal: 16,
-              marginTop:10,
+              marginTop: 10,
               alignSelf: "flex-end",
             }}
           >
@@ -316,6 +328,10 @@ export default function SummaryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  resfreshing: {
+    flex: 1,
+    justifyContent:"center"
+  },
   modalOverlay: {
     backgroundColor: "rgba(0,0,0,0.5)",
     flex: 1,

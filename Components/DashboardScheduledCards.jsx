@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
   Dimensions,
   Modal,
   Image,
   ActivityIndicator,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
 import { useDispatch } from "react-redux";
@@ -42,15 +39,12 @@ function DashboardScheduledCards({
 
   function convertDateToDDMMYY(dateString) {
     const date = new Date(dateString);
-
     if (isNaN(date.getTime())) {
-      return ""; // Return an empty string or a default value if the date is invalid
+      return ""; 
     }
-
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
-
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = String(date.getFullYear()).slice(-2); 
     return `${day}/${month}/${year}`;
   }
 
@@ -58,7 +52,6 @@ function DashboardScheduledCards({
     const hours = Math.floor(seconds / 3600);
     const remainingSeconds = seconds % 3600;
     const minutes = Math.floor(remainingSeconds / 60);
-
     let duration = "";
     if (hours > 0) {
       duration += `${hours}hr `;
@@ -66,7 +59,6 @@ function DashboardScheduledCards({
     if (minutes > 0) {
       duration += `${minutes}mins`;
     }
-
     return duration?.trim();
   }
 
@@ -78,6 +70,7 @@ function DashboardScheduledCards({
       return "invalid";
     }
   }
+  
 
   useEffect(() => {
     const checkImageURL = async (url) => {
@@ -181,13 +174,7 @@ function DashboardScheduledCards({
           <View style={[styles.expandContentHeading, { marginBottom: 7 }]}>
             <Text style={styles.expandHeadingFTxt}>Address :</Text>
             <Text
-              style={{
-                fontWeight: "600",
-                fontSize: 14,
-                width: "80%",
-                color: "rgba(89, 89, 89, 1)",
-                paddingLeft: 10,
-              }}
+              style={styles.address}
             >
               {items?.address}
             </Text>
@@ -456,6 +443,13 @@ const styles = StyleSheet.create({
     color: "#0099ff",
     fontWeight: "400",
     fontSize: 14,
+  },
+  address:{
+    fontWeight: "600",
+    fontSize: 14,
+    width: "80%",
+    color: "rgba(89, 89, 89, 1)",
+    paddingLeft: 10,
   },
   belowContentCompleted: {
     display: "flex",

@@ -24,12 +24,9 @@ import {
 import appApi from "../Helper/Api";
 import LoaderComponent from "../Components/LoaderComponent";
 import { getFileData } from "../Helper/Helper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
 import { colorCodes } from "../ColorCodes/Colors";
-import { all } from "axios";
 import { setBillingAddress } from "../redux/slices/BillingSlice";
 
 const MeterSection = ({ navigation }) => {
@@ -45,24 +42,19 @@ const MeterSection = ({ navigation }) => {
   const [lastReading, setLastReading] = useState("");
   const [lastReadingDate, setLastReadingDate] = useState("");
   const [avgUsage, setAvgUsage] = useState("");
-  // For edit
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [dropdownNotes, setDropdownNotes] = useState("");
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
-
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
-
   const [isCompletedDropdown, setIsCompletedDropdown] = useState(false);
   const [inputValueCompleted, setinputValueCompleted] = useState("");
   const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
-  const [image, setImage] = useState(null);
-  const [completeDropdownImage, setCompleteDropdownImage] = useState(null);
   const [completeLoading, setCompleteLoading] = useState(false);
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
   const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
@@ -139,7 +131,6 @@ const MeterSection = ({ navigation }) => {
   };
 
   const toggleModalVisibility = () => {
-    // setDropdownNotes(meterMake?.meterNote);
     setIsModalVisible(!isModalVisible);
   };
   const toggleModalVisibilitySubmit = () => {
@@ -164,14 +155,12 @@ const MeterSection = ({ navigation }) => {
         setnoteLoading(false);
         toast.show("Unexpected Error Occur", { type: "sucess" });
       } finally {
-        // fetchData();
         setnoteLoading(false);
       }
     };
     fetchSubmitData();
     setIsModalVisible(!isModalVisible);
   };
-  // For Information
   const [isModalInformation, setIsModalInformation] = useState(false);
 
   const toggleModalVisibilityInformation = () => {
@@ -316,7 +305,6 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       setloading(false);
-      toast.show("something went wrong", { type: "error" });
     } finally {
       setloading(false);
     }

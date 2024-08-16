@@ -219,7 +219,7 @@ function MeterReadingScanner({ navigation }) {
         setLoading(false);
       }
     } catch (err) {
-      toast.show("Something went wrong,please reselect meter again");
+      toast.show("something went wrong");
       console.error(err, "Error while uploading image");
       setLoading(false);
     }
@@ -408,12 +408,7 @@ function MeterReadingScanner({ navigation }) {
                     <TouchableOpacity style={{ height: 200 }}>
                       <TouchableOpacity
                         onPress={captureImage}
-                        style={{
-                          position: "absolute",
-                          bottom: 20,
-                          right: 20,
-                          zIndex: 1,
-                        }}
+                        style={styles.shutterIcon}
                       >
                         <Image
                           source={require("../assets/icons/shutter.png")}
@@ -882,6 +877,12 @@ const styles = StyleSheet.create({
     color: "#0B9ED2",
     textAlign: "center",
     marginVertical: 12,
+  },
+  shutterIcon:{
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    zIndex: 1,
   },
   scannerView: {
     backgroundColor: "#414141",
