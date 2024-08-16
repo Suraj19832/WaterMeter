@@ -105,8 +105,7 @@ const MeterSection = ({ navigation }) => {
     setCompleteImage(null);
     setCompletedUnit({});
   };
-  const handleSelectionOptionMeter = (all_data, option, billingId,note) => {
-    console.log(billingId,"<=================option");
+  const handleSelectionOptionMeter = (all_data, option, billingId, note) => {
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(null);
@@ -114,7 +113,7 @@ const MeterSection = ({ navigation }) => {
     setmeterData(option);
     setIsPendingDropdown(false);
     setmeterMake(getNameById(all_data, option));
-    setDropdownNotes(note)
+    setDropdownNotes(note);
 
     const meterMakevalue = getNameById(all_data, option);
     if (userSelectedImage) {
@@ -155,10 +154,8 @@ const MeterSection = ({ navigation }) => {
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
-      // console.log(data,"<<<<<<<<<<<LLLLLLLLLLLLLL")
       try {
         const res = await appApi.meternote(data);
-        // console.log(res,"><<<<<<<<<<<<meter")
         if (res?.status) {
           setnoteLoading(false);
           toast.show(res?.message, { type: "sucess" });
@@ -319,6 +316,7 @@ const MeterSection = ({ navigation }) => {
       }
     } catch (error) {
       setloading(false);
+      toast.show("something went wrong", { type: "error" });
     } finally {
       setloading(false);
     }
@@ -328,17 +326,16 @@ const MeterSection = ({ navigation }) => {
     const date = new Date(dateString);
 
     if (isNaN(date.getTime())) {
-      return ""; // Return an empty string or a default value if the date is invalid
+      return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-    const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = String(date.getFullYear()).slice(-2); 
     return `${day}/${month}/${year}`;
   }
   useFocusEffect(
     React.useCallback(() => {
-      // Reset the states when the screen comes into focus
       fetchData();
     }, [PopertyId])
   );
@@ -471,7 +468,6 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
-                    // console.log(meterid,"<<<<<<<")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}

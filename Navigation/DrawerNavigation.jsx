@@ -48,61 +48,6 @@ const DrawerNavigation = ({ navigation }) => {
     }
   };
 
-  // const handleYesLogout = async () => {
-  //   await AsyncStorage.removeItem("token");
-  //   const savedEmail = await AsyncStorage.getItem("token");
-
-  //   try {
-  //     setModal(false);
-  //     showToast("Wait a Second");
-
-  //     const res = await appApi.logout();
-  //     console.log(res, "??????????????????????????");
-
-  //     if (res?.status) {
-  //       showToast("Logout Successfully");
-  //       navigation.navigate("Login");
-  //     } else if (res?.message === "Unauthenticated.") {
-  //       showToast("Error");
-  //       console.log("bbbbbbbbbb");
-  //     }
-  //   } catch (error) {
-  //     let errorMessage = "An unexpected error occurred";
-
-  //     if (error.response) {
-  //       const { response } = error;
-
-  //       // Check if the response data is a string that starts with "<"
-  //       if (typeof response.data === 'string' && response.data.trim().startsWith('<')) {
-  //         errorMessage = "Received an HTML response from the server.";
-  //       } else {
-  //         // Try to parse the response data as JSON
-  //         try {
-  //           const responseData = JSON.parse(response.data);
-  //           if (response.status === 401 && responseData.message) {
-  //             errorMessage = responseData.message;
-  //           } else {
-  //             errorMessage = JSON.stringify(responseData);
-  //           }
-  //         } catch (e) {
-  //           errorMessage = response.data.toString();
-  //         }
-  //       }
-  //     } else if (error.request) {
-  //       // Request was made but no response was received
-  //       errorMessage = "No response received from server";
-  //     } else {
-  //       // Something happened in setting up the request that triggered an error
-  //       errorMessage = error.message;
-  //     }
-
-  //     showToast(errorMessage);
-  //     console.log(errorMessage, "hihi333333333333");
-  //   } finally {
-  //     // Any cleanup operations
-  //   }
-  // };
-
   const styles = StyleSheet.create({
     mainView: {
       backgroundColor: "#197AB6",

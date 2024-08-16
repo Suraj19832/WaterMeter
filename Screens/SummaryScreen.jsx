@@ -275,7 +275,6 @@ export default function SummaryScreen({ navigation }) {
                 style={styles.closeButtonn}
                 onPress={() => {
                   setCompleteModal(false);
-                  console.log("clicked");
                 }}
               >
                 <Image

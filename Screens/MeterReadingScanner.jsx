@@ -53,17 +53,23 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     date,
   } = route.params ?? {};
-  console.log(billingId, date, id, meterName, "KKKKKKKKKKKKK");
+  console.log(
+    billingId,
+    date,
+    id,
+    meterName,
+    completed_dataId,
+    "KKKKKKKKKKKKK"
+  );
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [dataId, setDataId] = useState(null);
-  const [notes, setNotes] = useState(completed_note ? completed_note :  "");
+  const [notes, setNotes] = useState(completed_note ? completed_note : "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
-  const [updateNotes, setUpdateNotes] = useState("")
   const toast = useToast();
   const [readingMismatchModalVisible, setReadingMismatchModalVisible] =
     useState(false);
@@ -108,7 +114,6 @@ function MeterReadingScanner({ navigation }) {
   }, [value]);
 
   const meternotesubmit = (note) => {
-    console.log(note)
     if (note === "") {
       return;
     }
@@ -122,7 +127,7 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .meternote(data)
       .then((res) => {
-        setNotes(res?.data?.note)
+        setNotes(res?.data?.note);
         if (res?.status) {
           toast.show(res?.message, { type: "success" });
           setnoteLoading(false);
@@ -198,13 +203,14 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
         property_billing_cycle_id: billingId,
       };
-      console.log(data, "<<<<<resposeeeeeeeeeeeee parasm");
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
-      console.log(res,"data fromn respose please check");
-      toast.show(getSubstring(res?.ocrReading, totalDigit), { type: "sucess", duration: 2000 });
+      toast.show(getSubstring(res?.ocrReading, totalDigit), {
+        type: "sucess",
+        duration: 2000,
+      });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
         setLoading(false);
@@ -264,7 +270,7 @@ function MeterReadingScanner({ navigation }) {
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
-      note: completed_note ? completed_note : notes,
+      note: notes ? notes : completed_note,
       property_billing_cycle_id: billingId,
       date: date,
     };
@@ -290,6 +296,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
+        toast.show("something went wrong",{type:"error"})
       });
   };
 
@@ -302,7 +309,7 @@ function MeterReadingScanner({ navigation }) {
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
-      note: completed_note ? completed_note : notes,
+      note: notes ? notes : completed_note,
       me_reason: selectedReading,
       property_billing_cycle_id: billingId,
       date: date,
@@ -331,6 +338,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
+        toast.show("something went wrong",{type:"error"})
         setManulLoading(false);
         setReadingMismatchModalVisible(false);
       });

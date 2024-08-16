@@ -28,7 +28,6 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
-  // console.log(items,"<<<<<<<")
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
