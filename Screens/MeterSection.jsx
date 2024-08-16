@@ -69,7 +69,6 @@ const MeterSection = ({ navigation }) => {
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
   const [completedNotes, setCompletedNotes] = useState("");
-
   const [noteLoading, setnoteLoading] = useState(false);
 
   const toast = useToast();
@@ -290,6 +289,7 @@ const MeterSection = ({ navigation }) => {
     };
     try {
       const res = await appApi.metersection(data);
+      console.log(res,"<<<<<response")
       if (res?.status) {
         setname(res?.data?.name);
         setid(res?.data?.id);
@@ -310,18 +310,14 @@ const MeterSection = ({ navigation }) => {
     }
   };
 
-  function convertDateToDDMMYY(dateString) {
-    const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) {
-      return "";
+  function convertDateToDDMMYY(date) {
+    if(date === ""){
+      return;
     }
-
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
-    const year = String(date.getFullYear()).slice(-2); 
-    return `${day}/${month}/${year}`;
+    const [year, month, day] = date.split('-');
+    return `${day}-${month}-${year.slice(-2)}`;
   }
+
   useFocusEffect(
     React.useCallback(() => {
       fetchData();

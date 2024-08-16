@@ -73,6 +73,7 @@ function Dashboard({ navigation }) {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
       date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`,
     };
+    // console.log(params,"<<<<<<<<<<")
     appApi
       .dashboard(params)
       .then((res) => {
