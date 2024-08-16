@@ -81,19 +81,32 @@ function MeterReadingScanner({ navigation }) {
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const [isRescan, setIsRescan] = useState(false);
 
+  const meReasonsDemo = ["Invalid Result", "Failed Scan", "Invisible","New Meter"];
+
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
 
-  function convertDateToDDMMYY(date) {
-    if(date === ""){
-      return;
+  function convertDateToDDMMYY(dateString) {
+    // Use a regular expression to check if the dateString is in the format 'YYYY-MM-DD'
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateString)) {
+        return ""; // Return empty string if the format is invalid
     }
-    const [year, month, day] = date.split('-');
-    return `${day}-${month}-${year.slice(-2)}`;
-  }
+
+    const date = new Date(dateString);
+    // Check if the date is valid
+    if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
+        return ""; // Return empty string if the date is invalid
+    }
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = String(date.getFullYear()).slice(-2); 
+    return `${day}/${month}/${year}`;
+}
 
   function getSubstring(data, count) {
     if (count > data?.length) {
@@ -150,7 +163,6 @@ function MeterReadingScanner({ navigation }) {
       setDataId(null);
       setSelectedReading(null);
       setMeReasons([]);
-      setSelectedReading(null);
       setNotes(completed_note || "");
       setCapturedImage(null);
       setValue(meterReading || "");
@@ -654,7 +666,7 @@ function MeterReadingScanner({ navigation }) {
                 {selectedReading || "Select meter reading"}
               </Text>
             </TouchableOpacity>
-            {isDropdownVisible && (
+            {isDropdownVisible ? (
               <View style={styles.dropdownContainer}>
                 <ScrollView
                   nestedScrollEnabled={true}
@@ -668,6 +680,25 @@ function MeterReadingScanner({ navigation }) {
                         key={index}
                       >
                         <Text style={styles.input}>{item.reason}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            ) : (
+              <View style={styles.dropdownContainer}>
+                <ScrollView
+                  nestedScrollEnabled={true}
+                  style={{ maxHeight: 150 }}
+                >
+                  {meReasonsDemo.map((item, index) => {
+                    return (
+                      <TouchableOpacity
+                        style={styles.dropdownOption}
+                        onPress={() => handleSelectionOptionMeter(item)}
+                        key={index}
+                      >
+                        <Text style={styles.input}>{item}</Text>
                       </TouchableOpacity>
                     );
                   })}

@@ -262,13 +262,20 @@ export default function DashboardCompletedCards({
     },
   });
 
-  function convertDateToDDMMYY(date) {
-    if(date === ""){
-      return;
+  function convertDateToDDMMYY(dateString) {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateString)) {
+        return ""; 
     }
-    const [year, month, day] = date.split('-');
-    return `${day}-${month}-${year.slice(-2)}`;
-  }
+    const date = new Date(dateString);
+    if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
+        return "";
+    }
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = String(date.getFullYear()).slice(-2); 
+    return `${day}/${month}/${year}`;
+}
 
   function convertToDuration(seconds) {
     const hours = Math.floor(seconds / 3600);
