@@ -387,7 +387,6 @@ function MeterReadingScanner({ navigation }) {
         contentContainerStyle={{ marginBottom: 50 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* heading title */}
         <View style={{ paddingHorizontal: 4 }}>
           <View style={styles.heading}>
             <Text style={styles.headingText}>

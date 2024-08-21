@@ -188,7 +188,6 @@ const MeterSection = ({ navigation }) => {
   };
 
   const ImageUpload = async (result) => {
-    // toast.show("Working on it...", { type: "sucess" });
     setnoteLoading(true);
     const newtry = getFileData(result);
     const postData = {
@@ -206,7 +205,6 @@ const MeterSection = ({ navigation }) => {
       setnoteLoading(false);
       toast.show("Unexpected Error Occur", { type: "sucess" });
     } finally {
-      // fetchData();
       setnoteLoading(false);
     }
   };
@@ -233,12 +231,10 @@ const MeterSection = ({ navigation }) => {
         result.assets.length > 0 &&
         result.assets[0].uri
       ) {
-        // File picked
         ImageUpload(result);
         setUserSelectedImage(result.assets[0].uri);
         toast.show("Uploading", { type: "sucess" });
       } else if (result.canceled) {
-        // File picking cancelled
       } else {
         setErrorMessageUploadImage("File picking failed");
       }
@@ -265,15 +261,14 @@ const MeterSection = ({ navigation }) => {
       });
 
       if (imageResult.assets && imageResult.assets[0].uri !== null) {
-        // Compress the image
         const compressedImage = await ImageManipulator.manipulateAsync(
           imageResult.assets[0].uri,
-          [{ resize: { width: 800 } }], // resize to a width of 800 pixels, maintain aspect ratio
-          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // compress to 70% quality
+          [{ resize: { width: 800 } }],
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
         );
 
         setModalVisibleUploadImage(false);
-        ImageUpload(compressedImage); // Use compressed image for upload
+        ImageUpload(compressedImage);
         setUserSelectedImage(compressedImage.uri);
       }
     } catch (error) {
@@ -289,7 +284,6 @@ const MeterSection = ({ navigation }) => {
     };
     try {
       const res = await appApi.metersection(data);
-      console.log(res,"<<<<<response")
       if (res?.status) {
         setname(res?.data?.name);
         setid(res?.data?.id);
@@ -311,16 +305,14 @@ const MeterSection = ({ navigation }) => {
   };
 
   function convertDateToDDMMYY(dateString) {
-    // Use a regular expression to check if the dateString is in the format 'YYYY-MM-DD'
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return ""; // Return empty string if the format is invalid
+        return "";
     }
 
     const date = new Date(dateString);
-    // Check if the date is valid
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return ""; // Return empty string if the date is invalid
+        return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
@@ -373,7 +365,6 @@ const MeterSection = ({ navigation }) => {
       setIsPendingDropdown(false);
       setCompleteImage(null);
       setCompletedUnit({});
-      // fetchData(); //maybe removed
     }, [])
   );
 
@@ -455,7 +446,6 @@ const MeterSection = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
-        {/* Dropdown of meter */}
         {isPendingDropdown && (
           <View style={styles.dropdownContainer}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 150 }}>
@@ -510,11 +500,7 @@ const MeterSection = ({ navigation }) => {
               >
                 <View style={{ width: "100%" }}>
                   <View
-                    style={{
-                      width: "90%",
-                      alignItems: "flex-end",
-                      alignSelf: "center",
-                    }}
+                    style={styles.cross}
                   >
                     <TouchableOpacity onPress={toggleModalVisibilityImage}>
                       <Entypo name="cross" size={24} color={color} />
@@ -532,28 +518,14 @@ const MeterSection = ({ navigation }) => {
                     />
                   ) : (
                     <View
-                      style={{
-                        height: 220,
-                        width: "100%",
-                        justifyContent: "space-evenly",
-                      }}
+                      style={styles.upload}
                     >
                       <Text style={styles.headingText}> Upload Image</Text>
                       <View
-                        style={{
-                          width: "100%",
-                          alignItems: "center",
-                          marginTop: 15,
-                        }}
+                        style={styles.uploadView}
                       >
                         <TouchableOpacity
-                          style={{
-                            width: 102,
-                            height: 32,
-                            backgroundColor: "#FF8902",
-                            borderRadius: 8,
-                            justifyContent: "center",
-                          }}
+                          style={styles.uploadBtn}
                           onPress={toggleChangeImage}
                         >
                           <Text style={styles.closeButton}>Upload Image</Text>
@@ -564,20 +536,10 @@ const MeterSection = ({ navigation }) => {
                 </View>
                 {isImage && (
                   <View
-                    style={{
-                      width: "90%",
-                      alignItems: "flex-end",
-                      marginTop: 15,
-                    }}
+                    style={styles.changeBox}
                   >
                     <TouchableOpacity
-                      style={{
-                        width: 102,
-                        height: 32,
-                        backgroundColor: "#FF8902",
-                        borderRadius: 8,
-                        justifyContent: "center",
-                      }}
+                      style={styles.changeBtn}
                       onPress={toggleChangeImage}
                     >
                       <Text style={styles.closeButton}>Change Image</Text>
@@ -653,11 +615,7 @@ const MeterSection = ({ navigation }) => {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.selectheading}>Make :</Text>
               <Text
-                style={{
-                  color: "rgba(152, 152, 152, 1)",
-                  fontWeight: "400",
-                  fontSize: 18,
-                }}
+                style={styles.meterMake}
               >
                 {meterMake?.make}
               </Text>
@@ -679,7 +637,7 @@ const MeterSection = ({ navigation }) => {
         <View style={styles.fields_main}>
           {inputValuePending && (
             <View
-              style={{ flexDirection: "row", gap: 2, alignItems: "center" }}
+              style={styles.meternotes}
             >
               <Text style={[styles.selectheading, { fontSize: 20 }]}>
                 Meter Notes :
@@ -759,24 +717,13 @@ const MeterSection = ({ navigation }) => {
         {/* Dropdown of meter reading */}
 
         <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            marginVertical: 15,
-          }}
+          style={styles.viewBox}
         >
           {completeImage !== null ? (
             <TouchableOpacity
-              style={{
-                backgroundColor: "#197AB6",
-                paddingVertical: 6,
-                borderRadius: 15,
-                paddingHorizontal: 16,
-              }}
+              style={styles.viewImage}
               onPress={() => {
                 setCompleteModal(true);
-                // setCompleteLoading(true); // Add this line
-                // completedImage(); // Call this function to load the image
               }}
             >
               <Text style={{ color: "white", fontWeight: 700 }}>
@@ -792,7 +739,6 @@ const MeterSection = ({ navigation }) => {
               backgroundColor: pendingMeterCount === 0 ? "#2F8A16" : "#197AB6",
               paddingVertical: 6,
               borderRadius: 15,
-              // width: 160,
               alignSelf: "flex-end",
               paddingHorizontal: 16,
             }}
@@ -813,19 +759,11 @@ const MeterSection = ({ navigation }) => {
               <ActivityIndicator size={"small"} color={"#197AB6"} />
             ) : (
               <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
+                style={styles.completedView}
               >
                 <View style={{ alignItems: "center", gap: 10 }}>
                   <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "500",
-                      color: "#197AB6",
-                    }}
+                    style={styles.completed}
                   >
                     {completedUnit.reading} {completedUnit.readingType}
                     {"  "}
@@ -864,13 +802,7 @@ const MeterSection = ({ navigation }) => {
         ) : null}
 
         <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            paddingLeft: 10,
-            paddingRight: 35,
-          }}
+          style={styles.info}
         >
           <TouchableOpacity onPress={toggleModalVisibilityInformation}>
             <Image
@@ -882,14 +814,7 @@ const MeterSection = ({ navigation }) => {
             />
           </TouchableOpacity>
           <View
-            style={{
-              marginVertical: 15,
-              flexDirection: "row",
-              gap: 80,
-              alignItems: "center",
-              width: "94%",
-              justifyContent: "center",
-            }}
+            style={styles.pendingView}
           >
             <TouchableOpacity
               disabled={inputValuePending ? false : true}
@@ -993,9 +918,7 @@ const MeterSection = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-
         {noteLoading && <LoaderComponent loading={noteLoading} />}
-        {/* <CropImage/> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -1043,12 +966,11 @@ const styles = StyleSheet.create({
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
-    // Adding shadow properties
     shadowColor: "#2198C9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 2,
-    elevation: 7, // For Android shadow
+    elevation: 7,
     borderRadius: 10,
   },
   headingText: {
@@ -1060,6 +982,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 12,
   },
+  upload:{
+    height: 220,
+    width: "100%",
+    justifyContent: "space-evenly",
+  },
   selectBox: {
     marginVertical: 10,
   },
@@ -1067,9 +994,14 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontWeight: "700",
     fontSize: 18,
-    // lineHeight: 21.09,
     color: "#0B9ED2",
   },
+  meterMake:{
+    color: "rgba(152, 152, 152, 1)",
+    fontWeight: "400",
+    fontSize: 18,
+  },
+  meternotes:{ flexDirection: "row", gap: 2, alignItems: "center" },
   select: {
     borderWidth: 1,
     borderColor: "#2198C9",
@@ -1088,7 +1020,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#989898",
   },
-  //new style
   fields_main: {
     marginTop: 17,
   },
@@ -1107,6 +1038,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     zIndex: 1,
   },
+  completed:{
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#197AB6",
+  },
+  completedView:{
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  viewImage:{
+    backgroundColor: "#197AB6",
+    paddingVertical: 6,
+    borderRadius: 15,
+    paddingHorizontal: 16,
+  },
+  viewBox:{
+    justifyContent: "space-between",
+    flexDirection: "row",
+    marginVertical: 15,
+  },
   input_box: {
     flexDirection: "row",
     alignItems: "center",
@@ -1117,7 +1069,6 @@ const styles = StyleSheet.create({
     borderColor: "#2198C9",
     marginTop: 18,
   },
-
   arrowdown: {
     position: "absolute",
     right: 22,
@@ -1139,7 +1090,7 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -1170,29 +1121,58 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     fontSize: 12,
-
     color: "#FFFFFF",
     fontWeight: "500",
     lineHeight: 16,
     alignSelf: "center",
+  },
+  changeBtn:{
+    width: 102,
+    height: 32,
+    backgroundColor: "#FF8902",
+    borderRadius: 8,
+    justifyContent: "center",
+  },
+  uploadBtn:{
+    width: 102,
+    height: 32,
+    backgroundColor: "#FF8902",
+    borderRadius: 8,
+    justifyContent: "center",
+  },
+  uploadView:{
+    width: "100%",
+    alignItems: "center",
+    marginTop: 15,
   },
   modalKeyText: {
     color: "#2198C9",
     fontWeight: "500",
     fontSize: 16,
   },
+  changeBox:{
+    width: "90%",
+    alignItems: "flex-end",
+    marginTop: 15,
+  },
   modalValueText: {
     color: "#989898",
     fontWeight: "400",
     fontSize: 16,
   },
-
-  //down modal css for camera gallery
   modalContainerCG: {
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  pendingView:{
+    marginVertical: 15,
+    flexDirection: "row",
+    gap: 80,
+    alignItems: "center",
+    width: "94%",
+    justifyContent: "center",
   },
   modalContent: {
     backgroundColor: "#fff",
@@ -1206,15 +1186,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#2198C9",
   },
+  info:{
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 35,
+  },
   modalOptionText: {
     fontSize: 18,
     textAlign: "center",
   },
-
-  // loader
   loader: {
     height: "100%",
-    // width: Dimensions.get("window").width * 0.7,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(242, 242, 242, 1)",
@@ -1244,6 +1228,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitNotesText: { color: "#fff", fontWeight: "bold" },
+  cross:{
+    width: "90%",
+    alignItems: "flex-end",
+    alignSelf: "center",
+  }
 });
-
-//

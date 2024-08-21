@@ -1,6 +1,6 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
-import { View, StyleSheet, Text, ImageBackground, Image } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import React from "react";
+import { View, StyleSheet, Text, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SubmitButton from "../Components/SubmitButton";
@@ -81,6 +81,31 @@ export default function OcrCaptured({ navigation }) {
       textAlign: "center",
       marginVertical: 12,
     },
+    rightIcon:{
+      height: "auto",
+      alignItems: "center",
+      width: "90%",
+      alignSelf: "center",
+      gap: 40,
+    },
+    capturedtext:{
+      color: "rgba(152, 152, 152, 1)",
+      fontSize: 24,
+      lineHeight: 28,
+      fontWeight: 500,
+    },
+    meter:{
+      fontWeight: "600",
+      fontSize: 24,
+      lineHeight: 28,
+      color: "rgba(11, 158, 210, 1)",
+    },
+    metername:{
+      fontWeight: "500",
+      fontSize: 24,
+      lineHeight: 28,
+      color: "rgba(152, 152, 152, 1)",
+    }
   });
 
   return (
@@ -111,46 +136,25 @@ export default function OcrCaptured({ navigation }) {
             </View>
           </View>
           <View
-            style={{
-              height: "auto",
-              alignItems: "center",
-              width: "90%",
-              alignSelf: "center",
-              gap: 40,
-            }}
+            style={styles.rightIcon}
           >
             <Image
               source={require("../assets/right_icon (1).png")}
               style={{ height: 80, width: 80 }}
             ></Image>
             <Text
-              style={{
-                color: "rgba(152, 152, 152, 1)",
-                fontSize: 24,
-                lineHeight: 28,
-                fontWeight: 500,
-              }}
+              style={styles.capturedtext}
             >
               {otp} {value === "me" ? "ME" : "OCR"} Captured
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Text
-                style={{
-                  fontWeight: "600",
-                  fontSize: 24,
-                  lineHeight: 28,
-                  color: "rgba(11, 158, 210, 1)",
-                }}
+                style={styles.meter}
               >
                 Meter :
               </Text>
               <Text
-                style={{
-                  fontWeight: "500",
-                  fontSize: 24,
-                  lineHeight: 28,
-                  color: "rgba(152, 152, 152, 1)",
-                }}
+                style={styles.metername}
               >
                 {" "}
                 {meterName}
