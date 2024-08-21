@@ -90,16 +90,13 @@ function MeterReadingScanner({ navigation }) {
   });
 
   function convertDateToDDMMYY(dateString) {
-    // Use a regular expression to check if the dateString is in the format 'YYYY-MM-DD'
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return ""; // Return empty string if the format is invalid
+        return "";
     }
-
     const date = new Date(dateString);
-    // Check if the date is valid
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return ""; // Return empty string if the date is invalid
+        return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
@@ -179,7 +176,7 @@ function MeterReadingScanner({ navigation }) {
 
   const onPinchEvent = (event) => {
     const newZoom = Math.min(
-      Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
+      Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
       1
     );
     setZoom(newZoom);
@@ -187,7 +184,7 @@ function MeterReadingScanner({ navigation }) {
   const onPinchStateChange = (event) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       const newZoom = Math.min(
-        Math.max(zoom + (event.nativeEvent.scale - 1) / 20, 0),
+        Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
         1
       );
       setZoom(newZoom);
@@ -243,7 +240,7 @@ function MeterReadingScanner({ navigation }) {
         const resizedImage = await ImageManipulator.manipulateAsync(
           photo.uri,
           [{ resize: { width: 800 } }],
-          { compress: 0.6, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
         const fileData = getFileData(resizedImage);
         await verifyNumber(fileData);
@@ -871,6 +868,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     borderColor: colorCodes.otpbox,
     color: colorCodes.otp,
+    height:"100%"
   },
   message: {
     fontSize: 16,

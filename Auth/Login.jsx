@@ -16,6 +16,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   ScrollView,
+  Platform,
 } from "react-native";
 import appApi from "../Helper/Api";
 import CheckBox from "react-native-check-box";
@@ -37,8 +38,6 @@ function Login({ navigation }) {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  console.log(latitude, longitude, "????????????????????");
-
   const requestLocationPermission = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -57,7 +56,7 @@ function Login({ navigation }) {
         );
       }
     } catch (err) {
-      console.warn(err, "::::::::::::");
+      console.warn(err);
       setLocationPermission(false);
     }
   };
@@ -164,7 +163,6 @@ function Login({ navigation }) {
               await AsyncStorage.removeItem("email");
               await AsyncStorage.removeItem("password");
             }
-            // navigation.navigate("Dashboard");
           } else {
             toast.show(res?.message, { type: "warning" });
           }
@@ -189,7 +187,7 @@ function Login({ navigation }) {
     setChecked(!checked);
   };
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={{}}>
         <View style={styles.container}>
           <ImageBackground
