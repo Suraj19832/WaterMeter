@@ -54,20 +54,16 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     date,
   } = route.params ?? {};
-  console.log(
-    billingId,
-    date,
-    id,
-    meterName,
-    completed_dataId,
-    "KKKKKKKKKKKKK"
-  );
+  // console.log(completed_dataId, "KKKKKKKKKKKKK");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [dataId, setDataId] = useState(null);
+  const [dataId, setDataId] = useState(
+    completed_dataId ? completed_dataId : null
+  );
+  // console.log(dataId, "<<<<<<<<state");
   const [notes, setNotes] = useState(completed_note ? completed_note : "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
@@ -160,16 +156,19 @@ function MeterReadingScanner({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      if (!completed_dataId) {
+        setDataId(null);
+      }
       setMeterValue(null);
       setModalInfo(false);
       setSubmitLoading(false);
-      setDataId(null);
       setSelectedReading(null);
       setMeReasons([]);
       setNotes(completed_note || "");
       setCapturedImage(null);
       setValue(meterReading || "");
-    }, [totalDigit, completed_note, CELL_COUNT, meterReading])
+      setIsCameraOpen(false);
+    }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
 
   const scanAnimation = useRef(new Animated.Value(1)).current;
@@ -180,13 +179,29 @@ function MeterReadingScanner({ navigation }) {
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef(null);
 
+  // const onPinchEvent = (event) => {
+  //   const newZoom = Math.min(
+  //     Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
+  //     1
+  //   );
+  //   setZoom(newZoom);
+  // };
+
   const onPinchEvent = (event) => {
-    const newZoom = Math.min(
-      Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
-      1
-    );
-    setZoom(newZoom);
+    const scale = event.nativeEvent.scale;
+    setTimeout(() => {
+      const newZoom = Math.min(
+        Math.max(
+          zoom +
+            (scale - 1) / (Platform.OS === "ios" ? 20 : 14),
+          0
+        ),
+        0.8
+      );
+      setZoom(newZoom);
+    }, 50);
   };
+
   const onPinchStateChange = (event) => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
       const newZoom = Math.min(
@@ -269,7 +284,12 @@ function MeterReadingScanner({ navigation }) {
     }
   };
 
+
   const handleSubmit = () => {
+    if (dataId === null) {
+      toast.show("please scan first");
+      return;
+    }
     if (meterValue !== value || meterValue === null) {
       setReadingMismatchModalVisible(true);
       return;
@@ -278,7 +298,7 @@ function MeterReadingScanner({ navigation }) {
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: completed_dataId ? completed_dataId : dataId,
+      data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
@@ -286,11 +306,11 @@ function MeterReadingScanner({ navigation }) {
       property_billing_cycle_id: billingId,
       date: date,
     };
-    console.log(data, "handlesubmit params");
+    console.log(data, "without excuse submit");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, "handlesubmit");
+        // console.log(res, "handlesubmit");
         if (res?.status) {
           toast.show("Sucessfully Submitted", {
             type: "sucess",
@@ -307,17 +327,22 @@ function MeterReadingScanner({ navigation }) {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         toast.show("something went wrong", { type: "error" });
       });
   };
 
   const handleManualReadingSubmit = () => {
+    if (dataId === null) {
+      toast.show("please scan first1");
+      return;
+    }
+    console.log(dataId);
     setManulLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: completed_dataId ? completed_dataId : dataId,
+      data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
@@ -326,11 +351,11 @@ function MeterReadingScanner({ navigation }) {
       property_billing_cycle_id: billingId,
       date: date,
     };
-    console.log(data, "handlemanual paramas");
+    console.log(data, "with excuse submission");
     appApi
       .submitReading(data)
       .then((res) => {
-        console.log(res, "handle manual submit response");
+        // console.log(res, "handle manual submit response");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -349,7 +374,6 @@ function MeterReadingScanner({ navigation }) {
         }
       })
       .catch((err) => {
-        console.log(err);
         toast.show("something went wrong", { type: "error" });
         setManulLoading(false);
         setReadingMismatchModalVisible(false);

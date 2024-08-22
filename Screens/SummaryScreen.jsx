@@ -55,7 +55,6 @@ export default function SummaryScreen({ navigation }) {
         setImageLoading(false);
       })
       .catch((err) => {
-        console.log(err, "error from complete");
         setLoading(false);
         setImageLoading(false);
       });
@@ -82,7 +81,6 @@ export default function SummaryScreen({ navigation }) {
           setDropdownData(res?.data?.completedMeters);
         })
         .catch((err) => {
-          console.log(err);
           setResfreshing(false);
         });
       setCompletedUnit({});

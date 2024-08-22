@@ -102,7 +102,6 @@ function DashboardScheduledCards({
 
     checkImageURL(items?.image);
   }, [items?.image, modalVisible]);
-console.log(convertDateToDDMMYY(items?.reading_date?.last))
   return (
     <View style={styles.propertyCards}>
       <View style={styles.cardContentTop}>

@@ -22,20 +22,17 @@ function EditProfile({ navigation }) {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [firstname, setfirstname] = useState();
-  console.log(authToken, "redux setup");
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const fetchData = async () => {
     try {
-      const res = await appApi.profile();
-      console.log(res);
+      const res = await appApi.profile();;
       if (res?.status) {
         setEmail(res?.data?.email);
         setfirstname(res?.data?.name);
       }
     } catch (err) {
-      console.log(err);
       showToast("Login again");
       async function handleLoginPress() {
         // showToast("Login again");
@@ -92,12 +89,9 @@ function EditProfile({ navigation }) {
         showToast("Login Agian");
       }
     } catch (error) {
-      console.log(error);
       setloading(false);
       showToast("Login again");
     } finally {
-      console.log("api call complete");
-      // setloading(false)
       setloading(false);
     }
   };

@@ -102,14 +102,12 @@ function VerifyOTP({ navigation }) {
   };
   const handleOTPVarification = () => {
     setloading(true);
-    console.log("object");
     const otpINT = otp.join("");
     const data = {
       email: email,
       otp: otpINT,
     };
     appApi.VerifyOTP(data).then((res) => {
-      // console.log(res.status)
       if (res?.status) {
         showToast(res?.message);
         setloading(false);
@@ -119,23 +117,18 @@ function VerifyOTP({ navigation }) {
         setloading(false);
       }
     });
-    // console.log( parseInt(otpINT, 10))
   };
   const handleResendOTP = () => {
     setloading(true);
-    // console.log("hh")
     const data = {
       email: email,
     };
 
     appApi.verifyEmail(data).then((res) => {
-      // console.log(res?.status)
       if (res?.status) {
         showToast(res?.message);
         setTime(res?.resendInSec);
         setloading(false);
-        //  console.log(res?.resendInSec)
-        //  console.log()
       }
     });
   };

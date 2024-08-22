@@ -67,7 +67,6 @@ function ChangePassword({ navigation }) {
           }
         })
         .catch((err) => {
-          console.log(err, "error form chnge password");
           DoLogout()
           setIsLoading(false);
           setDisabledBtn(false);
@@ -91,11 +90,6 @@ function ChangePassword({ navigation }) {
     }
   }, [currentPassword, newPassword, confirmPassword]);
 
-  
-
- 
-
-  console.log("+++++++++++++++++++++++++", currentPassword);
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}

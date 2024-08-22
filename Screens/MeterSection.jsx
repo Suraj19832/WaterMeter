@@ -352,6 +352,7 @@ const MeterSection = ({ navigation }) => {
       })
       .catch((err) => {
         console.log(err, "error from complete");
+        toast.show("please try again!!")
         setCompleteLoading(false);
         setCompleteDetailsLoading(false);
       });

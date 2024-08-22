@@ -20,7 +20,6 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
-  console.log(items,">>>>>>>>>completed")
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,

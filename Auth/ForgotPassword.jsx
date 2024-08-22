@@ -22,11 +22,9 @@ import appApi from "../Helper/Api";
 import InputField from "../Components/InputField";
 
 function ForgotPassword({ navigation }) {
-  //   const [checked, setChecked] = useState(true);
   const route = useRoute();
   const { email, otp } = route.params;
   const [loading, setloading] = useState(false);
-  // console.log(email ,otp,"iouioouiouiouo")
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isNewPassword, setIsNewPassword] = useState("");

@@ -46,7 +46,6 @@ function Login({ navigation }) {
         const { latitude, longitude } = location.coords;
         setLatitude(latitude);
         setLongitude(longitude);
-        console.log(latitude, longitude, "<<<<<<<<<<<<");
         setLocationPermission(true);
       } else {
         setLocationPermission(false);
@@ -69,14 +68,13 @@ function Login({ navigation }) {
       lat: latitude,
       lng: longitude,
     };
-    console.log("checking");
     appApi
       .saveLocationApi(data)
       .then((res) => {
-        console.log(res, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<response");
+        console.log(res)
       })
       .catch((err) => {
-        console.log(err, "<<<<<<<<<<<<<<<<<<<<<error");
+        console.log(err)
       });
   };
 
@@ -91,7 +89,6 @@ function Login({ navigation }) {
           setChecked(true);
         }
       } catch (error) {
-        console.log(error);
       }
     };
 
@@ -100,30 +97,30 @@ function Login({ navigation }) {
 
   const errors = {};
 
-const validation = () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const trimmedEmail = email.trim();
-  const trimmedPassword = password.trim();
+  const validation = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
 
-  if (!trimmedEmail) {
-    errors.email = "Email id is required";
-  } else if (!emailRegex.test(trimmedEmail)) {
-    errors.email = "Incorrect email format";
-  }
+    if (!trimmedEmail) {
+      errors.email = "Email id is required";
+    } else if (!emailRegex.test(trimmedEmail)) {
+      errors.email = "Incorrect email format";
+    }
 
-  if (!trimmedPassword) {
-    errors.password = "Password is required";
-  } else if (trimmedPassword.length <= 4) {
-    errors.password = "Password should be more than 4 characters";
-  }
+    if (!trimmedPassword) {
+      errors.password = "Password is required";
+    } else if (trimmedPassword.length <= 4) {
+      errors.password = "Password should be more than 4 characters";
+    }
 
-  setValidationError(errors);
+    setValidationError(errors);
 
-  if (Object.keys(errors).length > 0) {
-    return false;
-  }
-  return true;
-};
+    if (Object.keys(errors).length > 0) {
+      return false;
+    }
+    return true;
+  };
 
   const handleLogin = async () => {
     if (locationPermission === false) {
@@ -144,7 +141,6 @@ const validation = () => {
         .then(async (res) => {
           setIsLoading(false);
           setDisabledBtn(false);
-          console.log(res?.status, "status ");
           if (res?.status) {
             toast.show(res?.message, { type: "sucess" });
             await AsyncStorage.setItem("token", res?.authorization?.token);
@@ -162,7 +158,6 @@ const validation = () => {
           }
         })
         .catch((err) => {
-          console.log(err, "error from api");
           toast.show(err.message, { type: "warning" });
           setIsLoading(false);
           setDisabledBtn(false);
