@@ -92,7 +92,7 @@ export default function OcrCaptured({ navigation }) {
       color: "rgba(152, 152, 152, 1)",
       fontSize: 24,
       lineHeight: 28,
-      fontWeight: 500,
+      fontWeight: "500",
     },
     meter:{
       fontWeight: "600",

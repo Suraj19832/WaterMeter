@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Animated,
   Button,
+  Dimensions,
 } from "react-native";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -81,7 +82,12 @@ function MeterReadingScanner({ navigation }) {
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const [isRescan, setIsRescan] = useState(false);
 
-  const meReasonsDemo = ["Invalid Result", "Failed Scan", "Invisible","New Meter"];
+  const meReasonsDemo = [
+    "Invalid Result",
+    "Failed Scan",
+    "Invisible",
+    "New Meter",
+  ];
 
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -92,18 +98,18 @@ function MeterReadingScanner({ navigation }) {
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return "";
+      return "";
     }
     const date = new Date(dateString);
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return "";
+      return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
-    const year = String(date.getFullYear()).slice(-2); 
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
-}
+  }
 
   function getSubstring(data, count) {
     if (count > data?.length) {
@@ -302,7 +308,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
-        toast.show("something went wrong",{type:"error"})
+        toast.show("something went wrong", { type: "error" });
       });
   };
 
@@ -344,7 +350,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
-        toast.show("something went wrong",{type:"error"})
+        toast.show("something went wrong", { type: "error" });
         setManulLoading(false);
         setReadingMismatchModalVisible(false);
       });
@@ -542,7 +548,7 @@ function MeterReadingScanner({ navigation }) {
               <Text
                 style={{
                   color: "#fff",
-                  fontWeight: 700,
+                  fontWeight: "700",
                   fontSize: 16,
                   textAlign: "center",
                 }}
@@ -568,19 +574,19 @@ function MeterReadingScanner({ navigation }) {
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
                     Last Reading :
                   </Text>{" "}
                   {convertDateToDDMMYY(lastReading)}
                 </Text>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
                     Last Reading Date :
                   </Text>{" "}
                   {convertDateToDDMMYY(lastReadingDate)}
                 </Text>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: 600 }}>
+                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
                     Avg Usage :
                   </Text>{" "}
                   {avgUsage}
@@ -727,7 +733,6 @@ function MeterReadingScanner({ navigation }) {
   );
 }
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 20 },
   codeFieldRoot: { marginTop: 2 },
   cell: {
     width: 40,
@@ -807,7 +812,7 @@ const styles = StyleSheet.create({
   },
   modalHeading: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: 16,
     alignSelf: "flex-start",
   },
@@ -857,17 +862,16 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   otpBox: {
-    paddingVertical: 4,
-    width: "16%",
+    height: Dimensions.get("window").height * 0.06,
+    width: Dimensions.get("window").width * 0.13,
     borderWidth: 1,
     borderRadius: 10,
-    paddingLeft: 14,
-    paddingHorizontal: 8,
     fontWeight: "700",
     fontSize: 30,
     borderColor: colorCodes.otpbox,
     color: colorCodes.otp,
-    height:"100%"
+    textAlign: "center",
+    paddingTop: 4,
   },
   message: {
     fontSize: 16,
@@ -903,7 +907,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 12,
   },
-  shutterIcon:{
+  shutterIcon: {
     position: "absolute",
     bottom: 20,
     right: 20,
@@ -948,7 +952,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: 10,
   },
   notesInput: {
@@ -972,7 +976,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "600",
   },
 });
 export default MeterReadingScanner;

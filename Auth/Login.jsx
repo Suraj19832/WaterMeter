@@ -23,7 +23,7 @@ import CheckBox from "react-native-check-box";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { colorCodes } from "../ColorCodes/Colors";
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from "@expo/vector-icons";
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +34,7 @@ function Login({ navigation }) {
   const [locationPermission, setLocationPermission] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const toast = useToast();
 
@@ -99,36 +99,31 @@ function Login({ navigation }) {
   }, []);
 
   const errors = {};
-  const validation = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email == null) {
-      errors.email = "email id is required";
-    }
-    if (email == "") {
-      errors.email = "email id is required";
-    }
-    if (!emailRegex.test(email)) {
-      errors.email = "incorrect email format";
-    }
-    if (password == null) {
-      errors.password = "password is required";
-    }
-    if (password == "") {
-      errors.password = "password is required";
-    }
-    if (password !== "") {
-      if (password.length < 7) {
-        errors.password = "password should be more than 6";
-      }
-    }
-    setValidationError({});
 
-    if (Object.keys(errors).length > 0) {
-      setValidationError(errors);
-      return false;
-    }
-    return true;
-  };
+const validation = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+
+  if (!trimmedEmail) {
+    errors.email = "Email id is required";
+  } else if (!emailRegex.test(trimmedEmail)) {
+    errors.email = "Incorrect email format";
+  }
+
+  if (!trimmedPassword) {
+    errors.password = "Password is required";
+  } else if (trimmedPassword.length <= 4) {
+    errors.password = "Password should be more than 4 characters";
+  }
+
+  setValidationError(errors);
+
+  if (Object.keys(errors).length > 0) {
+    return false;
+  }
+  return true;
+};
 
   const handleLogin = async () => {
     if (locationPermission === false) {
@@ -149,9 +144,8 @@ function Login({ navigation }) {
         .then(async (res) => {
           setIsLoading(false);
           setDisabledBtn(false);
-          console.log(res?.status ,"status ")
+          console.log(res?.status, "status ");
           if (res?.status) {
-            
             toast.show(res?.message, { type: "sucess" });
             await AsyncStorage.setItem("token", res?.authorization?.token);
             dispatch(setAuthToken(res?.authorization?.token));
@@ -171,12 +165,15 @@ function Login({ navigation }) {
           console.log(err, "error from api");
           toast.show(err.message, { type: "warning" });
           setIsLoading(false);
+          setDisabledBtn(false);
         });
     }
   };
 
   useEffect(() => {
-    if (email && password) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    if (trimmedEmail && trimmedPassword.length > 5) {
       setDisabledBtn(false);
     } else {
       setDisabledBtn(true);
@@ -187,7 +184,9 @@ function Login({ navigation }) {
     setChecked(!checked);
   };
   return (
-    <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView contentContainerStyle={{}}>
         <View style={styles.container}>
           <ImageBackground
@@ -208,13 +207,9 @@ function Login({ navigation }) {
             </View>
 
             <View style={{ marginTop: 20 }}>
-              <TouchableOpacity
-                onPress={() => {
-                  toast.show("hello", { type: "warning" });
-                }}
-              >
+              <View>
                 <Text style={styles.heading}>Login</Text>
-              </TouchableOpacity>
+              </View>
               <View>
                 <TextInput
                   value={email}
@@ -238,40 +233,22 @@ function Login({ navigation }) {
                   style={styles.password}
                   secureTextEntry={!showPassword}
                 />
-                  <TouchableOpacity
-        style={{paddingRight:20}}
-        onPress={() => setShowPassword(!showPassword)}
-      >
-        <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={16} color="rgba(101, 98, 99, 1)" />
-      </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ paddingRight: 20 }}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye" : "eye-off"}
+                    size={16}
+                    color="rgba(101, 98, 99, 1)"
+                  />
+                </TouchableOpacity>
                 {validationError.password && (
                   <Text style={{ color: "red", fontWeight: "500", left: 45 }}>
                     {validationError.password}
                   </Text>
                 )}
               </View>
-
-{/* <View>
-      <TextInput
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholder="Password"
-        placeholderTextColor={colorCodes.placeholder}
-        style={styles.password}
-        secureTextEntry={!showPassword} // Toggle secureTextEntry based on showPassword state
-      />
-      <TouchableOpacity
-        style={{ position: 'absolute', right: 10, top: 12 }}
-        onPress={() => setShowPassword(!showPassword)}
-      >
-        <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="black" />
-      </TouchableOpacity>
-      {validationError.password && (
-        <Text style={{ color: 'red', fontWeight: '500', left: 45 }}>
-          {validationError.password}
-        </Text>
-      )}
-    </View> */}
 
               <View style={styles.RememberPassword}>
                 <View style={styles.rememberMain}>
@@ -318,7 +295,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    height:Dimensions.get("window").height * 1,
+    height: Dimensions.get("window").height * 1,
   },
   content: {
     position: "relative",
@@ -355,7 +332,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: colorCodes.placeholderFill,
   },
-  viewpass:{
+  viewpass: {
     height: 60,
     width: "85%",
     borderWidth: 1,
@@ -363,17 +340,16 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderColor: colorCodes.borderColor,
     marginTop: "4%",
-    justifyContent:'space-between',
-    alignItems:'center',
-    flexDirection:'row'
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
   },
   password: {
-   
     paddingLeft: 20,
     fontSize: 14,
     fontWeight: "400",
     color: colorCodes.placeholderFill,
-     width: "85%"
+    width: "85%",
   },
   RememberPassword: {
     display: "flex",
@@ -385,7 +361,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   remember: {
-    fontWeight: "light",
+    fontWeight: "400",
     color: colorCodes.yaleBlue,
     fontSize: 14,
     fontWeight: "700",

@@ -150,7 +150,7 @@ console.log(convertDateToDDMMYY(items?.reading_date?.last))
         </View>
 
         <View style={styles.belowSecond}>
-          <Text style={{ fontWeight: 500 }}>{items?.meter?.total} meters</Text>
+          <Text style={{ fontWeight: "500" }}>{items?.meter?.total} meters</Text>
           <TouchableOpacity
             onPress={() => {
               if (expandSchedule == index) {

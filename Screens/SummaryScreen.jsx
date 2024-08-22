@@ -233,7 +233,7 @@ export default function SummaryScreen({ navigation }) {
               alignSelf: "flex-end",
             }}
           >
-            <Text style={{ color: "white", fontWeight: 700 }}>Completed</Text>
+            <Text style={{ color: "white", fontWeight: "700" }}>Completed</Text>
           </View>
 
           <View style={{ marginVertical: 10 }}>
@@ -254,7 +254,7 @@ export default function SummaryScreen({ navigation }) {
                     <Text
                       style={{
                         color: "white",
-                        fontWeight: 700,
+                        fontWeight: "700",
                         textAlign: "center",
                       }}
                     >

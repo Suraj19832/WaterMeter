@@ -328,7 +328,7 @@ export default function DashboardCompletedCards({
           )}
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: 500 }}>{items?.total_meter} meters</Text>
+            <Text style={{ fontWeight: "500" }}>{items?.total_meter} meters</Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandCompleted == index) {

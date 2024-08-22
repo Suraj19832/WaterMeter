@@ -726,7 +726,7 @@ const MeterSection = ({ navigation }) => {
                 setCompleteModal(true);
               }}
             >
-              <Text style={{ color: "white", fontWeight: 700 }}>
+              <Text style={{ color: "white", fontWeight: "700" }}>
                 View Image
               </Text>
             </TouchableOpacity>
@@ -744,9 +744,9 @@ const MeterSection = ({ navigation }) => {
             }}
           >
             {pendingMeterCount === 0 ? (
-              <Text style={{ color: "white", fontWeight: 700 }}>Completed</Text>
+              <Text style={{ color: "white", fontWeight: "700" }}>Completed</Text>
             ) : (
-              <Text style={{ color: "white", fontWeight: 700 }}>
+              <Text style={{ color: "white", fontWeight: "700" }}>
                 {pendingMeterCount} Meters Pending
               </Text>
             )}
@@ -942,7 +942,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   modalContentt: {
     height: Dimensions.get("window").height * 0.3,
@@ -1205,7 +1205,7 @@ const styles = StyleSheet.create({
   },
   addNotes: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: 10,
   },
   notesInput: {
@@ -1227,7 +1227,7 @@ const styles = StyleSheet.create({
     width: "48%",
     alignItems: "center",
   },
-  submitNotesText: { color: "#fff", fontWeight: "bold" },
+  submitNotesText: { color: "#fff", fontWeight: "600" },
   cross:{
     width: "90%",
     alignItems: "flex-end",
