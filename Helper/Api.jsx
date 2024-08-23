@@ -5,10 +5,10 @@ import {
   sendPostFormData,
 } from "./Helper";
 
-const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
+// const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
 // const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
 // const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat/
-// const baseURL = "https://db08-2405-201-8015-610b-bc88-fb6f-1fd-96b1.ngrok-free.app"  
+const baseURL = "https://0689-2405-201-8015-610b-931b-854d-7f90-9e42.ngrok-free.app"  
 
 const appApi = {
   login: function (data) {
@@ -79,5 +79,9 @@ const appApi = {
     const url = `${baseURL}/api/summary/completion`;
     return sendAuthorizeGetRequest(url, data);
   },
+  overRideDigit: function (data) {
+    const url = `${baseURL}/api/last-digit-override`;
+    return sendAuthorizePostFormData(url, data);
+  }
 };
 export default appApi;

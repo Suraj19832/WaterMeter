@@ -59,6 +59,7 @@ const MeterSection = ({ navigation }) => {
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
   const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
   const [billingId, setBillingId] = useState(null);
+  const [isOverRide, setIsOverRide] = useState("")
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -97,6 +98,7 @@ const MeterSection = ({ navigation }) => {
     setCompletedUnit({});
   };
   const handleSelectionOptionMeter = (all_data, option, billingId, note) => {
+    // console.log(option,"<><><?????????????")
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(null);
@@ -284,6 +286,7 @@ const MeterSection = ({ navigation }) => {
     };
     try {
       const res = await appApi.metersection(data);
+      // console.log(res,"<><><><><>><<<<<<<<<<<<<<<")
       if (res?.status) {
         setname(res?.data?.name);
         setid(res?.data?.id);
@@ -292,7 +295,7 @@ const MeterSection = ({ navigation }) => {
         setLastReading(res?.data?.last_reading);
         setLastReadingDate(res?.data?.last_reading_date);
         setAvgUsage(res?.data?.avg_usage);
-
+        setIsOverRide(res?.data?.meter_last_digit_override)
         if (inputValuePending != "") {
           handleSelectionOptionMeter(res?.data?.meters, inputValuePending);
         }
@@ -337,7 +340,7 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        dispatch(setBillingAddress(res?.property_billing_cycle_id));
+        dispatch(setBillingAddress(res?.meter_reading_cycle_id));
         setMeterCompletedImage(res?.iamge);
         setMeterReading(res?.reading);
         setCompletedDataId(res?.data_id);
@@ -460,7 +463,7 @@ const MeterSection = ({ navigation }) => {
                           handleSelectionOptionMeter(
                             meterDataByApi,
                             meterid?.id,
-                            meterid?.property_billing_cycle_id,
+                            meterid?.meter_reading_cycle_id,
                             meterid?.note
                           )
                         }
@@ -841,6 +844,7 @@ const MeterSection = ({ navigation }) => {
                   completed_note: dropdownNotes,
                   billingId: billingAddress,
                   date: date,
+                  isOverRideValue:isOverRide
                 });
               }}
             >

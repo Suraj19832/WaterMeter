@@ -15,6 +15,7 @@ import { colorCodes } from "../ColorCodes/Colors";
 import DashboardScheduledCards from "../Components/DashboardScheduledCards";
 import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 import appApi from "../Helper/Api";
+import { useFocusEffect } from "@react-navigation/native";
 
 function Dashboard({ navigation }) {
   let monthArr = [
@@ -83,13 +84,19 @@ function Dashboard({ navigation }) {
       .catch((err) => {
         setLoading(false);
         setRefreshing(false);
-        console.log(err, "dashoard app error");
+        console.log(err, "dashoard  error");
       });
   }, [toggleScheduleCompleted, monthIndex, year]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [fetchData]);
+
+  useFocusEffect(
+    React.useCallback(()=>{
+      fetchData();
+    },[fetchData])
+  )
 
   const refreshApp = () => {
     setRefreshing(true);
