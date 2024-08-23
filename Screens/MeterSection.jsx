@@ -351,7 +351,6 @@ const MeterSection = ({ navigation }) => {
         setCompleteDetailsLoading(false);
       })
       .catch((err) => {
-        console.log(err, "error from complete");
         toast.show("please try again!!")
         setCompleteLoading(false);
         setCompleteDetailsLoading(false);
@@ -390,7 +389,7 @@ const MeterSection = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ marginHorizontal: 20 }}>
+    <SafeAreaView style={{ marginHorizontal: 20,height:"100%" }}>
       <>
         <TouchableOpacity
           style={{ marginTop: 10 }}
