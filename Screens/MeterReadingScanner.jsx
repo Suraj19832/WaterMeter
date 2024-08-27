@@ -53,8 +53,10 @@ function MeterReadingScanner({ navigation }) {
     completed_note,
     billingId,
     date,
+    isOverRideValue,
+    flag,
   } = route.params ?? {};
-  // console.log(completed_dataId, "KKKKKKKKKKKKK");
+  console.log(isOverRideValue, ">>>>>s>>>>>>>");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
@@ -63,7 +65,6 @@ function MeterReadingScanner({ navigation }) {
   const [dataId, setDataId] = useState(
     completed_dataId ? completed_dataId : null
   );
-  // console.log(dataId, "<<<<<<<<state");
   const [notes, setNotes] = useState(completed_note ? completed_note : "");
   const [notesModalVisible, setNotesModalVisible] = useState(false);
   const [noteLoading, setnoteLoading] = useState(false);
@@ -75,8 +76,11 @@ function MeterReadingScanner({ navigation }) {
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
+  // console.log(typeof value, value, "LLLLLLLLLL");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const [isRescan, setIsRescan] = useState(false);
+  const [isOverrideButton, setIsOverrideButton] = useState(false);
+  const [overrideDigitResult, setOverrideDigitResult] = useState(8);
 
   const meReasonsDemo = [
     "Invalid Result",
@@ -168,6 +172,7 @@ function MeterReadingScanner({ navigation }) {
       setCapturedImage(null);
       setValue(meterReading || "");
       setIsCameraOpen(false);
+      setIsOverrideButton(false);
     }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
 
@@ -179,27 +184,15 @@ function MeterReadingScanner({ navigation }) {
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef(null);
 
-  // const onPinchEvent = (event) => {
-  //   const newZoom = Math.min(
-  //     Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
-  //     1
-  //   );
-  //   setZoom(newZoom);
-  // };
-
   const onPinchEvent = (event) => {
     const scale = event.nativeEvent.scale;
     setTimeout(() => {
       const newZoom = Math.min(
-        Math.max(
-          zoom +
-            (scale - 1) / (Platform.OS === "ios" ? 20 : 14),
-          0
-        ),
+        Math.max(zoom + (scale - 1) / (Platform.OS === "ios" ? 20 : 18), 0),
         0.8
       );
       setZoom(newZoom);
-    }, 50);
+    }, 20);
   };
 
   const onPinchStateChange = (event) => {
@@ -211,6 +204,7 @@ function MeterReadingScanner({ navigation }) {
       setZoom(newZoom);
     }
   };
+
   const startScanningAnimation = () => {
     scanAnimation.setValue(0);
     Animated.loop(
@@ -228,10 +222,12 @@ function MeterReadingScanner({ navigation }) {
         file: imageFile,
         property_id: id,
         meter_id: meterName,
-        property_billing_cycle_id: billingId,
+        meter_reading_cycle_id: billingId,
       };
+      // console.log(data, "<<<<<<<<<<<<<<<data in verfify");
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
+      setIsOverrideButton(true);
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
       toast.show(getSubstring(res?.ocrReading, totalDigit), {
@@ -247,7 +243,7 @@ function MeterReadingScanner({ navigation }) {
       }
     } catch (err) {
       toast.show("something went wrong");
-      console.error(err, "Error while uploading image");
+      console.error(err, "error in detect ocr");
       setLoading(false);
     }
   };
@@ -257,6 +253,7 @@ function MeterReadingScanner({ navigation }) {
       if (cameraRef.current) {
         const photo = await cameraRef.current.takePictureAsync();
         setCapturedImage(photo.uri);
+
         setIsCameraOpen(false);
         const resizedImage = await ImageManipulator.manipulateAsync(
           photo.uri,
@@ -264,6 +261,7 @@ function MeterReadingScanner({ navigation }) {
           { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
         const fileData = getFileData(resizedImage);
+
         await verifyNumber(fileData);
       }
     } catch (error) {
@@ -275,6 +273,7 @@ function MeterReadingScanner({ navigation }) {
 
   const handleScan = () => {
     setIsCameraOpen(!isCameraOpen);
+    setIsOverrideButton(false);
     startScanningAnimation();
     captureImage();
     if (capturedImage) {
@@ -283,7 +282,6 @@ function MeterReadingScanner({ navigation }) {
       setIsRescan(false);
     }
   };
-
 
   const handleSubmit = () => {
     if (dataId === null) {
@@ -298,19 +296,19 @@ function MeterReadingScanner({ navigation }) {
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: dataId,
+      // data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
       note: notes ? notes : completed_note,
-      property_billing_cycle_id: billingId,
-      date: date,
+      meter_reading_cycle_id: billingId,
+      // date: date,
+      flag: flag ? 1 : 0,
     };
     console.log(data, "without excuse submit");
     appApi
       .submitReading(data)
       .then((res) => {
-        // console.log(res, "handlesubmit");
         if (res?.status) {
           toast.show("Sucessfully Submitted", {
             type: "sucess",
@@ -327,7 +325,6 @@ function MeterReadingScanner({ navigation }) {
         }
       })
       .catch((err) => {
-        // console.log(err);
         toast.show("something went wrong", { type: "error" });
       });
   };
@@ -337,25 +334,24 @@ function MeterReadingScanner({ navigation }) {
       toast.show("please scan first1");
       return;
     }
-    console.log(dataId);
     setManulLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
-      data_id: dataId,
+      // data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
       note: notes ? notes : completed_note,
       me_reason: selectedReading,
-      property_billing_cycle_id: billingId,
-      date: date,
+      meter_reading_cycle_id: billingId,
+      // date: date,
+      flag: flag ? 1 : 0,
     };
     console.log(data, "with excuse submission");
     appApi
       .submitReading(data)
       .then((res) => {
-        // console.log(res, "handle manual submit response");
         if (res?.status) {
           setManulLoading(false);
           setReadingMismatchModalVisible(false);
@@ -377,6 +373,25 @@ function MeterReadingScanner({ navigation }) {
         toast.show("something went wrong", { type: "error" });
         setManulLoading(false);
         setReadingMismatchModalVisible(false);
+      });
+  };
+
+  const getOverRideDigit = () => {
+    const data = {
+      property_id: id,
+      meter_id: meterName,
+    };
+
+    appApi
+      .overRideDigit(data)
+      .then((res) => {
+        const overriddenDigit = res?.data?.last_digit_override;
+        const currentValue = value.split("");
+        currentValue[CELL_COUNT - 1] = overriddenDigit;
+        setValue(currentValue.join(""));
+      })
+      .catch((err) => {
+        console.log(err, "error from override digit");
       });
   };
 
@@ -457,14 +472,7 @@ function MeterReadingScanner({ navigation }) {
             </PinchGestureHandler>
           </GestureHandlerRootView>
         ) : (
-          <View
-            style={{
-              justifyContent: "center",
-              backgroundColor: "#414141",
-              height: 200,
-              alignItems: "center",
-            }}
-          >
+          <View style={styles.capturedImage}>
             {loading ? (
               <ActivityIndicator size={"large"} />
             ) : capturedImage && capturedImage ? (
@@ -490,6 +498,20 @@ function MeterReadingScanner({ navigation }) {
           <Text style={styles.scannerHeading}>
             <Text style={{ color: "#0B9ED2" }}>Meter :</Text> {meterName}
           </Text>
+
+          {isOverrideButton &&
+            ((value.length === CELL_COUNT && isOverRideValue === "yes") ||
+            value.length !== CELL_COUNT ? (
+              <TouchableOpacity
+                style={styles.lastDigit}
+                onPress={getOverRideDigit}
+              >
+                <Text style={styles.lastDigittext}>Last Digit OverRide</Text>
+              </TouchableOpacity>
+            ) : (
+              <View />
+            ))}
+
           <TouchableOpacity
             style={{
               backgroundColor:
@@ -497,12 +519,12 @@ function MeterReadingScanner({ navigation }) {
                   ? colorCodes.submitButtonDisabled
                   : colorCodes.submitButtonEnabled,
               paddingVertical: 10,
-              paddingHorizontal: 25,
+              paddingHorizontal: 20,
               borderRadius: 8,
             }}
             onPress={handleScan}
           >
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
+            <Text style={styles.scanButton}>
               {isCameraOpen
                 ? "Stop"
                 : loading
@@ -514,15 +536,7 @@ function MeterReadingScanner({ navigation }) {
           </TouchableOpacity>
         </View>
         {/* otp filling screen */}
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: colorCodes.borderColor,
-            borderRadius: 15,
-            paddingVertical: 16,
-            paddingHorizontal: 15,
-          }}
-        >
+        <View style={styles.readingBox}>
           <Text style={styles.title}>Meter Reading :</Text>
           <CodeField
             ref={ref}
@@ -569,16 +583,7 @@ function MeterReadingScanner({ navigation }) {
             {submitLoading ? (
               <ActivityIndicator size={"small"} />
             ) : (
-              <Text
-                style={{
-                  color: "#fff",
-                  fontWeight: "700",
-                  fontSize: 16,
-                  textAlign: "center",
-                }}
-              >
-                Submit Reading
-              </Text>
+              <Text style={styles.submitButton}>Submit Reading</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setNotesModalVisible(true)}>
@@ -598,21 +603,19 @@ function MeterReadingScanner({ navigation }) {
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
-                    Last Reading :
-                  </Text>{" "}
-                  {convertDateToDDMMYY(lastReading)}
+                  <Text style={styles.lastReadings}>Last Reading : </Text>{" "}
+                  {lastReading}
                 </Text>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
-                    Last Reading Date :
-                  </Text>{" "}
-                  {convertDateToDDMMYY(lastReadingDate)}
+                  <Text style={styles.lastReadings}>Last Reading Date : </Text>{" "}
+                  {lastReading !== null && lastReading !== "" ? (
+                    convertDateToDDMMYY(lastReadingDate)
+                  ) : (
+                    <Text />
+                  )}
                 </Text>
                 <Text style={{ color: "#989898" }}>
-                  <Text style={{ color: "#0B9ED2", fontWeight: "600" }}>
-                    Avg Usage :
-                  </Text>{" "}
+                  <Text style={styles.lastReadings}>Avg Usage :</Text>{" "}
                   {avgUsage}
                 </Text>
               </View>
@@ -659,7 +662,6 @@ function MeterReadingScanner({ navigation }) {
                 style={styles.modalButton}
                 onPress={() => {
                   setNotesModalVisible(false);
-                  // setNotes(completed_note || "");
                 }}
               >
                 <Text style={styles.modalButtonText}>Cancel</Text>
@@ -855,6 +857,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
   },
+  lastReadings: { color: "#0B9ED2", fontWeight: "600" },
+  submitButton: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+    textAlign: "center",
+  },
   modalContent: {
     backgroundColor: "#fff",
     position: "absolute",
@@ -878,6 +887,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: colorCodes.otptext,
   },
+  readingBox: {
+    borderWidth: 1,
+    borderColor: colorCodes.borderColor,
+    borderRadius: 15,
+    paddingVertical: 16,
+    paddingHorizontal: 15,
+  },
+  scanButton: { fontSize: 16, fontWeight: "700", color: "#fff" },
   infoText: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -963,10 +980,28 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#989898",
   },
+  lastDigit: {
+    backgroundColor: colorCodes.submitButtonEnabled,
+    borderRadius: 8,
+    width: 90,
+    paddingVertical: 2,
+  },
+  lastDigittext: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#fff",
+    textAlign: "center",
+  },
   scannedImage: {
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+  },
+  capturedImage: {
+    justifyContent: "center",
+    backgroundColor: "#414141",
+    height: 200,
+    alignItems: "center",
   },
   modalContentNotes: {
     width: "80%",

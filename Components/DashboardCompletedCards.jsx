@@ -20,6 +20,7 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
+  console.log(items,"LLLLLLLLLL")
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -360,17 +361,17 @@ export default function DashboardCompletedCards({
         {index == expandCompleted ? (
           <View style={styles.expandContentCompleted}>
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandHeadingFTxt}>Address :</Text>
+              <Text style={styles.expandHeadingFTxt}>Address : </Text>
               <Text style={styles.expandHeadingSTxt}>{items?.address}</Text>
             </View>
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Total Meters :</Text>
+              <Text style={styles.expandContentFTxt}>Total Meters : </Text>
 
               <Text style={styles.expandContentSTxt}>{items?.total_meter}</Text>
             </View>
 
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Date Completed :</Text>
+              <Text style={styles.expandContentFTxt}>Date Completed : </Text>
 
               <Text style={styles.expandContentSTxt}>
                 {convertDateToDDMMYY(items?.date?.completed)}
@@ -378,7 +379,7 @@ export default function DashboardCompletedCards({
             </View>
 
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Task Completed In :</Text>
+              <Text style={styles.expandContentFTxt}>Task Completed In : </Text>
 
               <Text style={styles.expandContentSTxt}>
                 {convertToDuration(items?.task_completed_in_sec)}
@@ -386,14 +387,21 @@ export default function DashboardCompletedCards({
             </View>
 
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Next Reading Date :</Text>
+              <Text style={styles.expandContentFTxt}>Next Reading Date : </Text>
 
               <Text style={styles.expandContentSTxt}>
                 {convertDateToDDMMYY(items?.date?.next_reading)}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Name :</Text>
+              <Text style={styles.expandContentFTxt}>Readings Approval : </Text>
+
+              <Text style={styles.expandContentSTxt}>
+                {(items?.reading_approval)}
+              </Text>
+            </View>
+            <View style={styles.expandContentHeading}>
+              <Text style={styles.expandContentFTxt}>Name : </Text>
 
               <Text style={styles.expandContentSTxt}>{items?.read_by}</Text>
             </View>
@@ -410,6 +418,7 @@ export default function DashboardCompletedCards({
                   navigation.navigate("SummaryScreen", {
                     id: items?.id,
                     name: items?.name,
+                    meter_reading_cycle_id:items?.meter_reading_cycle_id
                   })
                 }
               >

@@ -168,7 +168,7 @@ function Login({ navigation }) {
   useEffect(() => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
-    if (trimmedEmail && trimmedPassword.length > 5) {
+    if (trimmedEmail && trimmedPassword.length > 4) {
       setDisabledBtn(false);
     } else {
       setDisabledBtn(true);

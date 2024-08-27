@@ -5,10 +5,10 @@ import {
   sendPostFormData,
 } from "./Helper";
 
-// const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
+const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
 // const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
-// const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat/
-const baseURL = "https://0689-2405-201-8015-610b-931b-854d-7f90-9e42.ngrok-free.app"  
+// const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat
+// const baseURL = "https://35e2-2405-201-8015-610b-357b-566d-c486-e6fa.ngrok-free.app"  
 
 const appApi = {
   login: function (data) {

@@ -25,6 +25,7 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
+  console.log(items, "?????????");
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
@@ -40,21 +41,19 @@ function DashboardScheduledCards({
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return "";
+      return "";
     }
 
     const date = new Date(dateString);
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return "";
+      return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
-    const year = String(date.getFullYear()).slice(-2); 
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
-}
-
-
+  }
 
   function convertToDuration(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -78,7 +77,6 @@ function DashboardScheduledCards({
       return "invalid";
     }
   }
-  
 
   useEffect(() => {
     const checkImageURL = async (url) => {
@@ -147,7 +145,9 @@ function DashboardScheduledCards({
         </View>
 
         <View style={styles.belowSecond}>
-          <Text style={{ fontWeight: "500" }}>{items?.meter?.total} meters</Text>
+          <Text style={{ fontWeight: "500" }}>
+            {items?.meter?.total} meters
+          </Text>
           <TouchableOpacity
             onPress={() => {
               if (expandSchedule == index) {
@@ -180,11 +180,7 @@ function DashboardScheduledCards({
         <View style={styles.expandContent}>
           <View style={[styles.expandContentHeading, { marginBottom: 7 }]}>
             <Text style={styles.expandHeadingFTxt}>Address :</Text>
-            <Text
-              style={styles.address}
-            >
-              {items?.address}
-            </Text>
+            <Text style={styles.address}>{items?.address}</Text>
           </View>
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Total Meters :</Text>
@@ -206,6 +202,7 @@ function DashboardScheduledCards({
               {convertDateToDDMMYY(items?.reading_date?.next)}
             </Text>
           </View>
+          
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
@@ -214,7 +211,16 @@ function DashboardScheduledCards({
               {convertDateToDDMMYY(items?.reading_date?.last)}
             </Text>
           </View>
-          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+          <View style={styles.expandContentHeading}>
+              <Text style={styles.expandContentFTxt}>Readings Approval :</Text>
+
+              <Text style={styles.expandContentSTxt}>
+                {(items?.reading_approval)}
+              </Text>
+            </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <View style={[styles.expandContentBottomPart, {}]}>
               <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
@@ -233,6 +239,7 @@ function DashboardScheduledCards({
                   navigation.jumpTo("MeterScreen", {
                     PopertyId: items?.id,
                     date,
+                    meter_reading_cycle_id: items?.meter_reading_cycle_id,
                   });
                 }}
               >
@@ -451,7 +458,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 14,
   },
-  address:{
+  address: {
     fontWeight: "600",
     fontSize: 14,
     width: "80%",

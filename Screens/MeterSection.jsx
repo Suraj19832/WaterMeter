@@ -34,7 +34,7 @@ const MeterSection = ({ navigation }) => {
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
-  const { PopertyId, date } = route.params ?? {};
+  const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};
   const [name, setname] = useState();
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
@@ -59,7 +59,7 @@ const MeterSection = ({ navigation }) => {
   const [completeDetailsLoading, setCompleteDetailsLoading] = useState(false);
   const [completedTotalDigit, setCompletedTotalDigit] = useState(null);
   const [billingId, setBillingId] = useState(null);
-  const [isOverRide, setIsOverRide] = useState("")
+  const [isOverRide, setIsOverRide] = useState("");
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
@@ -71,6 +71,8 @@ const MeterSection = ({ navigation }) => {
   const [completedDataId, setCompletedDataId] = useState(null);
   const [completedNotes, setCompletedNotes] = useState("");
   const [noteLoading, setnoteLoading] = useState(false);
+  const [meterCycleId, setMeterCycleId] = useState(null);
+  const [editAccess, setEditAccess] = useState("")
 
   const toast = useToast();
   const getNameById = (all_data, id) => {
@@ -97,8 +99,24 @@ const MeterSection = ({ navigation }) => {
     setCompleteImage(null);
     setCompletedUnit({});
   };
+
+  function convertDateToDDMMYY(dateString) {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateString)) {
+      return "";
+    }
+    const date = new Date(dateString);
+    if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
+      return "";
+    }
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  }
+
   const handleSelectionOptionMeter = (all_data, option, billingId, note) => {
-    // console.log(option,"<><><?????????????")
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(null);
@@ -122,7 +140,8 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    completedImage(option?.id);
+    console.log(option.reading_status, "option heaind88888888888888888");
+    completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
     setCompletedTotalDigit(option?.total_number_of_digit);
@@ -286,16 +305,16 @@ const MeterSection = ({ navigation }) => {
     };
     try {
       const res = await appApi.metersection(data);
-      // console.log(res,"<><><><><>><<<<<<<<<<<<<<<")
       if (res?.status) {
         setname(res?.data?.name);
-        setid(res?.data?.id);
+        setid(res?.data?.uid);
         setmeterDataByApi(res?.data?.meters);
         setpendingMeterCount(res?.data?.pendingMeterReading);
         setLastReading(res?.data?.last_reading);
         setLastReadingDate(res?.data?.last_reading_date);
         setAvgUsage(res?.data?.avg_usage);
-        setIsOverRide(res?.data?.meter_last_digit_override)
+        setIsOverRide(res?.data?.meter_last_digit_override);
+        setMeterCycleId(res?.data?.meter_reading_cycle_id);
         if (inputValuePending != "") {
           handleSelectionOptionMeter(res?.data?.meters, inputValuePending);
         }
@@ -310,19 +329,19 @@ const MeterSection = ({ navigation }) => {
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return "";
+      return "";
     }
 
     const date = new Date(dateString);
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return "";
+      return "";
     }
 
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
-    const year = String(date.getFullYear()).slice(-2); 
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
-}
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -330,31 +349,35 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId) => {
+  const completedImage = (meterId,editAccess) => {
+    console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
     const data = {
-      property_id: id,
       meter_id: meterId,
+      meter_reading_cycle_id: meterCycleId,
     };
     appApi
       .completedImage(data)
       .then((res) => {
+        // console.log(res,">>>>>>>>>>>metere conrh")
         dispatch(setBillingAddress(res?.meter_reading_cycle_id));
-        setMeterCompletedImage(res?.iamge);
-        setMeterReading(res?.reading);
-        setCompletedDataId(res?.data_id);
+        setMeterCycleId(res?.data?.meter_reading_cycle_id);
+        setMeterCompletedImage(res?.data?.image);
+        setMeterReading(res?.data?.reading);
+        setCompletedDataId(res?.data?.data_id);
+        setEditAccess(editAccess)
 
         setCompletedUnit({
-          reading: res?.reading,
-          readingType: res?.readingType,
-          readingDate: res?.readingDate,
+          reading: res?.data?.reading,
+          readingType: res?.data?.readingType,
+          readingDate: res?.data?.readingDate,
         });
         setCompleteLoading(false);
         setCompleteDetailsLoading(false);
       })
       .catch((err) => {
-        toast.show("please try again!!")
+        toast.show("please try again!!");
         setCompleteLoading(false);
         setCompleteDetailsLoading(false);
       });
@@ -392,7 +415,7 @@ const MeterSection = ({ navigation }) => {
   }
 
   return (
-    <SafeAreaView style={{ marginHorizontal: 20,height:"100%" }}>
+    <SafeAreaView style={{ marginHorizontal: 20, height: "100%" }}>
       <>
         <TouchableOpacity
           style={{ marginTop: 10 }}
@@ -502,9 +525,7 @@ const MeterSection = ({ navigation }) => {
                 ]}
               >
                 <View style={{ width: "100%" }}>
-                  <View
-                    style={styles.cross}
-                  >
+                  <View style={styles.cross}>
                     <TouchableOpacity onPress={toggleModalVisibilityImage}>
                       <Entypo name="cross" size={24} color={color} />
                     </TouchableOpacity>
@@ -520,13 +541,9 @@ const MeterSection = ({ navigation }) => {
                       resizeMode="cover"
                     />
                   ) : (
-                    <View
-                      style={styles.upload}
-                    >
+                    <View style={styles.upload}>
                       <Text style={styles.headingText}> Upload Image</Text>
-                      <View
-                        style={styles.uploadView}
-                      >
+                      <View style={styles.uploadView}>
                         <TouchableOpacity
                           style={styles.uploadBtn}
                           onPress={toggleChangeImage}
@@ -538,9 +555,7 @@ const MeterSection = ({ navigation }) => {
                   )}
                 </View>
                 {isImage && (
-                  <View
-                    style={styles.changeBox}
-                  >
+                  <View style={styles.changeBox}>
                     <TouchableOpacity
                       style={styles.changeBtn}
                       onPress={toggleChangeImage}
@@ -584,17 +599,19 @@ const MeterSection = ({ navigation }) => {
                 {isModalInformation && (
                   <View style={{ width: "100%", gap: 10 }}>
                     <View style={{ flexDirection: "row" }}>
-                      <Text style={styles.modalKeyText}>Last Reading :</Text>
-                      <Text style={styles.modalValueText}>
-                        {convertDateToDDMMYY(lastReading)}
-                      </Text>
+                      <Text style={styles.modalKeyText}>Last Reading : </Text>
+                      <Text style={styles.modalValueText}>{lastReading}</Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
                       <Text style={styles.modalKeyText}>
-                        Last Reading Date :
+                        Last Reading Date :{" "}
                       </Text>
                       <Text style={styles.modalValueText}>
-                        {convertDateToDDMMYY(lastReadingDate)}
+                        {lastReading !== null && lastReading !== "" ? (
+                          convertDateToDDMMYY(lastReadingDate)
+                        ) : (
+                          <Text />
+                        )}
                       </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
@@ -617,11 +634,7 @@ const MeterSection = ({ navigation }) => {
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.selectheading}>Make :</Text>
-              <Text
-                style={styles.meterMake}
-              >
-                {meterMake?.make}
-              </Text>
+              <Text style={styles.meterMake}>{meterMake?.make}</Text>
             </View>
             <View>
               <TouchableOpacity onPress={toggleModalVisibilityImage}>
@@ -639,9 +652,7 @@ const MeterSection = ({ navigation }) => {
 
         <View style={styles.fields_main}>
           {inputValuePending && (
-            <View
-              style={styles.meternotes}
-            >
+            <View style={styles.meternotes}>
               <Text style={[styles.selectheading, { fontSize: 20 }]}>
                 Meter Notes :
               </Text>
@@ -719,9 +730,7 @@ const MeterSection = ({ navigation }) => {
 
         {/* Dropdown of meter reading */}
 
-        <View
-          style={styles.viewBox}
-        >
+        <View style={styles.viewBox}>
           {completeImage !== null ? (
             <TouchableOpacity
               style={styles.viewImage}
@@ -747,7 +756,9 @@ const MeterSection = ({ navigation }) => {
             }}
           >
             {pendingMeterCount === 0 ? (
-              <Text style={{ color: "white", fontWeight: "700" }}>Completed</Text>
+              <Text style={{ color: "white", fontWeight: "700" }}>
+                Completed
+              </Text>
             ) : (
               <Text style={{ color: "white", fontWeight: "700" }}>
                 {pendingMeterCount} Meters Pending
@@ -761,20 +772,17 @@ const MeterSection = ({ navigation }) => {
             {completeDetailsLoading ? (
               <ActivityIndicator size={"small"} color={"#197AB6"} />
             ) : (
-              <View
-                style={styles.completedView}
-              >
+              <View style={styles.completedView}>
                 <View style={{ alignItems: "center", gap: 10 }}>
-                  <Text
-                    style={styles.completed}
-                  >
+                  <Text style={styles.completed}>
                     {completedUnit.reading} {completedUnit.readingType}
                     {"  "}
-                    {completedUnit.readingDate}
+                    {convertDateToDDMMYY(completedUnit.readingDate)}
                   </Text>
                 </View>
                 {Object.keys(completedUnit).length !== 0 && (
                   <TouchableOpacity
+                  disabled={editAccess === "Pending" ? false : true}
                     onPress={() =>
                       navigation.navigate("meterReadingScanner", {
                         id,
@@ -788,13 +796,15 @@ const MeterSection = ({ navigation }) => {
                         meterReading: meterReading,
                         completed_dataId: completedDataId,
                         completed_note: completedNotes,
-                        billingId: billingAddress,
+                        billingId: meterCycleId,
                         date: date,
+                        flag: "editing",
+                        isOverRideValue: isOverRide,
                       })
                     }
                   >
                     <Image
-                      source={require("../assets/write.png")}
+                      source={editAccess === "Pending" ? require("../assets/write.png") : require("../assets/disableWrite.png")}
                       style={{ height: 30, width: 30 }}
                     />
                   </TouchableOpacity>
@@ -804,9 +814,7 @@ const MeterSection = ({ navigation }) => {
           </>
         ) : null}
 
-        <View
-          style={styles.info}
-        >
+        <View style={styles.info}>
           <TouchableOpacity onPress={toggleModalVisibilityInformation}>
             <Image
               source={require("../assets/infoIcon.png")}
@@ -816,9 +824,7 @@ const MeterSection = ({ navigation }) => {
               }}
             />
           </TouchableOpacity>
-          <View
-            style={styles.pendingView}
-          >
+          <View style={styles.pendingView}>
             <TouchableOpacity
               disabled={inputValuePending ? false : true}
               style={{
@@ -842,9 +848,10 @@ const MeterSection = ({ navigation }) => {
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
                   completed_note: dropdownNotes,
-                  billingId: billingAddress,
+                  // billingId: billingAddress,
+                  billingId: meterCycleId,
                   date: date,
-                  isOverRideValue:isOverRide
+                  isOverRideValue: isOverRide,
                 });
               }}
             >
@@ -986,7 +993,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 12,
   },
-  upload:{
+  upload: {
     height: 220,
     width: "100%",
     justifyContent: "space-evenly",
@@ -1000,12 +1007,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#0B9ED2",
   },
-  meterMake:{
+  meterMake: {
     color: "rgba(152, 152, 152, 1)",
     fontWeight: "400",
     fontSize: 18,
   },
-  meternotes:{ flexDirection: "row", gap: 2, alignItems: "center" },
+  meternotes: { flexDirection: "row", gap: 2, alignItems: "center" },
   select: {
     borderWidth: 1,
     borderColor: "#2198C9",
@@ -1042,23 +1049,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     zIndex: 1,
   },
-  completed:{
+  completed: {
     fontSize: 18,
     fontWeight: "500",
     color: "#197AB6",
   },
-  completedView:{
+  completedView: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
   },
-  viewImage:{
+  viewImage: {
     backgroundColor: "#197AB6",
     paddingVertical: 6,
     borderRadius: 15,
     paddingHorizontal: 16,
   },
-  viewBox:{
+  viewBox: {
     justifyContent: "space-between",
     flexDirection: "row",
     marginVertical: 15,
@@ -1130,21 +1137,21 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     alignSelf: "center",
   },
-  changeBtn:{
+  changeBtn: {
     width: 102,
     height: 32,
     backgroundColor: "#FF8902",
     borderRadius: 8,
     justifyContent: "center",
   },
-  uploadBtn:{
+  uploadBtn: {
     width: 102,
     height: 32,
     backgroundColor: "#FF8902",
     borderRadius: 8,
     justifyContent: "center",
   },
-  uploadView:{
+  uploadView: {
     width: "100%",
     alignItems: "center",
     marginTop: 15,
@@ -1154,7 +1161,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 16,
   },
-  changeBox:{
+  changeBox: {
     width: "90%",
     alignItems: "flex-end",
     marginTop: 15,
@@ -1170,7 +1177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  pendingView:{
+  pendingView: {
     marginVertical: 15,
     flexDirection: "row",
     gap: 80,
@@ -1190,7 +1197,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#2198C9",
   },
-  info:{
+  info: {
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
@@ -1232,9 +1239,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitNotesText: { color: "#fff", fontWeight: "600" },
-  cross:{
+  cross: {
     width: "90%",
     alignItems: "flex-end",
     alignSelf: "center",
-  }
+  },
 });

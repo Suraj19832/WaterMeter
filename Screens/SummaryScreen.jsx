@@ -1,6 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import appApi from "../Helper/Api";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name } = route.params ?? {};
+  const { id, name, meter_reading_cycle_id } = route.params ?? {};
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -35,22 +35,39 @@ export default function SummaryScreen({ navigation }) {
     readingDate: "",
   });
 
+  function convertDateToDDMMYY(dateString) {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateString)) {
+      return "";
+    }
+    const date = new Date(dateString);
+    if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
+      return "";
+    }
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  }
+
   const meterDetails = (meterId) => {
     setLoading(true);
     setImageLoading(true);
     const data = {
-      property_id: id,
       meter_id: meterId,
+      meter_reading_cycle_id: meter_reading_cycle_id,
     };
     appApi
       .completedImage(data)
       .then((res) => {
+        console.log(res.data.readingType,"<>><><><><><><><><><><><><><>")
         setCompletedUnit({
-          reading: res?.reading,
-          readingType: res?.readingType,
-          readingDate: res?.readingDate,
+          reading: res?.data?.reading,
+          readingType: res?.data?.readingType,
+          readingDate: res?.data?.readingDate,
         });
-        setShowImage(res?.iamge);
+        setShowImage(res?.data?.image);
         setLoading(false);
         setImageLoading(false);
       })
@@ -71,17 +88,19 @@ export default function SummaryScreen({ navigation }) {
     React.useCallback(() => {
       setResfreshing(true);
       const data = {
-        property_id: id,
+        meter_reading_cycle_id: meter_reading_cycle_id,
       };
       appApi
         .summaryCompletion(data)
         .then((res) => {
+          console.log(res);
           setData(res?.data);
           setResfreshing(false);
           setDropdownData(res?.data?.completedMeters);
         })
         .catch((err) => {
           setResfreshing(false);
+          console.log(err);
         });
       setCompletedUnit({});
       setDropdownValue(null);
@@ -268,7 +287,7 @@ export default function SummaryScreen({ navigation }) {
                   }}
                 >
                   {completedUnit.reading} {completedUnit.readingType}{" "}
-                  {completedUnit.readingDate}
+                  {convertDateToDDMMYY(completedUnit.readingDate)}
                 </Text>
               </View>
             )}
@@ -328,7 +347,7 @@ export default function SummaryScreen({ navigation }) {
 const styles = StyleSheet.create({
   resfreshing: {
     flex: 1,
-    justifyContent:"center"
+    justifyContent: "center",
   },
   modalOverlay: {
     backgroundColor: "rgba(0,0,0,0.5)",
