@@ -56,7 +56,7 @@ function MeterReadingScanner({ navigation }) {
     isOverRideValue,
     flag,
   } = route.params ?? {};
-  console.log(isOverRideValue, ">>>>>s>>>>>>>");
+  // console.log(isOverRideValue, ">>>>>s>>>>>>>");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);

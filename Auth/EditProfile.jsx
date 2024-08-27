@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ImageBackground, Pressable, StatusBar, Text } from "react-native";
+import { ActivityIndicator, Alert, Dimensions, Image, ImageBackground, Pressable, StatusBar, Text } from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -22,23 +22,27 @@ function EditProfile({ navigation }) {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [firstname, setfirstname] = useState();
+  const [refreshing, setRefreshing] = useState(false)
+
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const fetchData = async () => {
+    setRefreshing(true)
     try {
       const res = await appApi.profile();;
       if (res?.status) {
         setEmail(res?.data?.email);
         setfirstname(res?.data?.name);
+        setRefreshing(false)
       }
     } catch (err) {
       showToast("Login again");
+      setRefreshing(false)
       async function handleLoginPress() {
-        // showToast("Login again");
         await AsyncStorage.removeItem("token");
         dispatch(setAuthToken(null));
-        navigation.navigate("Login"); // Navigate to the login screen
+        navigation.navigate("Login");
       }
       Alert.alert(
         "Token Expire",
@@ -46,7 +50,7 @@ function EditProfile({ navigation }) {
         [
           {
             text: "Login",
-            onPress: handleLoginPress, // Navigate to the login screen
+            onPress: handleLoginPress,
           },
         ],
         { cancelable: false }
@@ -96,7 +100,14 @@ function EditProfile({ navigation }) {
     }
   };
 
-  
+  if(refreshing){
+    return(
+      <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+        <ActivityIndicator size={"large"}/>
+      </View>
+    )
+  }
+
  
   return (
     <SafeAreaView>
@@ -132,7 +143,7 @@ function EditProfile({ navigation }) {
             style={{
               height: Dimensions.get("window").height * 0.445,
               width: Dimensions.get("window").width,
-              zIndex: 1,
+              
             }}
           />
 

@@ -25,11 +25,12 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
-  console.log(items, "?????????");
+  // console.log(items.reading_process, "?????????");
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
     for (let i = 0; i < words?.length; i++) {
@@ -98,6 +99,7 @@ function DashboardScheduledCards({
 
     checkImageURL(items?.image);
   }, [items?.image, modalVisible]);
+
   return (
     <View style={styles.propertyCards}>
       <View style={styles.cardContentTop}>
@@ -202,7 +204,6 @@ function DashboardScheduledCards({
               {convertDateToDDMMYY(items?.reading_date?.next)}
             </Text>
           </View>
-          
 
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
@@ -212,12 +213,12 @@ function DashboardScheduledCards({
             </Text>
           </View>
           <View style={styles.expandContentHeading}>
-              <Text style={styles.expandContentFTxt}>Readings Approval :</Text>
+            <Text style={styles.expandContentFTxt}>Readings Approval :</Text>
 
-              <Text style={styles.expandContentSTxt}>
-                {(items?.reading_approval)}
-              </Text>
-            </View>
+            <Text style={styles.expandContentSTxt}>
+              {items?.reading_approval}
+            </Text>
+          </View>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -228,29 +229,49 @@ function DashboardScheduledCards({
                 {convertToDuration(items?.estimate_time_in_sec)}
               </Text>
             </View>
-            <View>
-              <TouchableOpacity
-                style={{ marginBottom: 6 }}
-                onPress={() => {
-                  dispatch(setBooleanValue(true));
-                  dispatch(setStringValue("MeterSelection"));
-                  const meterData = { propertyId: items?.id, date: date };
-                  dispatch(setMeterPropertyID(meterData));
-                  navigation.jumpTo("MeterScreen", {
-                    PopertyId: items?.id,
-                    date,
-                    meter_reading_cycle_id: items?.meter_reading_cycle_id,
-                  });
-                }}
-              >
-                <SubmitButton
-                  textSize={14}
-                  bgColor={colorCodes.submitButtonEnabled}
-                  text="Start Reading"
-                />
-              </TouchableOpacity>
-            </View>
+            {items?.reading_process !== "contact_admin" && (
+              <View>
+                <TouchableOpacity
+                  style={{ marginBottom: 6 }}
+                  onPress={() => {
+                    dispatch(setBooleanValue(true));
+                    dispatch(setStringValue("MeterSelection"));
+                    const meterData = { propertyId: items?.id, date: date };
+                    dispatch(setMeterPropertyID(meterData));
+                    navigation.jumpTo("MeterScreen", {
+                      PopertyId: items?.id,
+                      date,
+                      meter_reading_cycle_id: items?.meter_reading_cycle_id,
+                    });
+                  }}
+                >
+                  <SubmitButton
+                    textSize={14}
+                    bgColor={colorCodes.submitButtonEnabled}
+                    text="Start Reading"
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
+          {items?.reading_process === "contact_admin" && (
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 12,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                source={require("../assets/exclamation-mark.png")}
+                style={styles.exclamation}
+              />
+              <Text style={{ color: "red" }}>
+                Contact Admit to Close Readings
+              </Text>
+            </View>
+          )}
         </View>
       ) : null}
 
@@ -312,6 +333,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: Dimensions.get("window").height * 0.3,
     marginBottom: 20,
+  },
+  exclamation: {
+    height: 20,
+    width: 20,
   },
   closeButton: {
     position: "absolute",

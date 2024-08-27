@@ -140,7 +140,7 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    console.log(option.reading_status, "option heaind88888888888888888");
+    // console.log(option.reading_status, "option heaind88888888888888888");
     completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -158,7 +158,6 @@ const MeterSection = ({ navigation }) => {
   };
   const meternotesubmit = () => {
     setnoteLoading(true);
-    toast.show("wait while updating", { type: "sucess" });
     const fetchSubmitData = async () => {
       const data = {
         propertyId: PopertyId,
@@ -350,7 +349,7 @@ const MeterSection = ({ navigation }) => {
   );
 
   const completedImage = (meterId,editAccess) => {
-    console.log(editAccess,"meteridghg")
+    // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
     const data = {
