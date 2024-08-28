@@ -87,6 +87,7 @@ function Dashboard({ navigation }) {
         console.log(err, "dashoard  error");
       });
       setExpandSchedule(null)
+      setExpandCompleted(null)
   }, [toggleScheduleCompleted, monthIndex, year]);
 
   // useEffect(() => {

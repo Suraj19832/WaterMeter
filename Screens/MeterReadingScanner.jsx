@@ -76,6 +76,7 @@ function MeterReadingScanner({ navigation }) {
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
+  const [overrideLoading, setOverrideLoading] = useState(false)
   // console.log(typeof value, value, "LLLLLLLLLL");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const [isRescan, setIsRescan] = useState(false);
@@ -377,6 +378,7 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const getOverRideDigit = () => {
+    setOverrideLoading(true)
     const data = {
       property_id: id,
       meter_id: meterName,
@@ -385,13 +387,16 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
+        console.log(res,"<<<<<<<,")
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;
         setValue(currentValue.join(""));
+        setOverrideLoading(false)
       })
       .catch((err) => {
         console.log(err, "error from override digit");
+        setOverrideLoading(false)
       });
   };
 
@@ -503,7 +508,8 @@ function MeterReadingScanner({ navigation }) {
             ((value.length === CELL_COUNT && isOverRideValue === "yes") ||
             value.length !== CELL_COUNT ? (
               <TouchableOpacity
-                style={styles.lastDigit}
+              disabled={overrideLoading ? true : false}
+                style={[styles.lastDigit,{backgroundColor: overrideLoading ? colorCodes.submitButtonDisabled : colorCodes.submitButtonEnabled,}]}
                 onPress={getOverRideDigit}
               >
                 <Text style={styles.lastDigittext}>Last Digit OverRide</Text>
@@ -981,7 +987,7 @@ const styles = StyleSheet.create({
     color: "#989898",
   },
   lastDigit: {
-    backgroundColor: colorCodes.submitButtonEnabled,
+    
     borderRadius: 8,
     width: 90,
     paddingVertical: 2,

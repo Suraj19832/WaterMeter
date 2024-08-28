@@ -32,6 +32,7 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
   const [meterMake, setmeterMake] = useState({});
+  console.log(meterMake,"<<<<<<<,")
   const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};
@@ -157,6 +158,10 @@ const MeterSection = ({ navigation }) => {
     setIsModalVisible(false);
   };
   const meternotesubmit = () => {
+    if(dropdownNotes?.trim() === ""){
+      setIsModalVisible(false)
+      return;
+    }
     setnoteLoading(true);
     const fetchSubmitData = async () => {
       const data = {
@@ -638,7 +643,7 @@ const MeterSection = ({ navigation }) => {
             <View>
               <TouchableOpacity onPress={toggleModalVisibilityImage}>
                 <Image
-                  source={require("../assets/frame.png")}
+                  source={require("../assets/Frame.png")}
                   style={{
                     height: 28,
                     width: 30,

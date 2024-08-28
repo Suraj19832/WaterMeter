@@ -409,7 +409,7 @@ export default function DashboardCompletedCards({
             <View
               style={[
                 styles.expandContentHeading,
-                { marginTop: 10, justifyContent: "flex-end" },
+                { marginTop: 0, justifyContent: "flex-end" },
               ]}
             >
               <TouchableOpacity
