@@ -643,7 +643,7 @@ const MeterSection = ({ navigation }) => {
             <View>
               <TouchableOpacity onPress={toggleModalVisibilityImage}>
                 <Image
-                  source={require("../assets/Frame.png")}
+                  source={require("../assets/changeImage.png")}
                   style={{
                     height: 28,
                     width: 30,
