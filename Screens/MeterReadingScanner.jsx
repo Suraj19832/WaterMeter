@@ -65,11 +65,9 @@ function MeterReadingScanner({ navigation }) {
     completed_dataId,
     completed_note,
     billingId,
-    date,
     isOverRideValue,
     flag,
   } = route.params ?? {};
-  // console.log(isOverRideValue, ">>>>>s>>>>>>>");
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
@@ -240,7 +238,7 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
         meter_reading_cycle_id: billingId,
       };
-      // console.log(data, "<<<<<<<<<<<<<<<data in verfify");
+      console.log(data, "<<<<<<<<<<<<<<<data in verfify");
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setIsOverrideButton(true);
@@ -431,10 +429,8 @@ function MeterReadingScanner({ navigation }) {
     if (hasMeterReading) {
       try {
         if (hasMeterReading) {
-          // setIsScanCodeAlreadyExecuted(true);
           isScanCodeAlreadyExecuted.value = true;
           console.log("has meter reading data", hasMeterReading);
-
           captureImage();
         }
       } catch (error) {
