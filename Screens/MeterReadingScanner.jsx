@@ -14,6 +14,7 @@ import {
   Animated,
   Button,
   Dimensions,
+  AppState,
 } from "react-native";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -36,9 +37,21 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
+import {
+  Camera,
+  runAsync,
+  runAtTargetFps,
+  useCameraDevice,
+  useCameraFormat,
+  useFrameProcessor,
+} from "react-native-vision-camera";
+import { useTextRecognition } from "react-native-vision-camera-text-recognition";
+import { useSharedValue, Worklets } from "react-native-worklets-core";
+import { runOnJS } from "react-native-reanimated";
 
 function MeterReadingScanner({ navigation }) {
   const route = useRoute();
+  const { scanText } = useTextRecognition({ language: "en" });
   const {
     id,
     name,
@@ -57,6 +70,7 @@ function MeterReadingScanner({ navigation }) {
     flag,
   } = route.params ?? {};
   // console.log(isOverRideValue, ">>>>>s>>>>>>>");
+  const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
@@ -76,13 +90,14 @@ function MeterReadingScanner({ navigation }) {
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
-  const [overrideLoading, setOverrideLoading] = useState(false)
+  const [overrideLoading, setOverrideLoading] = useState(false);
   // console.log(typeof value, value, "LLLLLLLLLL");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
+  const format = useCameraFormat(device, [{ fps: 10 }]);
   const [isRescan, setIsRescan] = useState(false);
   const [isOverrideButton, setIsOverrideButton] = useState(false);
   const [overrideDigitResult, setOverrideDigitResult] = useState(8);
-
+  const isScanCodeAlreadyExecuted = useSharedValue(false);
   const meReasonsDemo = [
     "Invalid Result",
     "Failed Scan",
@@ -250,14 +265,16 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const captureImage = async () => {
+    console.log("capture image......=>>>>>");
+
     try {
       if (cameraRef.current) {
-        const photo = await cameraRef.current.takePictureAsync();
-        setCapturedImage(photo.uri);
+        const photo = await cameraRef.current.takePhoto();
+        setCapturedImage(`file://${photo.path}`);
 
         setIsCameraOpen(false);
         const resizedImage = await ImageManipulator.manipulateAsync(
-          photo.uri,
+          `file://${photo.path}`,
           [{ resize: { width: 800 } }],
           { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
@@ -273,6 +290,8 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleScan = () => {
+    // setIsScanCodeAlreadyExecuted(false);
+    isScanCodeAlreadyExecuted.value = false;
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
@@ -378,7 +397,7 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const getOverRideDigit = () => {
-    setOverrideLoading(true)
+    setOverrideLoading(true);
     const data = {
       property_id: id,
       meter_id: meterName,
@@ -387,18 +406,70 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
-        console.log(res,"<<<<<<<,")
+        console.log(res, "<<<<<<<,");
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;
         setValue(currentValue.join(""));
-        setOverrideLoading(false)
+        setOverrideLoading(false);
       })
       .catch((err) => {
         console.log(err, "error from override digit");
-        setOverrideLoading(false)
+        setOverrideLoading(false);
       });
   };
+  const [fps, setFps] = useState(0);
+  const lastFrameTime = useRef(0);
+  const handleFrameScan = Worklets.createRunOnJS(async (frame) => {
+    const { resultText } = frame;
+
+    const hasMeterReading = resultText?.match(/\b\d{4,}\b/g); // any number
+    // const hasMeterReading = /\b\d+\s*m\b/i.test(resultText); //if text has m
+    // const hasMeterReading = /\b\d+\b/i.test(resultText);
+    // Calculate the time difference between the current and last frame
+
+    if (hasMeterReading) {
+      try {
+        if (hasMeterReading) {
+          // setIsScanCodeAlreadyExecuted(true);
+          isScanCodeAlreadyExecuted.value = true;
+          console.log("has meter reading data", hasMeterReading);
+
+          captureImage();
+        }
+      } catch (error) {
+        console.error("Error taking photo:", error);
+      }
+    }
+  });
+  const handleFpsCalculation = Worklets.createRunOnJS((frame) => {
+    const currentTime = frame.timestamp / 1_000_000;
+    if (lastFrameTime.current !== 0) {
+      const timeDiff = currentTime - lastFrameTime.current;
+
+      if (timeDiff > 0) {
+        const currentFps = 1000 / timeDiff;
+
+        // Update the FPS state on the JS thread
+        runOnJS(setFps)(currentFps);
+      }
+    }
+
+    // Update the last frame time
+    lastFrameTime.current = currentTime;
+  });
+  const handleFrameProcessor = useFrameProcessor((frame) => {
+    "worklet";
+
+    // handleFpsCalculation(frame);
+    runAtTargetFps(10, () => {
+      // Run at 15 FPS, adjust based on your needs
+      if (isScanCodeAlreadyExecuted.value === false) {
+        const data = scanText(frame);
+        handleFrameScan(data);
+      }
+    });
+  }, []);
 
   if (!permission) {
     return <View />;
@@ -452,27 +523,41 @@ function MeterReadingScanner({ navigation }) {
               onHandlerStateChange={onPinchStateChange}
             >
               <View>
-                <CameraView type={facing} zoom={zoom} ref={cameraRef}>
-                  <Animated.View
-                    style={[
-                      styles.scanningOverlay,
-                      { transform: [{ translateY }] },
-                    ]}
-                  />
-                  <View>
-                    <TouchableOpacity style={{ height: 200 }}>
-                      <TouchableOpacity
-                        onPress={captureImage}
-                        style={styles.shutterIcon}
-                      >
-                        <Image
-                          source={require("../assets/icons/shutter.png")}
-                          style={{ height: 30, width: 30 }}
-                        />
-                      </TouchableOpacity>
+                <Camera
+                  ref={cameraRef}
+                  device={device}
+                  zoom={zoom}
+                  // enableFpsGraph={true}
+                  fps={10}
+                  format={format}
+                  photo={true}
+                  style={{ width: "100%", height: 200 }}
+                  isActive={isCameraOpen && AppState.currentState === "active"}
+                  frameProcessor={handleFrameProcessor}
+                />
+                <Animated.View
+                  style={[
+                    styles.scanningOverlay,
+                    { transform: [{ translateY }] },
+                  ]}
+                />
+                <View style={styles.overlayBox} />
+                <View style={StyleSheet.absoluteFillObject}>
+                  <TouchableOpacity style={{ height: 200 }}>
+                    <TouchableOpacity
+                      onPress={captureImage}
+                      style={styles.shutterIcon}
+                    >
+                      <Image
+                        source={require("../assets/icons/shutter.png")}
+                        style={{ height: 30, width: 30 }}
+                      />
                     </TouchableOpacity>
-                  </View>
-                </CameraView>
+                  </TouchableOpacity>
+                </View>
+                {/* <Text>
+                  {fps.toFixed(2) < 10 ? "Please zoom in" : "Capturing.."}
+                </Text> */}
               </View>
             </PinchGestureHandler>
           </GestureHandlerRootView>
@@ -508,8 +593,15 @@ function MeterReadingScanner({ navigation }) {
             ((value.length === CELL_COUNT && isOverRideValue === "yes") ||
             value.length !== CELL_COUNT ? (
               <TouchableOpacity
-              disabled={overrideLoading ? true : false}
-                style={[styles.lastDigit,{backgroundColor: overrideLoading ? colorCodes.submitButtonDisabled : colorCodes.submitButtonEnabled,}]}
+                disabled={overrideLoading ? true : false}
+                style={[
+                  styles.lastDigit,
+                  {
+                    backgroundColor: overrideLoading
+                      ? colorCodes.submitButtonDisabled
+                      : colorCodes.submitButtonEnabled,
+                  },
+                ]}
                 onPress={getOverRideDigit}
               >
                 <Text style={styles.lastDigittext}>Last Digit OverRide</Text>
@@ -987,7 +1079,6 @@ const styles = StyleSheet.create({
     color: "#989898",
   },
   lastDigit: {
-    
     borderRadius: 8,
     width: 90,
     paddingVertical: 2,
@@ -1042,6 +1133,18 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: "#fff",
     fontWeight: "600",
+  },
+  overlayBox: {
+    position: "absolute",
+    top: 20,
+    left: "25%",
+    width: 200,
+    height: 100,
+    // marginLeft: -100, // Centering horizontally
+    // marginTop: -50, // Centering vertically
+    borderColor: "white",
+    borderWidth: 2,
+    opacity: 0.5,
   },
 });
 export default MeterReadingScanner;

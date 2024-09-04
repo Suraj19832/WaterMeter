@@ -33,8 +33,6 @@ const DashboardStack = () => (
   </Stack.Navigator>
 );
 
-
-
 const TabNavigator = () => (
   <Bottom.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
     <Bottom.Screen

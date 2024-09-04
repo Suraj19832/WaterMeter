@@ -69,10 +69,12 @@ function Dashboard({ navigation }) {
 
   const fetchData = useCallback(() => {
     setLoading(true);
-   
+
     const params = {
       status: !toggleScheduleCompleted ? "scheduled" : "completed",
-      date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`,
+      date: `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(
+        currentDay
+      ).padStart(2, "0")}`,
     };
     appApi
       .dashboard(params)
@@ -86,8 +88,8 @@ function Dashboard({ navigation }) {
         setRefreshing(false);
         console.log(err, "dashoard  error");
       });
-      setExpandSchedule(null)
-      setExpandCompleted(null)
+    setExpandSchedule(null);
+    setExpandCompleted(null);
   }, [toggleScheduleCompleted, monthIndex, year]);
 
   // useEffect(() => {
@@ -95,10 +97,10 @@ function Dashboard({ navigation }) {
   // }, [fetchData]);
 
   useFocusEffect(
-    React.useCallback(()=>{
+    React.useCallback(() => {
       fetchData();
-    },[fetchData])
-  )
+    }, [fetchData])
+  );
 
   const refreshApp = () => {
     setRefreshing(true);
@@ -166,9 +168,7 @@ function Dashboard({ navigation }) {
           <Text style={styles.prevNextTxt}>Prev</Text>
         </TouchableOpacity>
 
-        <TouchableHighlight
-          style={styles.dateView}
-        >
+        <TouchableHighlight style={styles.dateView}>
           <Text style={styles.dateTxt}>
             {month} {year}
           </Text>
