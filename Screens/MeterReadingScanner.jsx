@@ -1136,8 +1136,8 @@ const styles = StyleSheet.create({
     left: "25%",
     width: 200,
     height: 100,
-    // marginLeft: -100, // Centering horizontally
-    // marginTop: -50, // Centering vertically
+    marginLeft: -10, // Centering horizontally
+    marginTop: 20, // Centering vertically
     borderColor: "white",
     borderWidth: 2,
     opacity: 0.5,

@@ -5,9 +5,9 @@ import {
   sendPostFormData,
 } from "./Helper";
 
-const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
+// const baseURL = "https://ehostingguru.com/stage/water-meter/api/public"; //for devs
 // const baseURL = "https://test.ehostingguru.com/water-meter/api/public"; //for testing
-// const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat
+const baseURL = "https://uat.ehostingguru.com/water-meter/api/public"; //for uat
 // const baseURL = "https://9b35-2405-201-8015-610b-813d-7508-77c4-86d8.ngrok-free.app"
 
 const appApi = {

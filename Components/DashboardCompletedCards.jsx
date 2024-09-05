@@ -265,17 +265,17 @@ export default function DashboardCompletedCards({
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
-        return ""; 
+      return "";
     }
     const date = new Date(dateString);
     if (isNaN(date.getTime()) || date.getFullYear() < 1000) {
-        return "";
+      return "";
     }
     const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
-    const year = String(date.getFullYear()).slice(-2); 
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2);
     return `${day}/${month}/${year}`;
-}
+  }
 
   function convertToDuration(seconds) {
     const hours = Math.floor(seconds / 3600);
@@ -328,7 +328,9 @@ export default function DashboardCompletedCards({
           )}
 
           <View style={styles.belowSecond}>
-            <Text style={{ fontWeight: "500" }}>{items?.total_meter} meters</Text>
+            <Text style={{ fontWeight: "500" }}>
+              {items?.total_meter} meters
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 if (expandCompleted == index) {
@@ -396,8 +398,19 @@ export default function DashboardCompletedCards({
             <View style={styles.expandContentHeading}>
               <Text style={styles.expandContentFTxt}>Readings Approval : </Text>
 
-              <Text style={styles.expandContentSTxt}>
-                {(items?.reading_approval)}
+              <Text
+                style={[
+                  styles.expandContentSTxt,
+                  {
+                    color:
+                      items?.reading_approval === "Processed"
+                        ? "#2F8A16"
+                        : colorCodes.submitButtonEnabled,
+                    fontWeight: "500",
+                  },
+                ]}
+              >
+                {items?.reading_approval}
               </Text>
             </View>
             <View style={styles.expandContentHeading}>
@@ -418,7 +431,7 @@ export default function DashboardCompletedCards({
                   navigation.navigate("SummaryScreen", {
                     id: items?.id,
                     name: items?.name,
-                    meter_reading_cycle_id:items?.meter_reading_cycle_id
+                    meter_reading_cycle_id: items?.meter_reading_cycle_id,
                   })
                 }
               >
