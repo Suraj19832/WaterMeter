@@ -32,7 +32,7 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
   const [meterMake, setmeterMake] = useState({});
-  console.log(meterMake,"<<<<<<<,")
+  // console.log(meterMake,"<<<<<<<,")
   const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};

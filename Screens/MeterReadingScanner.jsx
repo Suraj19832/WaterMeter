@@ -404,7 +404,7 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
-        console.log(res, "<<<<<<<,");
+        // console.log(res, "<<<<<<<,");
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;

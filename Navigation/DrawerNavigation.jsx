@@ -35,6 +35,7 @@ const DrawerNavigation = ({ navigation }) => {
       setModal(false);
       toast.show("Wait a Second", { type: "sucess" });
       const res = await appApi.logout();
+      console.log(res,"logout logout")
       if (res?.status) {
         toast.show("Logout Successfully", { type: "sucess" });
         await AsyncStorage.removeItem("token");

@@ -98,14 +98,14 @@ function Login({ navigation }) {
   const errors = {};
 
   const validation = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
     if (!trimmedEmail) {
-      errors.email = "Email id is required";
-    } else if (!emailRegex.test(trimmedEmail)) {
-      errors.email = "Incorrect email format";
+      errors.email = "Username or email is required";
+    } else if (trimmedEmail.length <= 4) {
+      errors.email = "This field should be more than 4 characters";
     }
 
     if (!trimmedPassword) {
