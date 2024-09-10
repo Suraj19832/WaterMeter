@@ -403,9 +403,11 @@ export default function DashboardCompletedCards({
                   styles.expandContentSTxt,
                   {
                     color:
-                      items?.reading_approval === "Processed"
-                        ? "#2F8A16"
-                        : colorCodes.submitButtonEnabled,
+                    items?.reading_approval === "Processed"
+                      ? "#2F8A16"
+                      : items?.reading_approval === "N/A"
+                      ? "grey"
+                      : colorCodes.submitButtonEnabled,
                     fontWeight: "500",
                   },
                 ]}

@@ -67,6 +67,7 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
+  console.log(meterCompletedImage)
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -117,10 +118,12 @@ const MeterSection = ({ navigation }) => {
     return `${day}/${month}/${year}`;
   }
 
-  const handleSelectionOptionMeter = (all_data, option, billingId, note) => {
+  const handleSelectionOptionMeter = (all_data, option, billingId, note,image) => {
+    console.log(image,"<<<<<<<<<<<<<<<<<>>>>")
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
-    setUserSelectedImage(null);
+    setUserSelectedImage(image);
+    // console.log(userSelectedImage)
     setinputValuePending(option);
     setmeterData(option);
     setIsPendingDropdown(false);
@@ -128,6 +131,7 @@ const MeterSection = ({ navigation }) => {
     setDropdownNotes(note);
 
     const meterMakevalue = getNameById(all_data, option);
+    // console.log(meterMakevalue,"PPPPPPPPPPPPP")
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
@@ -483,6 +487,7 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
+                    // console.log(meterid,">>>>::::::::::::::")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -491,7 +496,8 @@ const MeterSection = ({ navigation }) => {
                             meterDataByApi,
                             meterid?.id,
                             meterid?.meter_reading_cycle_id,
-                            meterid?.note
+                            meterid?.note,
+                            meterid?.image
                           )
                         }
                         key={index}

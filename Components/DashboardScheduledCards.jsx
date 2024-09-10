@@ -215,7 +215,20 @@ function DashboardScheduledCards({
           <View style={styles.expandContentHeading}>
             <Text style={styles.expandContentFTxt}>Readings Approval :</Text>
 
-            <Text style={styles.expandContentSTxt}>
+            <Text
+              style={[
+                styles.expandContentSTxt,
+                {
+                  color:
+                    items?.reading_approval === "Processed"
+                      ? "#2F8A16"
+                      : items?.reading_approval === "N/A"
+                      ? "grey"
+                      : colorCodes.submitButtonEnabled,
+                  fontWeight: "500",
+                },
+              ]}
+            >
               {items?.reading_approval}
             </Text>
           </View>
