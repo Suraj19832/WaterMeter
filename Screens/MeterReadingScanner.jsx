@@ -269,8 +269,9 @@ function MeterReadingScanner({ navigation }) {
       if (cameraRef.current) {
         const photo = await cameraRef.current.takePhoto();
         setCapturedImage(`file://${photo.path}`);
-
-        setIsCameraOpen(false);
+        setTimeout(() => {
+          setIsCameraOpen(false);
+        }, 1000);
         const resizedImage = await ImageManipulator.manipulateAsync(
           `file://${photo.path}`,
           [{ resize: { width: 800 } }],
@@ -281,7 +282,7 @@ function MeterReadingScanner({ navigation }) {
         await verifyNumber(fileData);
       }
     } catch (error) {
-      toast.show("Unable to capture image", { type: "error" });
+      // toast.show("Unable to capture image", { type: "error" });
       console.error(error);
     } finally {
     }
@@ -293,7 +294,7 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
-    captureImage();
+    // captureImage();
     if (capturedImage) {
       setIsRescan(true);
     } else {
@@ -428,7 +429,7 @@ function MeterReadingScanner({ navigation }) {
 
     if (hasMeterReading) {
       try {
-        if (hasMeterReading) {
+        if (hasMeterReading && isScanCodeAlreadyExecuted.value === false) {
           isScanCodeAlreadyExecuted.value = true;
           console.log("has meter reading data", hasMeterReading);
           captureImage();
@@ -456,8 +457,9 @@ function MeterReadingScanner({ navigation }) {
   });
   const handleFrameProcessor = useFrameProcessor((frame) => {
     "worklet";
-
+    // const data = scanText(frame);
     // handleFpsCalculation(frame);
+    // handleFrameScan(data);
     runAtTargetFps(10, () => {
       // Run at 15 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
@@ -546,7 +548,14 @@ function MeterReadingScanner({ navigation }) {
                     >
                       <Image
                         source={require("../assets/icons/shutter.png")}
-                        style={{ height: 30, width: 30 }}
+                        style={{
+                          height: 30,
+                          width: 30,
+                          tintColor:
+                            isScanCodeAlreadyExecuted.value === true || loading
+                              ? "grey"
+                              : null,
+                        }}
                       />
                     </TouchableOpacity>
                   </TouchableOpacity>
