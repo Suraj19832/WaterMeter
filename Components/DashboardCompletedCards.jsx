@@ -20,7 +20,7 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
-  // console.log(items,"LLLLLLLLLL")
+  console.log(items,"LLLLLLLLLL")
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -434,6 +434,7 @@ export default function DashboardCompletedCards({
                     id: items?.id,
                     name: items?.name,
                     meter_reading_cycle_id: items?.meter_reading_cycle_id,
+                    reading_approval: items?.reading_approval
                   })
                 }
               >

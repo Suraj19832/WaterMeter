@@ -22,11 +22,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 import { ToastProvider, useToast } from "react-native-toast-notifications";
+import Constants from 'expo-constants';
+
+
 const DrawerNavigation = ({ navigation }) => {
   const [modal, setModal] = useState(false);
   const [isYesPressed, setIsYesPressed] = useState(false);
   const [isNoPressed, setIsNoPressed] = useState(false);
   const dispatch = useDispatch();
+
+  const appVersion = 
+    Constants.expoConfig?.version || // EAS Build/Bare Workflow
+    Constants.manifest?.version || // Managed Workflow
+    Constants.manifest2?.extra?.expoClient?.version || // Fallback for other cases
+    'Version not available'; // Default fallback
+
+  console.log(appVersion, "App Version");
 
   const toast = useToast();
 
@@ -223,6 +234,9 @@ const DrawerNavigation = ({ navigation }) => {
         />
         <Text style={styles.changePassText}>Log Out</Text>
       </TouchableOpacity>
+      <View style={{position:"absolute",bottom:14,alignSelf:"center"}}>
+        <Text style={{color:colorCodes.secondaryLightGray}}>Version : {appVersion}</Text>
+      </View>
     </View>
   );
 };
