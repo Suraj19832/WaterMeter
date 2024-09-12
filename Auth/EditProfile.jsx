@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Dimensions, Image, ImageBackground, Pressable, StatusBar, Text } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Image,
+  ImageBackground,
+  Pressable,
+  StatusBar,
+  Text,
+} from "react-native";
 import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
@@ -22,23 +31,26 @@ function EditProfile({ navigation }) {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [firstname, setfirstname] = useState();
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
   const fetchData = async () => {
-    setRefreshing(true)
+    setRefreshing(true);
     try {
-      const res = await appApi.profile();;
+      const res = await appApi.profile();
       if (res?.status) {
         setEmail(res?.data?.email);
         setfirstname(res?.data?.name);
-        setRefreshing(false)
+        setRefreshing(false);
+      } else {
+        setRefreshing(false);
+        // showToast("Login again");
       }
     } catch (err) {
       showToast("Login again");
-      setRefreshing(false)
+      setRefreshing(false);
       async function handleLoginPress() {
         await AsyncStorage.removeItem("token");
         dispatch(setAuthToken(null));
@@ -55,6 +67,8 @@ function EditProfile({ navigation }) {
         ],
         { cancelable: false }
       );
+    } finally {
+      setRefreshing(false);
     }
   };
   useEffect(() => {
@@ -100,18 +114,16 @@ function EditProfile({ navigation }) {
     }
   };
 
-  if(refreshing){
-    return(
-      <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-        <ActivityIndicator size={"large"}/>
+  if (refreshing) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={"large"} />
       </View>
-    )
+    );
   }
 
- 
   return (
     <SafeAreaView>
-
       <ScrollView style={{ height: "auto" }}>
         <ImageBackground
           source={require("../assets/BackgroundImage.png")}
@@ -123,7 +135,7 @@ function EditProfile({ navigation }) {
           <View style={{ position: "absolute", zIndex: 2 }}>
             <Pressable
               onPress={navigation.goBack}
-              style={{ position: "absolute",zIndex:1,height:22,width:22 }}
+              style={{ position: "absolute", zIndex: 1, height: 22, width: 22 }}
             >
               <Image
                 source={require("../assets/left-arrow.png")}
@@ -143,7 +155,6 @@ function EditProfile({ navigation }) {
             style={{
               height: Dimensions.get("window").height * 0.445,
               width: Dimensions.get("window").width,
-              
             }}
           />
 
