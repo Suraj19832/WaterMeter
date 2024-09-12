@@ -540,7 +540,7 @@ function MeterReadingScanner({ navigation }) {
                   ]}
                 />
                 <View style={styles.overlayBox} />
-                <View style={StyleSheet.absoluteFillObject}>
+                {/* <View style={StyleSheet.absoluteFillObject}>
                   <TouchableOpacity style={{ height: 200 }}>
                     <TouchableOpacity
                       onPress={captureImage}
@@ -559,7 +559,7 @@ function MeterReadingScanner({ navigation }) {
                       />
                     </TouchableOpacity>
                   </TouchableOpacity>
-                </View>
+                </View> */}
                 {/* <Text>
                   {fps.toFixed(2) < 10 ? "Please zoom in" : "Capturing.."}
                 </Text> */}
