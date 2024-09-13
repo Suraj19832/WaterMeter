@@ -193,7 +193,7 @@ function MeterReadingScanner({ navigation }) {
   const scanAnimation = useRef(new Animated.Value(1)).current;
   const [facing, setFacing] = useState("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [zoom, setZoom] = useState(0);
+  const [zoom, setZoom] = useState(1);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const cameraRef = useRef(null);
@@ -267,6 +267,7 @@ function MeterReadingScanner({ navigation }) {
 
     try {
       if (cameraRef.current) {
+        setZoom(2);
         const photo = await cameraRef.current.takePhoto();
         setCapturedImage(`file://${photo.path}`);
         setTimeout(() => {
@@ -290,6 +291,7 @@ function MeterReadingScanner({ navigation }) {
 
   const handleScan = () => {
     // setIsScanCodeAlreadyExecuted(false);
+    setZoom(1);
     isScanCodeAlreadyExecuted.value = false;
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
@@ -417,8 +419,6 @@ function MeterReadingScanner({ navigation }) {
         setOverrideLoading(false);
       });
   };
-  const [fps, setFps] = useState(0);
-  const lastFrameTime = useRef(0);
   const handleFrameScan = Worklets.createRunOnJS(async (frame) => {
     const { resultText } = frame;
 
@@ -439,29 +439,12 @@ function MeterReadingScanner({ navigation }) {
       }
     }
   });
-  const handleFpsCalculation = Worklets.createRunOnJS((frame) => {
-    const currentTime = frame.timestamp / 1_000_000;
-    if (lastFrameTime.current !== 0) {
-      const timeDiff = currentTime - lastFrameTime.current;
 
-      if (timeDiff > 0) {
-        const currentFps = 1000 / timeDiff;
-
-        // Update the FPS state on the JS thread
-        runOnJS(setFps)(currentFps);
-      }
-    }
-
-    // Update the last frame time
-    lastFrameTime.current = currentTime;
-  });
   const handleFrameProcessor = useFrameProcessor((frame) => {
     "worklet";
-    // const data = scanText(frame);
-    // handleFpsCalculation(frame);
-    // handleFrameScan(data);
+
     runAtTargetFps(10, () => {
-      // Run at 15 FPS, adjust based on your needs
+      // Run at 10 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
         const data = scanText(frame);
         handleFrameScan(data);
@@ -560,9 +543,6 @@ function MeterReadingScanner({ navigation }) {
                     </TouchableOpacity>
                   </TouchableOpacity>
                 </View> */}
-                {/* <Text>
-                  {fps.toFixed(2) < 10 ? "Please zoom in" : "Capturing.."}
-                </Text> */}
               </View>
             </PinchGestureHandler>
           </GestureHandlerRootView>
