@@ -69,6 +69,7 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
+  console.log(meterCompletedImage)
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -183,8 +184,6 @@ const MeterSection = ({ navigation }) => {
   const meternotesubmit = () => {
     if (dropdownNotes?.trim() === "") {
       setIsModalVisible(false);
-    if (dropdownNotes?.trim() === "") {
-      setIsModalVisible(false);
       return;
     }
     setnoteLoading(true);
@@ -194,7 +193,6 @@ const MeterSection = ({ navigation }) => {
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
-
       try {
         const res = await appApi.meternote(data);
         if (res?.status) {
@@ -379,7 +377,8 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId, editAccess) => {
+  const completedImage = (meterId,editAccess) => {
+    // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
     const data = {
@@ -394,7 +393,6 @@ const MeterSection = ({ navigation }) => {
         setMeterCompletedImage(res?.data?.image);
         setMeterReading(res?.data?.reading);
         setCompletedDataId(res?.data?.data_id);
-        setEditAccess(editAccess);
         setEditAccess(editAccess);
 
         setCompletedUnit({
@@ -813,7 +811,6 @@ const MeterSection = ({ navigation }) => {
                 {Object.keys(completedUnit).length !== 0 && (
                   <TouchableOpacity
                     disabled={editAccess === "Pending" ? false : true}
-                    disabled={editAccess === "Pending" ? false : true}
                     onPress={() =>
                       navigation.navigate("meterReadingScanner", {
                         id,
@@ -836,11 +833,6 @@ const MeterSection = ({ navigation }) => {
                     }
                   >
                     <Image
-                      source={
-                        editAccess === "Pending"
-                          ? require("../assets/write.png")
-                          : require("../assets/disableWrite.png")
-                      }
                       source={
                         editAccess === "Pending"
                           ? require("../assets/write.png")
