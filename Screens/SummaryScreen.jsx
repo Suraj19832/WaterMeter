@@ -1,6 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,10 +15,13 @@ import {
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import appApi from "../Helper/Api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name, meter_reading_cycle_id } = route.params ?? {};
+  const { id, name, meter_reading_cycle_id, reading_approval } =
+    route.params ?? {};
+  console.log(meter_reading_cycle_id, "????????????????////////////////");
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -29,11 +32,64 @@ export default function SummaryScreen({ navigation }) {
   const [showImage, setShowImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
   const [resfreshing, setResfreshing] = useState(false);
+  const [totalDigit, setTotalDigit] = useState(null);
+  const [meterMake, setMeterMake] = useState("");
+  const [avgUsage, setAvgUsage] = useState(null);
+  const [completedNote, setCompletedNote] = useState("");
+  const [cycleID, setCycleId] = useState(null);
+  const [overridevalue, setOverrideValue] = useState("");
   const [completedUnit, setCompletedUnit] = useState({
     reading: "",
     readingType: "",
     readingDate: "",
   });
+
+  const saveMeterReadingCycleId = async (cycleId) => {
+    try {
+      // Convert the value to a string before saving it to AsyncStorage
+      await AsyncStorage.setItem(
+        "meterReadingCycleId",
+        JSON.stringify(cycleId)
+      );
+      console.log("Meter Reading Cycle ID saved successfully:", cycleId);
+    } catch (error) {
+      console.error("Error saving Meter Reading Cycle ID:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      meter_reading_cycle_id !== undefined &&
+      meter_reading_cycle_id !== null
+    ) {
+      saveMeterReadingCycleId(meter_reading_cycle_id);
+    }
+  }, [meter_reading_cycle_id]);
+
+  console.log(meter_reading_cycle_id, "Meter Reading Cycle ID");
+
+  function getLastFiveDigits(number) {
+    // Convert the number to a string only if it's a valid number
+    let numberStr =
+      number !== undefined && number !== null ? number.toString() : "";
+
+    // Split the string into integer and decimal parts if it's not empty
+    if (numberStr) {
+      let [integerPart, decimalPart] = numberStr.split(".");
+
+      // If no decimal part, return the integer part
+      if (!decimalPart) {
+        return integerPart;
+      }
+
+      // Slice the first 5 digits of the decimal part and return the formatted string
+      let truncatedDecimal = decimalPart.slice(0, 5);
+      return `${integerPart}.${truncatedDecimal}`;
+    }
+
+    // Handle invalid or empty input cases
+    return "";
+  }
 
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -51,33 +107,63 @@ export default function SummaryScreen({ navigation }) {
     return `${day}/${month}/${year}`;
   }
 
-  const meterDetails = (meterId) => {
+  const meterDetails = async (meterId) => {
     setLoading(true);
     setImageLoading(true);
-    const data = {
-      meter_id: meterId,
-      meter_reading_cycle_id: meter_reading_cycle_id,
-    };
-    appApi
-      .completedImage(data)
-      .then((res) => {
-        console.log(res.data.readingType,"<>><><><><><><><><><><><><><>")
-        setCompletedUnit({
-          reading: res?.data?.reading,
-          readingType: res?.data?.readingType,
-          readingDate: res?.data?.readingDate,
+
+    try {
+      // Fetch the meter_reading_cycle_id from AsyncStorage
+      const storedCycleId = await AsyncStorage.getItem("meterReadingCycleId");
+
+      // Parse the stored value back to the expected format (number in this case)
+      const meterReadingCycleId = storedCycleId
+        ? JSON.parse(storedCycleId)
+        : null;
+
+      // Ensure that meterReadingCycleId is available
+      if (!meterReadingCycleId) {
+        console.error("Meter Reading Cycle ID is not available.");
+        setLoading(false);
+        setImageLoading(false);
+        return;
+      }
+      const data = {
+        meter_id: meterId,
+        meter_reading_cycle_id: meter_reading_cycle_id,
+      };
+      console.log(data, "comppeteimahe");
+      appApi
+        .completedImage(data)
+        .then((res) => {
+          console.log(res, " completed image api response ========>");
+          setCompletedUnit({
+            reading: res?.data?.reading,
+            readingType: res?.data?.readingType,
+            readingDate: res?.data?.readingDate,
+          });
+          setShowImage(res?.data?.image);
+          setTotalDigit(res?.data?.total_number_of_digit);
+          setMeterMake(res?.data?.unit_id);
+          setAvgUsage(res?.data?.avg_usage);
+          setCompletedNote(res?.data?.note);
+          setCycleId(res?.data?.meter_reading_cycle_id);
+          setOverrideValue(res?.data?.meter_last_digit_override);
+          setLoading(false);
+          setImageLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
+          setImageLoading(false);
         });
-        setShowImage(res?.data?.image);
-        setLoading(false);
-        setImageLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        setImageLoading(false);
-      });
+    } catch (error) {
+      console.error("Error retrieving Meter Reading Cycle ID:", error);
+      setLoading(false);
+      setImageLoading(false);
+    }
   };
 
   const handleDropdownValue = (items) => {
+    console.log(items, ">>");
     setDropdownValue(items?.id);
     setToggleDropdown(false);
     meterDetails(items.id);
@@ -90,10 +176,11 @@ export default function SummaryScreen({ navigation }) {
       const data = {
         meter_reading_cycle_id: meter_reading_cycle_id,
       };
+      console.log(data, "summary");
       appApi
         .summaryCompletion(data)
         .then((res) => {
-          console.log(res);
+          console.log(res, "summarycompletion api response=======>");
           setData(res?.data);
           setResfreshing(false);
           setDropdownData(res?.data?.completedMeters);
@@ -189,11 +276,13 @@ export default function SummaryScreen({ navigation }) {
 
         <View style={styles.latLongBox}>
           <View style={styles.latBox}>
-            <Text style={styles.lat}>Lat : {data?.lat}</Text>
+            <Text style={styles.lat}>Lat : {getLastFiveDigits(data?.lat)}</Text>
           </View>
 
           <View style={styles.longBox}>
-            <Text style={styles.longtext}>Long : {data?.lng}</Text>
+            <Text style={styles.longtext}>
+              Long : {getLastFiveDigits(data?.lng)}
+            </Text>
           </View>
         </View>
 
@@ -240,32 +329,20 @@ export default function SummaryScreen({ navigation }) {
             )}
           </View>
 
-          <View
-            style={{
-              backgroundColor: "#2F8A16",
-              paddingVertical: 6,
-              borderRadius: 15,
-              paddingHorizontal: 16,
-              marginTop: 10,
-              alignSelf: "flex-end",
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: "700" }}>Completed</Text>
+          <View style={styles.completedStatus}>
+            <Text style={styles.completedText}>Completed</Text>
           </View>
 
           <View style={{ marginVertical: 10 }}>
             {loading ? (
               <ActivityIndicator size={"small"} />
             ) : (
-              <View style={{ flexDirection: "row", gap: 25 }}>
+              <View
+                style={{ flexDirection: "row", gap: 15, alignItems: "center" }}
+              >
                 {hideIcon && (
                   <TouchableOpacity
-                    style={{
-                      backgroundColor: "#197AB6",
-                      paddingVertical: 6,
-                      borderRadius: 15,
-                      paddingHorizontal: 16,
-                    }}
+                    style={styles.imageButton}
                     onPress={() => setCompleteModal(true)}
                   >
                     <Text
@@ -286,9 +363,38 @@ export default function SummaryScreen({ navigation }) {
                     color: "rgba(33, 152, 201, 1)",
                   }}
                 >
-                  {completedUnit.reading} {completedUnit.readingType}{" "}
-                  {convertDateToDDMMYY(completedUnit.readingDate)}
+                  {completedUnit?.reading} {completedUnit?.readingType}{" "}
+                  {convertDateToDDMMYY(completedUnit?.readingDate)}
                 </Text>
+                {reading_approval !== "Processed" && hideIcon && (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("meterReadingScanner", {
+                        id: id,
+                        name: name,
+                        meterName: meterMake,
+                        meterImage: showImage,
+                        meterReading: completedUnit?.reading,
+                        totalDigit: totalDigit,
+                        lastReading: completedUnit?.reading,
+                        lastReadingDate: completedUnit?.readingDate,
+                        avgUsage: avgUsage,
+                        completed_note: completedNote,
+                        billingId: cycleID,
+                        date: completedUnit?.readingDate,
+                        isOverRideValue: overridevalue,
+                        completed_dataId: null, //api
+                        flag: "testing", //progress
+                        navigatePath: "summaryCompleted",
+                      })
+                    }
+                  >
+                    <Image
+                      source={require("../assets/write.png")}
+                      style={{ height: 30, width: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             )}
           </View>
@@ -308,25 +414,12 @@ export default function SummaryScreen({ navigation }) {
               >
                 <Image
                   source={require("../assets/icons/close.png")}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    alignSelf: "flex-end",
-                    marginHorizontal: 20,
-                    marginBottom: 10,
-                  }}
+                  style={styles.closeImage}
                 />
               </TouchableWithoutFeedback>
               <View style={styles.imageBox}>
                 {imageLoading ? (
-                  <ActivityIndicator
-                    size="medium"
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  />
+                  <ActivityIndicator size="medium" style={styles.loading} />
                 ) : (
                   showImage && (
                     <Image
@@ -345,9 +438,24 @@ export default function SummaryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  completedStatus: {
+    backgroundColor: "#2F8A16",
+    paddingVertical: 6,
+    borderRadius: 15,
+    paddingHorizontal: 16,
+    marginTop: 10,
+    alignSelf: "flex-end",
+  },
+  completedText: { color: "white", fontWeight: "700" },
   resfreshing: {
     flex: 1,
     justifyContent: "center",
+  },
+  imageButton: {
+    backgroundColor: "#197AB6",
+    paddingVertical: 6,
+    borderRadius: 15,
+    paddingHorizontal: 16,
   },
   modalOverlay: {
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -363,6 +471,18 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
     backgroundColor: "rgba(0,0,0,0.6)",
+  },
+  closeImage: {
+    height: 20,
+    width: 20,
+    alignSelf: "flex-end",
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   closeButtonn: {},
   heading: {

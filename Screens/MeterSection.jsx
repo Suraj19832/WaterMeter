@@ -49,10 +49,12 @@ const MeterSection = ({ navigation }) => {
   const [isImage, setisImage] = useState();
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
+  console.log(inputValuePending,":::::::::::::::>>>>>>>>>>>")
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
   const [isCompletedDropdown, setIsCompletedDropdown] = useState(false);
   const [inputValueCompleted, setinputValueCompleted] = useState("");
+  console.log(inputValueCompleted,"::::::::::::::::::::::::::")
   const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
@@ -810,6 +812,7 @@ const MeterSection = ({ navigation }) => {
                         date: date,
                         flag: "editing",
                         isOverRideValue: isOverRide,
+                        navigatePath:"meterSection"
                       })
                     }
                   >
@@ -862,6 +865,7 @@ const MeterSection = ({ navigation }) => {
                   billingId: meterCycleId,
                   date: date,
                   isOverRideValue: isOverRide,
+                  navigatePath:"meterSection"
                 });
               }}
             >

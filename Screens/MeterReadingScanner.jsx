@@ -67,7 +67,9 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     isOverRideValue,
     flag,
+    navigatePath
   } = route.params ?? {};
+  console.log(navigatePath)
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
@@ -333,7 +335,7 @@ function MeterReadingScanner({ navigation }) {
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate("OcrCaptured", {
+          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
             meterName,
             id,
             name,
@@ -378,7 +380,7 @@ function MeterReadingScanner({ navigation }) {
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate("OcrCaptured", {
+          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
             meterName,
             id,
             name,
@@ -405,7 +407,7 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
-        // console.log(res, "<<<<<<<,");
+        console.log(res, "<<<<<<<,");
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;
@@ -460,7 +462,7 @@ function MeterReadingScanner({ navigation }) {
     // const data = scanText(frame);
     // handleFpsCalculation(frame);
     // handleFrameScan(data);
-    runAtTargetFps(10, () => {
+    runAtTargetFps(30, () => {
       // Run at 15 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
         const data = scanText(frame);
