@@ -23,7 +23,6 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
-  // console.log(items,"LLLLLLLLLL")
 
   const dispatch = useDispatch()
   const styles = StyleSheet.create({

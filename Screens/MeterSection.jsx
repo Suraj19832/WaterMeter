@@ -32,7 +32,6 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
   const [meterMake, setmeterMake] = useState({});
-  // console.log(meterMake,"<<<<<<<,")
   const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};
@@ -49,12 +48,10 @@ const MeterSection = ({ navigation }) => {
   const [isImage, setisImage] = useState();
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
-  console.log(inputValuePending, ":::::::::::::::>>>>>>>>>>>");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
   const [isCompletedDropdown, setIsCompletedDropdown] = useState(false);
   const [inputValueCompleted, setinputValueCompleted] = useState("");
-  console.log(inputValueCompleted, "::::::::::::::::::::::::::");
   const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
@@ -69,7 +66,6 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  console.log(meterCompletedImage);
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -113,10 +109,10 @@ const MeterSection = ({ navigation }) => {
     appApi
       .readingStartTime(data)
       .then((res) => {
-        console.log(res, "?????????stater timer");
+        console.log(res, "reading timer is now started");
       })
       .catch((err) => {
-        console.log(err, "errro timerstar");
+        console.log(err, "error while reading timer");
       });
   };
 
@@ -143,19 +139,15 @@ const MeterSection = ({ navigation }) => {
     note,
     image
   ) => {
-    console.log(image, "<<<<<<<<<<<<<<<<<>>>>");
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(image);
-    // console.log(userSelectedImage)
     setinputValuePending(option);
     setmeterData(option);
     setIsPendingDropdown(false);
     setmeterMake(getNameById(all_data, option));
     setDropdownNotes(note);
-
     const meterMakevalue = getNameById(all_data, option);
-    // console.log(meterMakevalue,"PPPPPPPPPPPPP")
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
@@ -169,7 +161,6 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    // console.log(option.reading_status, "option heaind88888888888888888");
     completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -382,7 +373,6 @@ const MeterSection = ({ navigation }) => {
   );
 
   const completedImage = (meterId, editAccess) => {
-    // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
     const data = {
@@ -392,7 +382,6 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        // console.log(res,">>>>>>>>>>>metere conrh")
         dispatch(setBillingAddress(res?.meter_reading_cycle_id));
         setMeterCycleId(res?.data?.meter_reading_cycle_id);
         setMeterCompletedImage(res?.data?.image);
@@ -511,7 +500,6 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
-                    // console.log(meterid,">>>>::::::::::::::")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}

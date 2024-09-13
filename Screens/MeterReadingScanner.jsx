@@ -69,7 +69,6 @@ function MeterReadingScanner({ navigation }) {
     flag,
     navigatePath
   } = route.params ?? {};
-  console.log(navigatePath)
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
   const [meterValue, setMeterValue] = useState(null);
@@ -91,7 +90,6 @@ function MeterReadingScanner({ navigation }) {
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
   const [overrideLoading, setOverrideLoading] = useState(false);
-  // console.log(typeof value, value, "LLLLLLLLLL");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const format = useCameraFormat(device, [{ fps: 10 }]);
   const [isRescan, setIsRescan] = useState(false);
@@ -265,8 +263,6 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const captureImage = async () => {
-    console.log("capture image......=>>>>>");
-
     try {
       if (cameraRef.current) {
         setZoom(2);
@@ -409,7 +405,6 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
-        console.log(res, "<<<<<<<,");
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;
@@ -433,7 +428,6 @@ function MeterReadingScanner({ navigation }) {
       try {
         if (hasMeterReading && isScanCodeAlreadyExecuted.value === false) {
           isScanCodeAlreadyExecuted.value = true;
-          console.log("has meter reading data", hasMeterReading);
           captureImage();
         }
       } catch (error) {
