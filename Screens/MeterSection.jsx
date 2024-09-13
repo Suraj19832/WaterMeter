@@ -35,6 +35,8 @@ const MeterSection = ({ navigation }) => {
   const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};
+  const { meterDataParams } = useSelector((state) => state.MeterSlice);
+
   const [name, setname] = useState();
   const [id, setid] = useState();
   const [meterDataByApi, setmeterDataByApi] = useState([]);
@@ -140,6 +142,7 @@ const MeterSection = ({ navigation }) => {
     note,
     image
   ) => {
+    console.log(image, "<<<<<<<<<<<<<<<<<>>>>");
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(image);
@@ -180,16 +183,18 @@ const MeterSection = ({ navigation }) => {
   const meternotesubmit = () => {
     if (dropdownNotes?.trim() === "") {
       setIsModalVisible(false);
+    if (dropdownNotes?.trim() === "") {
+      setIsModalVisible(false);
       return;
     }
     setnoteLoading(true);
     const fetchSubmitData = async () => {
       const data = {
-        propertyId: PopertyId,
+        propertyId: meterDataParams?.propertyId,
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
-      console.log(data,"?>>>>>>>>>")
+
       try {
         const res = await appApi.meternote(data);
         if (res?.status) {
@@ -237,7 +242,7 @@ const MeterSection = ({ navigation }) => {
     setnoteLoading(true);
     const newtry = getFileData(result);
     const postData = {
-      propertyId: PopertyId,
+      propertyId: meterDataParams?.propertyId,
       meter_id: inputValuePending,
       file: newtry,
     };
@@ -325,7 +330,7 @@ const MeterSection = ({ navigation }) => {
   const fetchData = async () => {
     setloading(true);
     const data = {
-      propertyId: PopertyId,
+      propertyId: meterDataParams?.propertyId,
       date: date,
     };
     try {
@@ -389,6 +394,7 @@ const MeterSection = ({ navigation }) => {
         setMeterCompletedImage(res?.data?.image);
         setMeterReading(res?.data?.reading);
         setCompletedDataId(res?.data?.data_id);
+        setEditAccess(editAccess);
         setEditAccess(editAccess);
 
         setCompletedUnit({
@@ -807,6 +813,7 @@ const MeterSection = ({ navigation }) => {
                 {Object.keys(completedUnit).length !== 0 && (
                   <TouchableOpacity
                     disabled={editAccess === "Pending" ? false : true}
+                    disabled={editAccess === "Pending" ? false : true}
                     onPress={() =>
                       navigation.navigate("meterReadingScanner", {
                         id,
@@ -829,6 +836,11 @@ const MeterSection = ({ navigation }) => {
                     }
                   >
                     <Image
+                      source={
+                        editAccess === "Pending"
+                          ? require("../assets/write.png")
+                          : require("../assets/disableWrite.png")
+                      }
                       source={
                         editAccess === "Pending"
                           ? require("../assets/write.png")
