@@ -150,7 +150,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-
+console.log(data,"PPPPPPPPP")
     appApi
       .meternote(data)
       .then((res) => {

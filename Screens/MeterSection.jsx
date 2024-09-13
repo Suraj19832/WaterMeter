@@ -46,6 +46,7 @@ const MeterSection = ({ navigation }) => {
   const [dropdownNotes, setDropdownNotes] = useState("");
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
+  console.log(isImage)
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
@@ -188,6 +189,7 @@ const MeterSection = ({ navigation }) => {
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
+      console.log(data,"?>>>>>>>>>")
       try {
         const res = await appApi.meternote(data);
         if (res?.status) {
@@ -196,7 +198,7 @@ const MeterSection = ({ navigation }) => {
         }
       } catch (error) {
         setnoteLoading(false);
-        toast.show("Unexpected Error Occur", { type: "sucess" });
+        // toast.show("Unexpected Error Occur", { type: "sucess" });
       } finally {
         setnoteLoading(false);
       }
