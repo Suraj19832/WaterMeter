@@ -481,7 +481,7 @@ function MeterReadingScanner({ navigation }) {
     >
       <TouchableOpacity
         style={{ marginTop: 5 }}
-        onPress={() => navigation.navigate("MeterScreen")}
+        onPress={() => navigation.navigate(navigatePath === "meterSection" ? "MeterScreen" : "Dashboard")}
       >
         <Image
           source={require("../assets/left-arrow (1).png")}
