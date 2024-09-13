@@ -283,7 +283,7 @@ function MeterReadingScanner({ navigation }) {
         await verifyNumber(fileData);
       }
     } catch (error) {
-      // toast.show("Unable to capture image", { type: "error" });
+      toast.show("Unable to capture image", { type: "error" });
       console.error(error);
     } finally {
     }
@@ -296,7 +296,6 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
-    // captureImage();
     if (capturedImage) {
       setIsRescan(true);
     } else {
@@ -443,8 +442,8 @@ function MeterReadingScanner({ navigation }) {
   const handleFrameProcessor = useFrameProcessor((frame) => {
     "worklet";
 
-    runAtTargetFps(10, () => {
-      // Run at 10 FPS, adjust based on your needs
+    runAtTargetFps(30, () => {
+      // Run at 30 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
         const data = scanText(frame);
         handleFrameScan(data);
@@ -509,7 +508,7 @@ function MeterReadingScanner({ navigation }) {
                   device={device}
                   zoom={zoom}
                   // enableFpsGraph={true}
-                  fps={10}
+                  fps={30}
                   format={format}
                   photo={true}
                   style={{ width: "100%", height: 200 }}
