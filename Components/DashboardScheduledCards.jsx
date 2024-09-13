@@ -97,7 +97,7 @@ function DashboardScheduledCards({
       }
     };
 
-    checkImageURL(items?.image);
+    checkImageURL(items?.image_path);
   }, [items?.image, modalVisible]);
 
   return (
