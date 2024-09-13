@@ -15,13 +15,16 @@ import {
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import appApi from "../Helper/Api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
   const { id, name, meter_reading_cycle_id, reading_approval } =
     route.params ?? {};
-  console.log(meter_reading_cycle_id, "????????????????////////////////");
+  
+  const {meterCycleId} = useSelector((state)=>state.readingCycleId)
+    console.log(meterCycleId, "Meter Reading Cycle ID");
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -44,29 +47,7 @@ export default function SummaryScreen({ navigation }) {
     readingDate: "",
   });
 
-  const saveMeterReadingCycleId = async (cycleId) => {
-    try {
-      // Convert the value to a string before saving it to AsyncStorage
-      await AsyncStorage.setItem(
-        "meterReadingCycleId",
-        JSON.stringify(cycleId)
-      );
-      console.log("Meter Reading Cycle ID saved successfully:", cycleId);
-    } catch (error) {
-      console.error("Error saving Meter Reading Cycle ID:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (
-      meter_reading_cycle_id !== undefined &&
-      meter_reading_cycle_id !== null
-    ) {
-      saveMeterReadingCycleId(meter_reading_cycle_id);
-    }
-  }, [meter_reading_cycle_id]);
-
-  console.log(meter_reading_cycle_id, "Meter Reading Cycle ID");
+  
 
   function getLastFiveDigits(number) {
     // Convert the number to a string only if it's a valid number
@@ -110,26 +91,9 @@ export default function SummaryScreen({ navigation }) {
   const meterDetails = async (meterId) => {
     setLoading(true);
     setImageLoading(true);
-
-    try {
-      // Fetch the meter_reading_cycle_id from AsyncStorage
-      const storedCycleId = await AsyncStorage.getItem("meterReadingCycleId");
-
-      // Parse the stored value back to the expected format (number in this case)
-      const meterReadingCycleId = storedCycleId
-        ? JSON.parse(storedCycleId)
-        : null;
-
-      // Ensure that meterReadingCycleId is available
-      if (!meterReadingCycleId) {
-        console.error("Meter Reading Cycle ID is not available.");
-        setLoading(false);
-        setImageLoading(false);
-        return;
-      }
       const data = {
         meter_id: meterId,
-        meter_reading_cycle_id: meter_reading_cycle_id,
+        meter_reading_cycle_id: meterCycleId,
       };
       console.log(data, "comppeteimahe");
       appApi
@@ -155,11 +119,6 @@ export default function SummaryScreen({ navigation }) {
           setLoading(false);
           setImageLoading(false);
         });
-    } catch (error) {
-      console.error("Error retrieving Meter Reading Cycle ID:", error);
-      setLoading(false);
-      setImageLoading(false);
-    }
   };
 
   const handleDropdownValue = (items) => {
@@ -174,7 +133,7 @@ export default function SummaryScreen({ navigation }) {
     React.useCallback(() => {
       setResfreshing(true);
       const data = {
-        meter_reading_cycle_id: meter_reading_cycle_id,
+        meter_reading_cycle_id: meterCycleId,
       };
       console.log(data, "summary");
       appApi
@@ -192,7 +151,8 @@ export default function SummaryScreen({ navigation }) {
       setCompletedUnit({});
       setDropdownValue(null);
       setHideIcon(false);
-    }, [])
+      setToggleDropdown(false)
+    }, [meterCycleId])
   );
 
   if (resfreshing) {

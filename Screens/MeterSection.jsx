@@ -49,12 +49,12 @@ const MeterSection = ({ navigation }) => {
   const [isImage, setisImage] = useState();
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
-  console.log(inputValuePending,":::::::::::::::>>>>>>>>>>>")
+  console.log(inputValuePending, ":::::::::::::::>>>>>>>>>>>");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
   const [isCompletedDropdown, setIsCompletedDropdown] = useState(false);
   const [inputValueCompleted, setinputValueCompleted] = useState("");
-  console.log(inputValueCompleted,"::::::::::::::::::::::::::")
+  console.log(inputValueCompleted, "::::::::::::::::::::::::::");
   const [meterReadingData, setmeterReadingData] = useState(null);
   const [completeImage, setCompleteImage] = useState(null);
   const [completeModal, setCompleteModal] = useState(false);
@@ -69,14 +69,14 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  console.log(meterCompletedImage)
+  console.log(meterCompletedImage);
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
   const [completedNotes, setCompletedNotes] = useState("");
   const [noteLoading, setnoteLoading] = useState(false);
   const [meterCycleId, setMeterCycleId] = useState(null);
-  const [editAccess, setEditAccess] = useState("")
+  const [editAccess, setEditAccess] = useState("");
 
   const toast = useToast();
   const getNameById = (all_data, id) => {
@@ -104,6 +104,22 @@ const MeterSection = ({ navigation }) => {
     setCompletedUnit({});
   };
 
+  const readingStartTime = () => {
+    const data = {
+      meter_id: inputValuePending,
+      property_id: PopertyId,
+      meter_reading_cycle_id: meterCycleId,
+    };
+    appApi
+      .readingStartTime(data)
+      .then((res) => {
+        console.log(res, "?????????stater timer");
+      })
+      .catch((err) => {
+        console.log(err, "errro timerstar");
+      });
+  };
+
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
@@ -120,8 +136,14 @@ const MeterSection = ({ navigation }) => {
     return `${day}/${month}/${year}`;
   }
 
-  const handleSelectionOptionMeter = (all_data, option, billingId, note,image) => {
-    console.log(image,"<<<<<<<<<<<<<<<<<>>>>")
+  const handleSelectionOptionMeter = (
+    all_data,
+    option,
+    billingId,
+    note,
+    image
+  ) => {
+    console.log(image, "<<<<<<<<<<<<<<<<<>>>>");
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(image);
@@ -164,8 +186,8 @@ const MeterSection = ({ navigation }) => {
     setIsModalVisible(false);
   };
   const meternotesubmit = () => {
-    if(dropdownNotes?.trim() === ""){
-      setIsModalVisible(false)
+    if (dropdownNotes?.trim() === "") {
+      setIsModalVisible(false);
       return;
     }
     setnoteLoading(true);
@@ -359,7 +381,7 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId,editAccess) => {
+  const completedImage = (meterId, editAccess) => {
     // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
@@ -376,7 +398,7 @@ const MeterSection = ({ navigation }) => {
         setMeterCompletedImage(res?.data?.image);
         setMeterReading(res?.data?.reading);
         setCompletedDataId(res?.data?.data_id);
-        setEditAccess(editAccess)
+        setEditAccess(editAccess);
 
         setCompletedUnit({
           reading: res?.data?.reading,
@@ -794,7 +816,7 @@ const MeterSection = ({ navigation }) => {
                 </View>
                 {Object.keys(completedUnit).length !== 0 && (
                   <TouchableOpacity
-                  disabled={editAccess === "Pending" ? false : true}
+                    disabled={editAccess === "Pending" ? false : true}
                     onPress={() =>
                       navigation.navigate("meterReadingScanner", {
                         id,
@@ -812,12 +834,16 @@ const MeterSection = ({ navigation }) => {
                         date: date,
                         flag: "editing",
                         isOverRideValue: isOverRide,
-                        navigatePath:"meterSection"
+                        navigatePath: "meterSection",
                       })
                     }
                   >
                     <Image
-                      source={editAccess === "Pending" ? require("../assets/write.png") : require("../assets/disableWrite.png")}
+                      source={
+                        editAccess === "Pending"
+                          ? require("../assets/write.png")
+                          : require("../assets/disableWrite.png")
+                      }
                       style={{ height: 30, width: 30 }}
                     />
                   </TouchableOpacity>
@@ -852,6 +878,7 @@ const MeterSection = ({ navigation }) => {
               }}
               onPress={() => {
                 dispatch(setStringValue("Completion"));
+                readingStartTime();
                 navigation.jumpTo("meterReadingScanner", {
                   id,
                   name,
@@ -865,7 +892,7 @@ const MeterSection = ({ navigation }) => {
                   billingId: meterCycleId,
                   date: date,
                   isOverRideValue: isOverRide,
-                  navigatePath:"meterSection"
+                  navigatePath: "meterSection",
                 });
               }}
             >

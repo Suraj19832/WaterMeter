@@ -98,7 +98,7 @@ function DashboardScheduledCards({
     };
 
     checkImageURL(items?.image_path);
-  }, [items?.image, modalVisible]);
+  }, [items?.image_path, modalVisible]);
 
   return (
     <View style={styles.propertyCards}>

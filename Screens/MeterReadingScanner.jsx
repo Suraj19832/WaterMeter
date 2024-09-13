@@ -513,7 +513,7 @@ function MeterReadingScanner({ navigation }) {
                   device={device}
                   zoom={zoom}
                   // enableFpsGraph={true}
-                  fps={10}
+                  fps={30}
                   format={format}
                   photo={true}
                   style={{ width: "100%", height: 200 }}
