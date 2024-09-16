@@ -242,7 +242,9 @@ function DashboardScheduledCards({
               <Text style={styles.expandContentFTxt}>Estimate Time :</Text>
 
               <Text style={styles.expandContentSTxt}>
-                {convertToDuration(items?.estimate_time_in_sec)}
+                {items?.estimate_time_in_sec
+                  ? convertToDuration(items?.estimate_time_in_sec)
+                  : "Not Available"}
               </Text>
             </View>
             {items?.reading_process !== "contact_admin" && (
