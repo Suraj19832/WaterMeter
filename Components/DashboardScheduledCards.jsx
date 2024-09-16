@@ -312,7 +312,9 @@ function DashboardScheduledCards({
                   onLoadStart={() => {
                     setImageOnLoad(true);
                   }}
-                  onError={() => setImageLoading(false)}
+                  onError={() => {
+                    setImageLoading(false), setImage(null);
+                  }}
                   onLoad={() => setImageLoading(false)}
                   onLoadEnd={() => {
                     setImageOnLoad(false);

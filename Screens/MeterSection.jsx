@@ -48,7 +48,8 @@ const MeterSection = ({ navigation }) => {
   const [dropdownNotes, setDropdownNotes] = useState("");
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
-  console.log(isImage)
+
+  const [isLoadingImage, setImageLoading] = useState(false);
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
@@ -69,7 +70,7 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  console.log(meterCompletedImage)
+  console.log(meterCompletedImage);
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -377,7 +378,7 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId,editAccess) => {
+  const completedImage = (meterId, editAccess) => {
     // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
@@ -560,14 +561,25 @@ const MeterSection = ({ navigation }) => {
                   </View>
 
                   {isImage ? (
-                    <Image
-                      source={{ uri: isImage }}
-                      style={{
-                        height: 220,
-                        width: "100%",
-                      }}
-                      resizeMode="cover"
-                    />
+                    <>
+                      {isLoadingImage && (
+                        <ActivityIndicator size={"large"} color={"black"} />
+                      )}
+                      <Image
+                        source={{ uri: isImage }}
+                        style={{
+                          height: 220,
+                          width: "100%",
+                        }}
+                        onLoadStart={() => setImageLoading(true)}
+                        onLoadEnd={() => setImageLoading(false)}
+                        onLoad={() => setImageLoading(false)}
+                        onError={() => {
+                          setImageLoading(false), setisImage("");
+                        }}
+                        resizeMode="cover"
+                      />
+                    </>
                   ) : (
                     <View style={styles.upload}>
                       <Text style={styles.headingText}> Upload Image</Text>
