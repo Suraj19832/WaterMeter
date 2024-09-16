@@ -212,7 +212,7 @@ function DashboardScheduledCards({
             <Text style={styles.expandContentFTxt}>Last Reading Date :</Text>
 
             <Text style={styles.expandContentSTxt}>
-              {convertDateToDDMMYY(items?.reading_date?.last)}
+              {convertDateToDDMMYY(items?.last_reading_date)}
             </Text>
           </View>
           <View style={styles.expandContentHeading}>
