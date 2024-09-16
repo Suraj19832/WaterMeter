@@ -25,11 +25,11 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
-  console.log(items)
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
+  const [imageOnLoad, setImageOnLoad] = useState(false);
 
   const firstCapitalize = (text) => {
     const words = text?.split(" ");
@@ -67,8 +67,8 @@ function DashboardScheduledCards({
     if (minutes > 0) {
       duration += `${minutes} mins`;
     }
-    if(remainingSeconds > 0){
-      duration+=`${remainingSeconds} sec`
+    if (remainingSeconds > 0) {
+      duration += `${remainingSeconds} sec`;
     }
     return duration?.trim();
   }
@@ -299,16 +299,26 @@ function DashboardScheduledCards({
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             {image != null ? (
-              imageLoading ? (
-                <ActivityIndicator size={"large"} color={"white"} />
-              ) : (
+              <>
+                {(imageLoading || imageOnLoad) && (
+                  <ActivityIndicator size={"large"} color={"white"} />
+                )}
+
                 <Image
                   source={{
                     uri: image,
                   }}
                   style={styles.modalImage}
+                  onLoadStart={() => {
+                    setImageOnLoad(true);
+                  }}
+                  onError={() => setImageLoading(false)}
+                  onLoad={() => setImageLoading(false)}
+                  onLoadEnd={() => {
+                    setImageOnLoad(false);
+                  }}
                 />
-              )
+              </>
             ) : (
               <Image
                 source={require("../assets/icons/no-image.jpg")}
