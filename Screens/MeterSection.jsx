@@ -32,7 +32,6 @@ import { setBillingAddress } from "../redux/slices/BillingSlice";
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
   const [meterMake, setmeterMake] = useState({});
-  // console.log(meterMake,"<<<<<<<,")
   const dispatch = useDispatch();
   const route = useRoute();
   const { PopertyId, date, meter_reading_cycle_id } = route.params ?? {};
@@ -49,6 +48,7 @@ const MeterSection = ({ navigation }) => {
   const [dropdownNotes, setDropdownNotes] = useState("");
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
+  console.log(isImage)
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
   const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
@@ -69,7 +69,7 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  console.log(meterCompletedImage);
+  console.log(meterCompletedImage)
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -104,6 +104,22 @@ const MeterSection = ({ navigation }) => {
     setCompletedUnit({});
   };
 
+  const readingStartTime = () => {
+    const data = {
+      meter_id: inputValuePending,
+      property_id: PopertyId,
+      meter_reading_cycle_id: meterCycleId,
+    };
+    appApi
+      .readingStartTime(data)
+      .then((res) => {
+        console.log(res, "reading timer is now started");
+      })
+      .catch((err) => {
+        console.log(err, "error while reading timer");
+      });
+  };
+
   function convertDateToDDMMYY(dateString) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(dateString)) {
@@ -131,15 +147,12 @@ const MeterSection = ({ navigation }) => {
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(image);
-    // console.log(userSelectedImage)
     setinputValuePending(option);
     setmeterData(option);
     setIsPendingDropdown(false);
     setmeterMake(getNameById(all_data, option));
     setDropdownNotes(note);
-
     const meterMakevalue = getNameById(all_data, option);
-    // console.log(meterMakevalue,"PPPPPPPPPPPPP")
     if (userSelectedImage) {
       setisImage(userSelectedImage);
     } else if (meterMakevalue?.image) {
@@ -153,7 +166,6 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
   };
   const handleCompletedSelectMeter = (option) => {
-    // console.log(option.reading_status, "option heaind88888888888888888");
     completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -181,7 +193,6 @@ const MeterSection = ({ navigation }) => {
         meter_id: inputValuePending,
         note: dropdownNotes,
       };
-
       try {
         const res = await appApi.meternote(data);
         if (res?.status) {
@@ -190,9 +201,7 @@ const MeterSection = ({ navigation }) => {
         }
       } catch (error) {
         setnoteLoading(false);
-        console.log("error", error);
-
-        toast.show("Unexpected Error Occur", { type: "sucess" });
+        // toast.show("Unexpected Error Occur", { type: "sucess" });
       } finally {
         setnoteLoading(false);
       }
@@ -368,7 +377,7 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId, editAccess) => {
+  const completedImage = (meterId,editAccess) => {
     // console.log(editAccess,"meteridghg")
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
@@ -379,7 +388,6 @@ const MeterSection = ({ navigation }) => {
     appApi
       .completedImage(data)
       .then((res) => {
-        // console.log(res,">>>>>>>>>>>metere conrh")
         dispatch(setBillingAddress(res?.meter_reading_cycle_id));
         setMeterCycleId(res?.data?.meter_reading_cycle_id);
         setMeterCompletedImage(res?.data?.image);
@@ -498,7 +506,6 @@ const MeterSection = ({ navigation }) => {
                 meterDataByApi
                   ?.filter((item) => item.status === "pending")
                   ?.map((meterid, index) => {
-                    // console.log(meterid,">>>>::::::::::::::")
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -821,6 +828,7 @@ const MeterSection = ({ navigation }) => {
                         date: date,
                         flag: "editing",
                         isOverRideValue: isOverRide,
+                        navigatePath: "meterSection",
                       })
                     }
                   >
@@ -864,6 +872,7 @@ const MeterSection = ({ navigation }) => {
               }}
               onPress={() => {
                 dispatch(setStringValue("Completion"));
+                readingStartTime();
                 navigation.jumpTo("meterReadingScanner", {
                   id,
                   name,
@@ -877,6 +886,7 @@ const MeterSection = ({ navigation }) => {
                   billingId: meterCycleId,
                   date: date,
                   isOverRideValue: isOverRide,
+                  navigatePath: "meterSection",
                 });
               }}
             >

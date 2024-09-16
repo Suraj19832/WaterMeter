@@ -12,6 +12,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import SubmitButton from "../Components/SubmitButton";
 import { colorCodes } from "../ColorCodes/Colors";
+import { useDispatch } from "react-redux";
+import { setMeterCycleId } from "../redux/slices/ReadingCycleId";
+
 
 export default function DashboardCompletedCards({
   items,
@@ -20,7 +23,8 @@ export default function DashboardCompletedCards({
   expandCompleted,
   navigation,
 }) {
-  console.log(items,"LLLLLLLLLL")
+
+  const dispatch = useDispatch()
   const styles = StyleSheet.create({
     topToggle: {
       height: 50,
@@ -403,11 +407,11 @@ export default function DashboardCompletedCards({
                   styles.expandContentSTxt,
                   {
                     color:
-                    items?.reading_approval === "Processed"
-                      ? "#2F8A16"
-                      : items?.reading_approval === "N/A"
-                      ? "grey"
-                      : colorCodes.submitButtonEnabled,
+                      items?.reading_approval === "Processed"
+                        ? "#2F8A16"
+                        : items?.reading_approval === "N/A"
+                        ? "grey"
+                        : colorCodes.submitButtonEnabled,
                     fontWeight: "500",
                   },
                 ]}
@@ -427,16 +431,18 @@ export default function DashboardCompletedCards({
                 { marginTop: 0, justifyContent: "flex-end" },
               ]}
             >
+
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate("SummaryScreen", {
                     id: items?.id,
                     name: items?.name,
                     meter_reading_cycle_id: items?.meter_reading_cycle_id,
-                    reading_approval: items?.reading_approval
-                  })
-                }
+                    reading_approval: items?.reading_approval,
+                  });
+                  dispatch(setMeterCycleId(items?.meter_reading_cycle_id))
+                }}
               >
                 <SubmitButton
                   textSize={13}

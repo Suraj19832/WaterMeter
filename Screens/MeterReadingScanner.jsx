@@ -67,6 +67,7 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     isOverRideValue,
     flag,
+    navigatePath
   } = route.params ?? {};
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
@@ -89,7 +90,6 @@ function MeterReadingScanner({ navigation }) {
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
   const [overrideLoading, setOverrideLoading] = useState(false);
-  // console.log(typeof value, value, "LLLLLLLLLL");
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const format = useCameraFormat(device, [{ fps: 10 }]);
   const [isRescan, setIsRescan] = useState(false);
@@ -150,7 +150,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-
+console.log(data,"PPPPPPPPP")
     appApi
       .meternote(data)
       .then((res) => {
@@ -263,8 +263,6 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const captureImage = async () => {
-    console.log("capture image......=>>>>>");
-
     try {
       if (cameraRef.current) {
         setZoom(2);
@@ -283,7 +281,7 @@ function MeterReadingScanner({ navigation }) {
         await verifyNumber(fileData);
       }
     } catch (error) {
-      toast.show("Unable to capture image", { type: "error" });
+      // toast.show("Unable to capture image", { type: "error" });
       console.error(error);
     } finally {
     }
@@ -296,6 +294,7 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
+    // captureImage();
     if (capturedImage) {
       setIsRescan(true);
     } else {
@@ -334,7 +333,7 @@ function MeterReadingScanner({ navigation }) {
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate("OcrCaptured", {
+          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
             meterName,
             id,
             name,
@@ -379,7 +378,7 @@ function MeterReadingScanner({ navigation }) {
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate("OcrCaptured", {
+          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
             meterName,
             id,
             name,
@@ -406,7 +405,6 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .overRideDigit(data)
       .then((res) => {
-        // console.log(res, "<<<<<<<,");
         const overriddenDigit = res?.data?.last_digit_override;
         const currentValue = value.split("");
         currentValue[CELL_COUNT - 1] = overriddenDigit;
@@ -430,7 +428,6 @@ function MeterReadingScanner({ navigation }) {
       try {
         if (hasMeterReading && isScanCodeAlreadyExecuted.value === false) {
           isScanCodeAlreadyExecuted.value = true;
-          console.log("has meter reading data", hasMeterReading);
           captureImage();
         }
       } catch (error) {
@@ -441,9 +438,11 @@ function MeterReadingScanner({ navigation }) {
 
   const handleFrameProcessor = useFrameProcessor((frame) => {
     "worklet";
-
+    // const data = scanText(frame);
+    // handleFpsCalculation(frame);
+    // handleFrameScan(data);
     runAtTargetFps(30, () => {
-      // Run at 30 FPS, adjust based on your needs
+      // Run at 15 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
         const data = scanText(frame);
         handleFrameScan(data);
@@ -476,7 +475,7 @@ function MeterReadingScanner({ navigation }) {
     >
       <TouchableOpacity
         style={{ marginTop: 5 }}
-        onPress={() => navigation.navigate("MeterScreen")}
+        onPress={() => navigation.navigate(navigatePath === "meterSection" ? "MeterScreen" : "Dashboard")}
       >
         <Image
           source={require("../assets/left-arrow (1).png")}

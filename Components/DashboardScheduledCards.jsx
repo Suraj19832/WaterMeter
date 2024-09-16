@@ -25,7 +25,7 @@ function DashboardScheduledCards({
   navigation,
   date,
 }) {
-  console.log(items, "?????????");
+  console.log(items)
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [image, setImage] = useState(null);
@@ -62,10 +62,13 @@ function DashboardScheduledCards({
     const minutes = Math.floor(remainingSeconds / 60);
     let duration = "";
     if (hours > 0) {
-      duration += `${hours}hr `;
+      duration += `${hours} hr `;
     }
     if (minutes > 0) {
-      duration += `${minutes}mins`;
+      duration += `${minutes} mins`;
+    }
+    if(remainingSeconds > 0){
+      duration+=`${remainingSeconds} sec`
     }
     return duration?.trim();
   }
@@ -98,7 +101,7 @@ function DashboardScheduledCards({
     };
 
     checkImageURL(items?.image_path);
-  }, [items?.image, modalVisible]);
+  }, [items?.image_path, modalVisible]);
 
   return (
     <View style={styles.propertyCards}>

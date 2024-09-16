@@ -92,10 +92,6 @@ function Dashboard({ navigation }) {
     setExpandCompleted(null);
   }, [toggleScheduleCompleted, monthIndex, year]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [fetchData]);
-
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
