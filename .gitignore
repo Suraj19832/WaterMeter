@@ -1,1 +1,8 @@
 node_modules/
+.yarn
+.DS_Store
+.yarnrc.yml
+.expo
+*.apk
+*.aab
+.expo
