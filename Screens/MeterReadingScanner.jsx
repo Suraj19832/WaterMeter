@@ -101,7 +101,7 @@ function MeterReadingScanner({ navigation }) {
   const [value, setValue] = useState(meterReading || "");
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [activeReadingButton, setActiveReadingButton] = useState(false);
-  const format = useCameraFormat(device, [{ fps: 10 }]);
+
   const [isRescan, setIsRescan] = useState(false);
   const [isOverrideButton, setIsOverrideButton] = useState(false);
   const isScanCodeAlreadyExecuted = useSharedValue(false);
@@ -485,9 +485,6 @@ function MeterReadingScanner({ navigation }) {
       setTimerRunning(false); // Timer has completed
     }, timerForScanCode);
   };
-  useEffect(() => {
-    startTimer();
-  }, []);
 
   useEffect(() => {
     if (!isFocused) {
@@ -571,7 +568,6 @@ function MeterReadingScanner({ navigation }) {
                 device={device}
                 zoom={zoom}
                 fps={30}
-                format={format}
                 photo={true}
                 style={{ width: "100%", height: 200 }}
                 enableZoomGesture={true}
