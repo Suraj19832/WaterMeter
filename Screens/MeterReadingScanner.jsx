@@ -16,7 +16,11 @@ import {
   Dimensions,
   AppState,
 } from "react-native";
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useRoute,
+} from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { colorCodes } from "../ColorCodes/Colors";
 import appApi from "../Helper/Api";
@@ -30,6 +34,9 @@ import {
   PinchGestureHandler,
   State,
   GestureHandlerRootView,
+  TapGestureHandler,
+  GestureDetector,
+  Gesture,
 } from "react-native-gesture-handler";
 import {
   CodeField,
@@ -48,8 +55,11 @@ import {
 import { useTextRecognition } from "react-native-vision-camera-text-recognition";
 import { useSharedValue, Worklets } from "react-native-worklets-core";
 import { runOnJS } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 function MeterReadingScanner({ navigation }) {
+  const timerForScanCode = Platform.OS === "android" ? 5000 : 3000;
+  const isFocused = useIsFocused();
   const route = useRoute();
   const { scanText } = useTextRecognition({ language: "en" });
   const {
@@ -67,7 +77,7 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     isOverRideValue,
     flag,
-    navigatePath
+    navigatePath,
   } = route.params ?? {};
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
@@ -94,8 +104,18 @@ function MeterReadingScanner({ navigation }) {
   const format = useCameraFormat(device, [{ fps: 10 }]);
   const [isRescan, setIsRescan] = useState(false);
   const [isOverrideButton, setIsOverrideButton] = useState(false);
-  const [overrideDigitResult, setOverrideDigitResult] = useState(8);
   const isScanCodeAlreadyExecuted = useSharedValue(false);
+  const scanAnimation = useRef(new Animated.Value(1)).current;
+  const [permission, requestPermission] = useCameraPermissions();
+  const [zoom, setZoom] = useState(1);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
+
+  const [isScanTimeOut, setIsScanTimeOut] = useState(false);
+  const [timerRunning, setTimerRunning] = useState(false); // Track if timer is running
+  let timer; // Store the timer reference outside the state
+  const cameraRef = useRef(null);
+  const lastTap = useRef(null);
   const meReasonsDemo = [
     "Invalid Result",
     "Failed Scan",
@@ -150,7 +170,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-console.log(data,"PPPPPPPPP")
+
     appApi
       .meternote(data)
       .then((res) => {
@@ -189,14 +209,6 @@ console.log(data,"PPPPPPPPP")
       setIsOverrideButton(false);
     }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
-
-  const scanAnimation = useRef(new Animated.Value(1)).current;
-  const [facing, setFacing] = useState("back");
-  const [permission, requestPermission] = useCameraPermissions();
-  const [zoom, setZoom] = useState(1);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [capturedImage, setCapturedImage] = useState(null);
-  const cameraRef = useRef(null);
 
   const onPinchEvent = (event) => {
     const scale = event.nativeEvent.scale;
@@ -262,10 +274,12 @@ console.log(data,"PPPPPPPPP")
     }
   };
 
-  const captureImage = async () => {
+  const captureImage = async (manualCapture = false) => {
     try {
       if (cameraRef.current) {
-        setZoom(2);
+        if (!manualCapture) {
+          setZoom(2);
+        }
         const photo = await cameraRef.current.takePhoto();
         setCapturedImage(`file://${photo.path}`);
         setTimeout(() => {
@@ -289,6 +303,8 @@ console.log(data,"PPPPPPPPP")
 
   const handleScan = () => {
     // setIsScanCodeAlreadyExecuted(false);
+    setIsScanTimeOut(false);
+    startTimer();
     setZoom(1);
     isScanCodeAlreadyExecuted.value = false;
     setIsCameraOpen(!isCameraOpen);
@@ -333,14 +349,17 @@ console.log(data,"PPPPPPPPP")
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
-            meterName,
-            id,
-            name,
-            otp: value,
-            res,
-            value: "ocr",
-          });
+          navigation.navigate(
+            navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen",
+            {
+              meterName,
+              id,
+              name,
+              otp: value,
+              res,
+              value: "ocr",
+            }
+          );
         }
       })
       .catch((err) => {
@@ -378,14 +397,17 @@ console.log(data,"PPPPPPPPP")
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
-            meterName,
-            id,
-            name,
-            otp: value,
-            res,
-            value: "me",
-          });
+          navigation.navigate(
+            navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen",
+            {
+              meterName,
+              id,
+              name,
+              otp: value,
+              res,
+              value: "me",
+            }
+          );
         }
       })
       .catch((err) => {
@@ -429,6 +451,7 @@ console.log(data,"PPPPPPPPP")
         if (hasMeterReading && isScanCodeAlreadyExecuted.value === false) {
           isScanCodeAlreadyExecuted.value = true;
           captureImage();
+          clearTimeout(timer);
         }
       } catch (error) {
         console.error("Error taking photo:", error);
@@ -438,11 +461,8 @@ console.log(data,"PPPPPPPPP")
 
   const handleFrameProcessor = useFrameProcessor((frame) => {
     "worklet";
-    // const data = scanText(frame);
-    // handleFpsCalculation(frame);
-    // handleFrameScan(data);
     runAtTargetFps(30, () => {
-      // Run at 15 FPS, adjust based on your needs
+      // Run at 30 FPS, adjust based on your needs
       if (isScanCodeAlreadyExecuted.value === false) {
         const data = scanText(frame);
         handleFrameScan(data);
@@ -450,6 +470,54 @@ console.log(data,"PPPPPPPPP")
     });
   }, []);
 
+  const startTimer = () => {
+    setIsScanTimeOut(false); // Reset state
+    setTimerRunning(true); // Indicate that timer is running
+
+    // Clear any existing timer before starting a new one
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    // Start the 5-second timer
+    timer = setTimeout(() => {
+      setIsScanTimeOut(true);
+      setTimerRunning(false); // Timer has completed
+    }, timerForScanCode);
+  };
+  useEffect(() => {
+    startTimer();
+  }, []);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setIsScanTimeOut(false);
+    }
+  }, [isFocused]);
+  // Function to handle the double-tap
+  const handleDoubleTap = (point) => {
+    // if single touch then try to focus the camera on the touched location else zoom in
+    const cameraR = cameraRef.current;
+    cameraR.focus(point);
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300; // 300ms for double-tap detection
+    if (lastTap.current && now - lastTap.current < DOUBLE_PRESS_DELAY) {
+      // If the second tap happens within the delay, it's a double-tap
+      setZoom((prevZoom) => prevZoom + 0.5);
+    }
+    lastTap.current = now; // Update the last tap time
+  };
+
+  const handleZoomOut = () => {
+    if (zoom > 1) setZoom((prevZoom) => prevZoom - 0.5);
+  };
+  const gestureOnCamera = Gesture.Tap().onEnd(({ x, y }) => {
+    runOnJS(handleDoubleTap)({ x, y });
+  });
+  const translateY = scanAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-200, 0],
+  });
   if (!permission) {
     return <View />;
   }
@@ -463,10 +531,6 @@ console.log(data,"PPPPPPPPP")
       </View>
     );
   }
-  const translateY = scanAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-200, 0],
-  });
 
   return (
     <KeyboardAvoidingView
@@ -475,7 +539,11 @@ console.log(data,"PPPPPPPPP")
     >
       <TouchableOpacity
         style={{ marginTop: 5 }}
-        onPress={() => navigation.navigate(navigatePath === "meterSection" ? "MeterScreen" : "Dashboard")}
+        onPress={() =>
+          navigation.navigate(
+            navigatePath === "meterSection" ? "MeterScreen" : "Dashboard"
+          )
+        }
       >
         <Image
           source={require("../assets/left-arrow (1).png")}
@@ -496,55 +564,137 @@ console.log(data,"PPPPPPPPP")
         </View>
 
         {isCameraOpen ? (
-          <GestureHandlerRootView style={{}}>
-            <PinchGestureHandler
-              onGestureEvent={onPinchEvent}
-              onHandlerStateChange={onPinchStateChange}
-            >
+          <View>
+            <GestureDetector gesture={gestureOnCamera}>
+              <Camera
+                ref={cameraRef}
+                device={device}
+                zoom={zoom}
+                fps={30}
+                format={format}
+                photo={true}
+                style={{ width: "100%", height: 200 }}
+                enableZoomGesture={true}
+                isActive={isCameraOpen && AppState.currentState === "active"}
+                frameProcessor={
+                  isScanTimeOut && isScanCodeAlreadyExecuted.value === false
+                    ? null
+                    : handleFrameProcessor
+                }
+              />
+            </GestureDetector>
+
+            <GestureDetector gesture={gestureOnCamera}>
+              <View style={styles.overlayBox} />
+            </GestureDetector>
+
+            <Animated.View
+              style={[styles.scanningOverlay, { transform: [{ translateY }] }]}
+            />
+            {isScanTimeOut ? (
               <View>
-                <Camera
-                  ref={cameraRef}
-                  device={device}
-                  zoom={zoom}
-                  // enableFpsGraph={true}
-                  fps={30}
-                  format={format}
-                  photo={true}
-                  style={{ width: "100%", height: 200 }}
-                  isActive={isCameraOpen && AppState.currentState === "active"}
-                  frameProcessor={handleFrameProcessor}
-                />
-                <Animated.View
-                  style={[
-                    styles.scanningOverlay,
-                    { transform: [{ translateY }] },
-                  ]}
-                />
-                <View style={styles.overlayBox} />
-                {/* <View style={StyleSheet.absoluteFillObject}>
-                  <TouchableOpacity style={{ height: 200 }}>
-                    <TouchableOpacity
-                      onPress={captureImage}
-                      style={styles.shutterIcon}
-                    >
-                      <Image
-                        source={require("../assets/icons/shutter.png")}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          tintColor:
-                            isScanCodeAlreadyExecuted.value === true || loading
-                              ? "grey"
-                              : null,
-                        }}
-                      />
-                    </TouchableOpacity>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    bottom: 0,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => captureImage(true)}
+                    style={styles.shutterIcon}
+                  >
+                    <Image
+                      source={require("../assets/icons/shutter.png")}
+                      style={{
+                        height: 30,
+                        width: 30,
+                        tintColor:
+                          isScanCodeAlreadyExecuted.value === true || loading
+                            ? "grey"
+                            : null,
+                      }}
+                    />
                   </TouchableOpacity>
-                </View> */}
+                </View>
+                {zoom > 1 ? (
+                  <TouchableOpacity onPress={handleZoomOut}>
+                    <Feather
+                      name="zoom-out"
+                      size={28}
+                      color={colorCodes.submitButtonEnabled}
+                      style={{
+                        position: "absolute",
+                        bottom: 18,
+                        marginRight: 8,
+                        right: 50,
+                        height: 30,
+                        width: 30,
+                      }}
+                    />
+                  </TouchableOpacity>
+                ) : null}
               </View>
-            </PinchGestureHandler>
-          </GestureHandlerRootView>
+            ) : null}
+          </View>
         ) : (
+          // <GestureHandlerRootView style={{}}>
+          //   <PinchGestureHandler
+          //     onGestureEvent={onPinchEvent}
+          //     onHandlerStateChange={onPinchStateChange}
+          //   >
+          //     <View>
+          //       <Camera
+          //         ref={cameraRef}
+          //         device={device}
+          //         // zoom={zoom}
+          //         // enableFpsGraph={true}
+          //         fps={30}
+          //         format={format}
+          //         photo={true}
+          //         style={{ width: "100%", height: 200 }}
+          //         enableZoomGesture={true}
+          //         isActive={isCameraOpen && AppState.currentState === "active"}
+          //         frameProcessor={
+          //           isScanTimeOut &&
+          //           isScanCodeAlreadyExecuted.value === false
+          //             ? null
+          //             : handleFrameProcessor
+          //         }
+          //       />
+          //       {/* <Animated.View
+          //         style={[
+          //           styles.scanningOverlay,
+          //           { transform: [{ translateY }] },
+          //         ]}
+          //       />
+          //       <View style={styles.overlayBox} />
+          //       {isScanTimeOut ? (
+          //         <View style={StyleSheet.absoluteFillObject}>
+          //           <TouchableOpacity style={{ height: 200 }}>
+          //             <TouchableOpacity
+          //               onPress={captureImage}
+          //               style={styles.shutterIcon}
+          //             >
+          //               <Image
+          //                 source={require("../assets/icons/shutter.png")}
+          //                 style={{
+          //                   height: 30,
+          //                   width: 30,
+          //                   tintColor:
+          //                     isScanCodeAlreadyExecuted.value === true ||
+          //                     loading
+          //                       ? "grey"
+          //                       : null,
+          //                 }}
+          //               />
+          //             </TouchableOpacity>
+          //           </TouchableOpacity>
+          //         </View>
+          //       ) : null} */}
+          //     </View>
+          //   </PinchGestureHandler>
+          // </GestureHandlerRootView>
           <View style={styles.capturedImage}>
             {loading ? (
               <ActivityIndicator size={"large"} />
