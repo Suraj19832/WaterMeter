@@ -57,19 +57,28 @@ function DashboardScheduledCards({
   }
 
   function convertToDuration(seconds) {
+    // Return empty string if seconds is 0
+    if (seconds <= 0) {
+      return "";
+    }
+
     const hours = Math.floor(seconds / 3600);
     const remainingSeconds = seconds % 3600;
     const minutes = Math.floor(remainingSeconds / 60);
+    const secs = Math.round(remainingSeconds % 60); // Round to avoid fractions
+
     let duration = "";
     if (hours > 0) {
       duration += `${hours} hr `;
     }
     if (minutes > 0) {
-      duration += `${minutes} mins`;
+      duration += `${minutes} mins `;
     }
-    if (remainingSeconds > 0) {
-      duration += `${remainingSeconds} sec`;
+    if (secs > 0 || duration === "") {
+      // Show seconds if there are any or if duration is empty
+      duration += `${secs} secs`;
     }
+
     return duration?.trim();
   }
 

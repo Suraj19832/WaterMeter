@@ -99,6 +99,8 @@ function MeterReadingScanner({ navigation }) {
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
+  const [manualChecking, setManualChecking] = useState(false);
+  console.log(value, manualChecking);
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const format = useCameraFormat(device, [{ fps: 30 }]);
@@ -170,7 +172,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-
+    console.log(data, "PPPPPPPPP");
     appApi
       .meternote(data)
       .then((res) => {
@@ -207,6 +209,7 @@ function MeterReadingScanner({ navigation }) {
       setValue(meterReading || "");
       setIsCameraOpen(false);
       setIsOverrideButton(false);
+      setManualChecking(false);
     }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
 
@@ -262,6 +265,10 @@ function MeterReadingScanner({ navigation }) {
       });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
+        // console.log(res?.ocrReading.length, totalDigit, "...................");
+        if (res?.ocrReading.length < totalDigit) {
+          getOverRideDigit();
+        }
         setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
@@ -323,10 +330,16 @@ function MeterReadingScanner({ navigation }) {
       toast.show("please scan first");
       return;
     }
-    if (meterValue !== value || meterValue === null) {
+    // if (meterValue !== value || meterValue === null) {
+    //   setReadingMismatchModalVisible(true);
+    //   return;
+
+    // }
+    if (manualChecking) {
       setReadingMismatchModalVisible(true);
       return;
     }
+
     setSubmitLoading(true);
     const data = {
       property_id: id,
@@ -428,9 +441,11 @@ function MeterReadingScanner({ navigation }) {
       .overRideDigit(data)
       .then((res) => {
         const overriddenDigit = res?.data?.last_digit_override;
-        const currentValue = value.split("");
-        currentValue[CELL_COUNT - 1] = overriddenDigit;
-        setValue(currentValue.join(""));
+        setValue((prevValue) => {
+          const currentValue = prevValue.split("");
+          currentValue[CELL_COUNT - 1] = overriddenDigit; // Replace last digit
+          return currentValue.join(""); // Return updated value
+        });
         setOverrideLoading(false);
       })
       .catch((err) => {
@@ -770,7 +785,10 @@ function MeterReadingScanner({ navigation }) {
             ref={ref}
             // {...props} //can remove for delete from end always
             value={value}
-            onChangeText={(value) => setValue(value)}
+            onChangeText={(value) => {
+              setManualChecking(true);
+              setValue(value);
+            }}
             cellCount={CELL_COUNT}
             rootStyle={styles.codeFieldRoot}
             keyboardType="number-pad"
@@ -928,7 +946,7 @@ function MeterReadingScanner({ navigation }) {
                   nestedScrollEnabled={true}
                   style={{ maxHeight: 150 }}
                 >
-                  {meReasons.map((item, index) => {
+                  {meReasons?.map((item, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -947,7 +965,7 @@ function MeterReadingScanner({ navigation }) {
                   nestedScrollEnabled={true}
                   style={{ maxHeight: 150 }}
                 >
-                  {meReasonsDemo.map((item, index) => {
+                  {meReasonsDemo?.map((item, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
