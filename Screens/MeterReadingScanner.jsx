@@ -250,6 +250,10 @@ console.log(data,"PPPPPPPPP")
       });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
+        console.log(res?.ocrReading.length, totalDigit,"...................")
+        if(res?.ocrReading.length < totalDigit){
+          getOverRideDigit();
+        }
         setLoading(false);
       } else {
         toast.show("Unable to read !!", { type: "success", duration: 3000 });
@@ -406,9 +410,11 @@ console.log(data,"PPPPPPPPP")
       .overRideDigit(data)
       .then((res) => {
         const overriddenDigit = res?.data?.last_digit_override;
-        const currentValue = value.split("");
-        currentValue[CELL_COUNT - 1] = overriddenDigit;
-        setValue(currentValue.join(""));
+        setValue((prevValue) => {
+          const currentValue = prevValue.split("");
+          currentValue[CELL_COUNT - 1] = overriddenDigit; // Replace last digit
+          return currentValue.join(""); // Return updated value
+        });
         setOverrideLoading(false);
       })
       .catch((err) => {
@@ -781,7 +787,7 @@ console.log(data,"PPPPPPPPP")
                   nestedScrollEnabled={true}
                   style={{ maxHeight: 150 }}
                 >
-                  {meReasons.map((item, index) => {
+                  {meReasons?.map((item, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}
@@ -800,7 +806,7 @@ console.log(data,"PPPPPPPPP")
                   nestedScrollEnabled={true}
                   style={{ maxHeight: 150 }}
                 >
-                  {meReasonsDemo.map((item, index) => {
+                  {meReasonsDemo?.map((item, index) => {
                     return (
                       <TouchableOpacity
                         style={styles.dropdownOption}

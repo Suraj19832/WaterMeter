@@ -48,8 +48,8 @@ const MeterSection = ({ navigation }) => {
   const [dropdownNotes, setDropdownNotes] = useState("");
   const [isModalImage, setIsModalImage] = useState(false);
   const [isImage, setisImage] = useState();
-  console.log(isImage)
   const [isPendingDropdown, setIsPendingDropdown] = useState(false);
+  const [showInfoIcon, setShowInfoIcon] = useState(false)
   const [inputValuePending, setinputValuePending] = useState("");
   const [meterData, setmeterData] = useState("");
   const [loading, setloading] = useState(true);
@@ -69,7 +69,6 @@ const MeterSection = ({ navigation }) => {
     readingDate: "",
   });
   const [meterCompletedImage, setMeterCompletedImage] = useState("");
-  console.log(meterCompletedImage)
   const [userSelectedImage, setUserSelectedImage] = useState(null);
   const [meterReading, setMeterReading] = useState(null);
   const [completedDataId, setCompletedDataId] = useState(null);
@@ -102,6 +101,7 @@ const MeterSection = ({ navigation }) => {
     setinputValueCompleted("");
     setCompleteImage(null);
     setCompletedUnit({});
+    setShowInfoIcon(false)
   };
 
   const readingStartTime = () => {
@@ -143,13 +143,14 @@ const MeterSection = ({ navigation }) => {
     note,
     image
   ) => {
-    console.log(image, "<<<<<<<<<<<<<<<<<>>>>");
+    console.log(option)
     dispatch(setBillingAddress(billingId));
     setBillingId(billingId);
     setUserSelectedImage(image);
     setinputValuePending(option);
     setmeterData(option);
     setIsPendingDropdown(false);
+    setShowInfoIcon(true)
     setmeterMake(getNameById(all_data, option));
     setDropdownNotes(note);
     const meterMakevalue = getNameById(all_data, option);
@@ -164,8 +165,10 @@ const MeterSection = ({ navigation }) => {
     setIsCompletedDropdown(!isCompletedDropdown);
     setIsPendingDropdown(false);
     setinputValuePending("");
+    setShowInfoIcon(false)
   };
   const handleCompletedSelectMeter = (option) => {
+    console.log(option)
     completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -173,6 +176,7 @@ const MeterSection = ({ navigation }) => {
     setIsCompletedDropdown(false);
     setCompleteImage(option?.image);
     setCompletedNotes(option?.note);
+    setShowInfoIcon(true)
   };
 
   const toggleModalVisibility = () => {
@@ -377,8 +381,7 @@ const MeterSection = ({ navigation }) => {
     }, [PopertyId])
   );
 
-  const completedImage = (meterId,editAccess) => {
-    // console.log(editAccess,"meteridghg")
+  const completedImage = (meterId, editAccess) => {
     setCompleteLoading(true);
     setCompleteDetailsLoading(true);
     const data = {
@@ -418,6 +421,7 @@ const MeterSection = ({ navigation }) => {
       setIsPendingDropdown(false);
       setCompleteImage(null);
       setCompletedUnit({});
+      setShowInfoIcon(false)
     }, [])
   );
 
@@ -848,15 +852,18 @@ const MeterSection = ({ navigation }) => {
         ) : null}
 
         <View style={styles.info}>
-          <TouchableOpacity onPress={toggleModalVisibilityInformation}>
-            <Image
-              source={require("../assets/infoIcon.png")}
-              style={{
-                height: 30,
-                width: 30,
-              }}
-            />
-          </TouchableOpacity>
+          {showInfoIcon && (
+            <TouchableOpacity onPress={toggleModalVisibilityInformation}>
+              <Image
+                source={require("../assets/infoIcon.png")}
+                style={{
+                  height: 30,
+                  width: 30,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+
           <View style={styles.pendingView}>
             <TouchableOpacity
               disabled={inputValuePending ? false : true}
