@@ -67,7 +67,7 @@ function MeterReadingScanner({ navigation }) {
     billingId,
     isOverRideValue,
     flag,
-    navigatePath
+    navigatePath,
   } = route.params ?? {};
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
@@ -89,6 +89,8 @@ function MeterReadingScanner({ navigation }) {
   const [meReasons, setMeReasons] = useState([]);
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
+  const [manualChecking, setManualChecking] = useState(false)
+  console.log(value,manualChecking);
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const format = useCameraFormat(device, [{ fps: 10 }]);
@@ -150,7 +152,7 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-console.log(data,"PPPPPPPPP")
+    console.log(data, "PPPPPPPPP");
     appApi
       .meternote(data)
       .then((res) => {
@@ -187,6 +189,7 @@ console.log(data,"PPPPPPPPP")
       setValue(meterReading || "");
       setIsCameraOpen(false);
       setIsOverrideButton(false);
+      setManualChecking(false)
     }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
 
@@ -250,8 +253,8 @@ console.log(data,"PPPPPPPPP")
       });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
-        console.log(res?.ocrReading.length, totalDigit,"...................")
-        if(res?.ocrReading.length < totalDigit){
+        // console.log(res?.ocrReading.length, totalDigit, "...................");
+        if (res?.ocrReading.length < totalDigit) {
           getOverRideDigit();
         }
         setLoading(false);
@@ -311,10 +314,16 @@ console.log(data,"PPPPPPPPP")
       toast.show("please scan first");
       return;
     }
-    if (meterValue !== value || meterValue === null) {
+    // if (meterValue !== value || meterValue === null) {
+    //   setReadingMismatchModalVisible(true);
+    //   return;
+    
+    // }
+    if(manualChecking){
       setReadingMismatchModalVisible(true);
       return;
     }
+
     setSubmitLoading(true);
     const data = {
       property_id: id,
@@ -337,14 +346,17 @@ console.log(data,"PPPPPPPPP")
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
-            meterName,
-            id,
-            name,
-            otp: value,
-            res,
-            value: "ocr",
-          });
+          navigation.navigate(
+            navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen",
+            {
+              meterName,
+              id,
+              name,
+              otp: value,
+              res,
+              value: "ocr",
+            }
+          );
         }
       })
       .catch((err) => {
@@ -382,14 +394,17 @@ console.log(data,"PPPPPPPPP")
             type: "sucess",
             duration: 3000,
           });
-          navigation.navigate(navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen", {
-            meterName,
-            id,
-            name,
-            otp: value,
-            res,
-            value: "me",
-          });
+          navigation.navigate(
+            navigatePath === "meterSection" ? "OcrCaptured" : "SummaryScreen",
+            {
+              meterName,
+              id,
+              name,
+              otp: value,
+              res,
+              value: "me",
+            }
+          );
         }
       })
       .catch((err) => {
@@ -481,7 +496,11 @@ console.log(data,"PPPPPPPPP")
     >
       <TouchableOpacity
         style={{ marginTop: 5 }}
-        onPress={() => navigation.navigate(navigatePath === "meterSection" ? "MeterScreen" : "Dashboard")}
+        onPress={() =>
+          navigation.navigate(
+            navigatePath === "meterSection" ? "MeterScreen" : "Dashboard"
+          )
+        }
       >
         <Image
           source={require("../assets/left-arrow (1).png")}
@@ -629,7 +648,10 @@ console.log(data,"PPPPPPPPP")
             ref={ref}
             // {...props} //can remove for delete from end always
             value={value}
-            onChangeText={(value) => setValue(value)}
+            onChangeText={(value) => {
+              setManualChecking(true)
+              setValue(value);
+            }}
             cellCount={CELL_COUNT}
             rootStyle={styles.codeFieldRoot}
             keyboardType="number-pad"

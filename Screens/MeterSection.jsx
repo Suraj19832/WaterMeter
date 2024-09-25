@@ -144,7 +144,7 @@ const MeterSection = ({ navigation }) => {
     note,
     image
   ) => {
-    console.log(option)
+    // console.log(option)
     dispatch(setBillingAddress(billingId));
     dispatch(setMeterReadingCycleId(billingId))
     setBillingId(billingId);
