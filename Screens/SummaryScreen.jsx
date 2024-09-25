@@ -20,11 +20,11 @@ import { useSelector } from "react-redux";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name, meter_reading_cycle_id, reading_approval } =
+  const { id, name, meter_reading_cycle_id, reading_approval ,billingAddress} =
     route.params ?? {};
   
   const {meterCycleId} = useSelector((state)=>state.readingCycleId)
-    console.log(meterCycleId, "Meter Reading Cycle ID");
+    console.log(meterCycleId, "Meter Reading Cycle ID",billingAddress,"billingAddress");
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -165,7 +165,7 @@ export default function SummaryScreen({ navigation }) {
   return (
     <SafeAreaView style={{ height: "100%" }}>
       <View style={styles.headArrow}>
-        <TouchableOpacity onPress={navigation.goBack}>
+        <TouchableOpacity onPress={()=>navigation.navigate("Dashboard")}>
           <Image
             source={require("../assets/left-arrow (1).png")}
             style={{ height: 22, width: 12 }}

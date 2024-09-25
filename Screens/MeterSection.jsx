@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setStringValue } from "../redux/slices/UniqueSlice";
 import { colorCodes } from "../ColorCodes/Colors";
 import { setBillingAddress } from "../redux/slices/BillingSlice";
+import { setMeterCycleId as setMeterReadingCycleId} from "../redux/slices/ReadingCycleId";
 
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
@@ -145,6 +146,7 @@ const MeterSection = ({ navigation }) => {
   ) => {
     console.log(option)
     dispatch(setBillingAddress(billingId));
+    dispatch(setMeterReadingCycleId(billingId))
     setBillingId(billingId);
     setUserSelectedImage(image);
     setinputValuePending(option);
@@ -167,8 +169,10 @@ const MeterSection = ({ navigation }) => {
     setinputValuePending("");
     setShowInfoIcon(false)
   };
-  const handleCompletedSelectMeter = (option) => {
-    console.log(option)
+  const handleCompletedSelectMeter = (option,billingId) => {
+    console.log(option,billingId,"kkkkkkkkkkkkkkkkkkkkk")
+    dispatch(setBillingAddress(billingId));
+    dispatch(setMeterReadingCycleId(billingId))
     completedImage(option?.id, option?.reading_status);
     setinputValueCompleted(option?.id);
     setmeterReadingData(option?.id);
@@ -731,11 +735,12 @@ const MeterSection = ({ navigation }) => {
                   meterDataByApi
                     ?.filter((item) => item.status === "completed")
                     ?.map((option, index) => {
+                      // console.log(option,"777777777777")
                       return (
                         <TouchableOpacity
                           key={index}
                           style={styles.dropdownOption}
-                          onPress={() => handleCompletedSelectMeter(option)}
+                          onPress={() => handleCompletedSelectMeter(option,option?.meter_reading_cycle_id)}
                         >
                           <Text style={styles.input}>{option?.id}</Text>
                         </TouchableOpacity>

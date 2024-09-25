@@ -10,6 +10,9 @@ export default function OcrCaptured({ navigation }) {
   const route = useRoute();
   const { meterName, id, name, otp, res, value } = route.params ?? {};
   const { meterDataParams } = useSelector((state) => state.MeterSlice);
+  const { billingAddress } = useSelector((state) => state.billingSlice);
+  console.log(billingAddress,"billing address")
+
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -81,31 +84,31 @@ export default function OcrCaptured({ navigation }) {
       textAlign: "center",
       marginVertical: 12,
     },
-    rightIcon:{
+    rightIcon: {
       height: "auto",
       alignItems: "center",
       width: "90%",
       alignSelf: "center",
       gap: 40,
     },
-    capturedtext:{
+    capturedtext: {
       color: "rgba(152, 152, 152, 1)",
       fontSize: 24,
       lineHeight: 28,
       fontWeight: "500",
     },
-    meter:{
+    meter: {
       fontWeight: "600",
       fontSize: 24,
       lineHeight: 28,
       color: "rgba(11, 158, 210, 1)",
     },
-    metername:{
+    metername: {
       fontWeight: "500",
       fontSize: 24,
       lineHeight: 28,
       color: "rgba(152, 152, 152, 1)",
-    }
+    },
   });
 
   return (
@@ -135,47 +138,59 @@ export default function OcrCaptured({ navigation }) {
               </Text>
             </View>
           </View>
-          <View
-            style={styles.rightIcon}
-          >
+          <View style={styles.rightIcon}>
             <Image
               source={require("../assets/right_icon (1).png")}
               style={{ height: 80, width: 80 }}
             ></Image>
-            <Text
-              style={styles.capturedtext}
-            >
+            <Text style={styles.capturedtext}>
               {otp} {value === "me" ? "ME" : "OCR"} Captured
             </Text>
             <View style={{ flexDirection: "row" }}>
-              <Text
-                style={styles.meter}
-              >
-                Meter :
-              </Text>
-              <Text
-                style={styles.metername}
-              >
-                {" "}
-                {meterName}
-              </Text>
+              <Text style={styles.meter}>Meter :</Text>
+              <Text style={styles.metername}> {meterName}</Text>
             </View>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("MeterScreen", {
-                  PopertyId: meterDataParams?.propertyId,
-                  date: meterDataParams?.date,
-                })
-              }
-            >
-              <SubmitButton
-                text="Submit Another"
-                bgColor="rgba(255, 137, 2, 1)"
-                height={44}
-                width={154}
-                textSize={18}
-              />
-            </TouchableOpacity>
+            <View>
+              {res.pendingMeterCount === 0 && (
+                <View style={{ paddingVertical: 5 }}>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "rgba(11, 158, 210, 1)",
+                      fontWeight: "500",
+                    }}
+                  >
+                    No Pending Readings
+                  </Text>
+                </View>
+              )}
+              <TouchableOpacity
+                onPress={() => {
+                  res?.pendingMeterCount === 0
+                    ? navigation.navigate("SummaryScreen", {
+                        // billingAddress: billingAddress,
+                        id: id,
+                        name: name,
+                      })
+                    : navigation.navigate("MeterScreen", {
+                        PopertyId: meterDataParams?.propertyId,
+                        date: meterDataParams?.date,
+                      });
+                }}
+              >
+                <SubmitButton
+                  text={
+                    res?.pendingMeterCount === 0
+                      ? "View Summary"
+                      : "Submit Another"
+                  }
+                  bgColor="rgba(255, 137, 2, 1)"
+                  height={44}
+                  width={"auto"}
+                  textSize={18}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View
             style={{
