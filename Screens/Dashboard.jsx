@@ -17,6 +17,7 @@ import DashboardCompletedCards from "../Components/DashboardCompletedCards";
 import appApi from "../Helper/Api";
 import { useFocusEffect } from "@react-navigation/native";
 
+
 function Dashboard({ navigation }) {
   let monthArr = [
     "January",
