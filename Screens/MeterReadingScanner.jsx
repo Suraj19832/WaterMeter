@@ -81,6 +81,7 @@ function MeterReadingScanner({ navigation }) {
   } = route.params ?? {};
   const device = useCameraDevice("back");
   const CELL_COUNT = totalDigit;
+
   const [meterValue, setMeterValue] = useState(null);
   const [modalInfo, setModalInfo] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -112,6 +113,8 @@ function MeterReadingScanner({ navigation }) {
   const [zoom, setZoom] = useState(1);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+
+  console.log("isOverrideButton", isOverrideButton);
 
   const [isScanTimeOut, setIsScanTimeOut] = useState(false);
   const [timerRunning, setTimerRunning] = useState(false); // Track if timer is running
@@ -259,13 +262,8 @@ function MeterReadingScanner({ navigation }) {
       setIsOverrideButton(true);
       setDataId(res?.dataId);
       setMeReasons(res?.meReasons);
-      toast.show(getSubstring(res?.ocrReading, totalDigit), {
-        type: "sucess",
-        duration: 2000,
-      });
       if (res?.ocrReading) {
         setValue(getSubstring(res?.ocrReading, totalDigit));
-        // console.log(res?.ocrReading.length, totalDigit, "...................");
         if (res?.ocrReading.length < totalDigit) {
           getOverRideDigit();
         }
@@ -302,7 +300,6 @@ function MeterReadingScanner({ navigation }) {
         await verifyNumber(fileData);
       }
     } catch (error) {
-      // toast.show("Unable to capture image", { type: "error" });
       console.error(error);
     } finally {
     }
@@ -333,7 +330,6 @@ function MeterReadingScanner({ navigation }) {
     // if (meterValue !== value || meterValue === null) {
     //   setReadingMismatchModalVisible(true);
     //   return;
-
     // }
     if (manualChecking) {
       setReadingMismatchModalVisible(true);
@@ -530,6 +526,7 @@ function MeterReadingScanner({ navigation }) {
     inputRange: [0, 1],
     outputRange: [-200, 0],
   });
+
   if (!permission) {
     return <View />;
   }
@@ -550,7 +547,7 @@ function MeterReadingScanner({ navigation }) {
       style={styles.container}
     >
       <TouchableOpacity
-        style={{ marginTop: 5 }}
+        style={{ marginTop: 5, height: 28, width: 50 }}
         onPress={() =>
           navigation.navigate(
             navigatePath === "meterSection" ? "MeterScreen" : "Dashboard"
@@ -650,63 +647,6 @@ function MeterReadingScanner({ navigation }) {
             ) : null}
           </View>
         ) : (
-          // <GestureHandlerRootView style={{}}>
-          //   <PinchGestureHandler
-          //     onGestureEvent={onPinchEvent}
-          //     onHandlerStateChange={onPinchStateChange}
-          //   >
-          //     <View>
-          //       <Camera
-          //         ref={cameraRef}
-          //         device={device}
-          //         // zoom={zoom}
-          //         // enableFpsGraph={true}
-          //         fps={30}
-          //         format={format}
-          //         photo={true}
-          //         style={{ width: "100%", height: 200 }}
-          //         enableZoomGesture={true}
-          //         isActive={isCameraOpen && AppState.currentState === "active"}
-          //         frameProcessor={
-          //           isScanTimeOut &&
-          //           isScanCodeAlreadyExecuted.value === false
-          //             ? null
-          //             : handleFrameProcessor
-          //         }
-          //       />
-          //       {/* <Animated.View
-          //         style={[
-          //           styles.scanningOverlay,
-          //           { transform: [{ translateY }] },
-          //         ]}
-          //       />
-          //       <View style={styles.overlayBox} />
-          //       {isScanTimeOut ? (
-          //         <View style={StyleSheet.absoluteFillObject}>
-          //           <TouchableOpacity style={{ height: 200 }}>
-          //             <TouchableOpacity
-          //               onPress={captureImage}
-          //               style={styles.shutterIcon}
-          //             >
-          //               <Image
-          //                 source={require("../assets/icons/shutter.png")}
-          //                 style={{
-          //                   height: 30,
-          //                   width: 30,
-          //                   tintColor:
-          //                     isScanCodeAlreadyExecuted.value === true ||
-          //                     loading
-          //                       ? "grey"
-          //                       : null,
-          //                 }}
-          //               />
-          //             </TouchableOpacity>
-          //           </TouchableOpacity>
-          //         </View>
-          //       ) : null} */}
-          //     </View>
-          //   </PinchGestureHandler>
-          // </GestureHandlerRootView>
           <View style={styles.capturedImage}>
             {loading ? (
               <ActivityIndicator size={"large"} />
@@ -735,8 +675,7 @@ function MeterReadingScanner({ navigation }) {
           </Text>
 
           {isOverrideButton &&
-            ((value.length === CELL_COUNT && isOverRideValue === "yes") ||
-            value.length !== CELL_COUNT ? (
+            (value.length === CELL_COUNT && isOverRideValue === "yes" ? (
               <TouchableOpacity
                 disabled={overrideLoading ? true : false}
                 style={[

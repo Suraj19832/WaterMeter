@@ -135,7 +135,7 @@ function EditProfile({ navigation }) {
           <View style={{ position: "absolute", zIndex: 2 }}>
             <Pressable
               onPress={navigation.goBack}
-              style={{ position: "absolute", zIndex: 1, height: 22, width: 22 }}
+              style={{ position: "absolute", zIndex: 1, height: 22, width: 50 }}
             >
               <Image
                 source={require("../assets/left-arrow.png")}

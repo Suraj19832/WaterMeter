@@ -10,9 +10,6 @@ export default function OcrCaptured({ navigation }) {
   const route = useRoute();
   const { meterName, id, name, otp, res, value } = route.params ?? {};
   const { meterDataParams } = useSelector((state) => state.MeterSlice);
-  const { billingAddress } = useSelector((state) => state.billingSlice);
-  console.log(billingAddress,"billing address")
-
 
   const styles = StyleSheet.create({
     headArrow: {
@@ -168,7 +165,6 @@ export default function OcrCaptured({ navigation }) {
                 onPress={() => {
                   res?.pendingMeterCount === 0
                     ? navigation.navigate("SummaryScreen", {
-                        // billingAddress: billingAddress,
                         id: id,
                         name: name,
                       })

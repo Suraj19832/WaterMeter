@@ -77,6 +77,7 @@ const MeterSection = ({ navigation }) => {
   const [noteLoading, setnoteLoading] = useState(false);
   const [meterCycleId, setMeterCycleId] = useState(null);
   const [editAccess, setEditAccess] = useState("");
+  const [isLoadingImage, setImageLoading] = useState(false);
 
   const toast = useToast();
   const getNameById = (all_data, id) => {
@@ -453,7 +454,7 @@ const MeterSection = ({ navigation }) => {
     <SafeAreaView style={{ marginHorizontal: 20, height: "100%" }}>
       <>
         <TouchableOpacity
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 10, height: 22, width: 50 }}
           onPress={() => navigation.navigate("Dashboard")}
         >
           <Image
