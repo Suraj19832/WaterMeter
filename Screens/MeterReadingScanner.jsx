@@ -101,7 +101,7 @@ function MeterReadingScanner({ navigation }) {
   const [manualLoading, setManulLoading] = useState(false);
   const [value, setValue] = useState(meterReading || "");
   const [manualChecking, setManualChecking] = useState(false);
-  console.log(value, manualChecking);
+
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [activeReadingButton, setActiveReadingButton] = useState(false);
   const format = useCameraFormat(device, [{ fps: 30 }]);
@@ -113,8 +113,6 @@ function MeterReadingScanner({ navigation }) {
   const [zoom, setZoom] = useState(1);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-
-  console.log("isOverrideButton", isOverrideButton);
 
   const [isScanTimeOut, setIsScanTimeOut] = useState(false);
   const [timerRunning, setTimerRunning] = useState(false); // Track if timer is running
@@ -216,27 +214,6 @@ function MeterReadingScanner({ navigation }) {
     }, [totalDigit, completed_note, CELL_COUNT, meterReading, completed_dataId])
   );
 
-  const onPinchEvent = (event) => {
-    const scale = event.nativeEvent.scale;
-    setTimeout(() => {
-      const newZoom = Math.min(
-        Math.max(zoom + (scale - 1) / (Platform.OS === "ios" ? 20 : 18), 0),
-        0.8
-      );
-      setZoom(newZoom);
-    }, 20);
-  };
-
-  const onPinchStateChange = (event) => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {
-      const newZoom = Math.min(
-        Math.max(zoom + (event.nativeEvent.scale - 1) / 14, 0),
-        1
-      );
-      setZoom(newZoom);
-    }
-  };
-
   const startScanningAnimation = () => {
     scanAnimation.setValue(0);
     Animated.loop(
@@ -256,7 +233,7 @@ function MeterReadingScanner({ navigation }) {
         meter_id: meterName,
         meter_reading_cycle_id: billingId,
       };
-      console.log(data, "<<<<<<<<<<<<<<<data in verfify");
+      console.log("Scanned OCR image payload", data);
       const res = await appApi.meterScanner(data);
       setMeterValue(getSubstring(res?.ocrReading, totalDigit));
       setIsOverrideButton(true);
@@ -314,7 +291,6 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
-    // captureImage();
     if (capturedImage) {
       setIsRescan(true);
     } else {
@@ -349,13 +325,13 @@ function MeterReadingScanner({ navigation }) {
       // date: date,
       flag: flag ? 1 : 0,
     };
-    console.log(data, "without excuse submit");
+    console.log("submitted data ", data);
     appApi
       .submitReading(data)
       .then((res) => {
         if (res?.status) {
-          toast.show("Sucessfully Submitted", {
-            type: "sucess",
+          toast.show("Successfully Submitted", {
+            type: "success",
             duration: 3000,
           });
           navigation.navigate(
@@ -452,10 +428,7 @@ function MeterReadingScanner({ navigation }) {
   const handleFrameScan = Worklets.createRunOnJS(async (frame) => {
     const { resultText } = frame;
 
-    const hasMeterReading = resultText?.match(/\b\d{4,}\b/g); // any number
-    // const hasMeterReading = /\b\d+\s*m\b/i.test(resultText); //if text has m
-    // const hasMeterReading = /\b\d+\b/i.test(resultText);
-    // Calculate the time difference between the current and last frame
+    const hasMeterReading = resultText?.match(/\b\d{4,}\b/g); // any number with 4 digits
 
     if (hasMeterReading) {
       try {
@@ -470,16 +443,19 @@ function MeterReadingScanner({ navigation }) {
     }
   });
 
-  const handleFrameProcessor = useFrameProcessor((frame) => {
-    "worklet";
-    runAtTargetFps(30, () => {
-      // Run at 30 FPS, adjust based on your needs
-      if (isScanCodeAlreadyExecuted.value === false) {
-        const data = scanText(frame);
-        handleFrameScan(data);
-      }
-    });
-  }, []);
+  const handleFrameProcessor = useFrameProcessor(
+    (frame) => {
+      "worklet";
+      runAtTargetFps(30, () => {
+        // Run at 30 FPS, adjust based on your needs
+        if (isScanCodeAlreadyExecuted.value === false) {
+          const data = scanText(frame);
+          handleFrameScan(data);
+        }
+      });
+    },
+    [isFocused]
+  );
 
   const startTimer = () => {
     setIsScanTimeOut(false); // Reset state

@@ -32,6 +32,7 @@ import { setMeterCycleId as setMeterReadingCycleId } from "../redux/slices/Readi
 
 const MeterSection = ({ navigation }) => {
   const { billingAddress } = useSelector((state) => state.billingSlice);
+  const isFocused = useIsFocused();
   const [meterMake, setmeterMake] = useState({});
   const dispatch = useDispatch();
   const route = useRoute();
@@ -338,24 +339,35 @@ const MeterSection = ({ navigation }) => {
     setloading(true);
     const data = {
       propertyId: meterDataParams?.propertyId,
-      date: date,
+      date: meterDataParams?.date,
     };
+
     try {
-      const res = await appApi.metersection(data);
-      if (res?.status) {
-        setname(res?.data?.name);
-        setid(res?.data?.uid);
-        setmeterDataByApi(res?.data?.meters);
-        setpendingMeterCount(res?.data?.pendingMeterReading);
-        setLastReading(res?.data?.last_reading);
-        setLastReadingDate(res?.data?.last_reading_date);
-        setAvgUsage(res?.data?.avg_usage);
-        setIsOverRide(res?.data?.meter_last_digit_override);
-        setMeterCycleId(res?.data?.meter_reading_cycle_id);
-        if (inputValuePending != "") {
-          handleSelectionOptionMeter(res?.data?.meters, inputValuePending);
-        }
-      }
+      appApi
+        .metersection(data)
+        .then((res) => {
+          setloading(false);
+          console.log("res for meter section", res.data);
+          if (res?.status) {
+            setname(res?.data?.name);
+            setid(res?.data?.uid);
+            setmeterDataByApi(res?.data?.meters);
+            setpendingMeterCount(res?.data?.pendingMeterReading);
+            setLastReading(res?.data?.last_reading);
+            setLastReadingDate(res?.data?.last_reading_date);
+            setAvgUsage(res?.data?.avg_usage);
+            setIsOverRide(res?.data?.meter_last_digit_override);
+            setMeterCycleId(res?.data?.meter_reading_cycle_id);
+            if (inputValuePending != "") {
+              handleSelectionOptionMeter(res?.data?.meters, inputValuePending);
+            }
+          }
+        })
+        .catch((err) => {
+          console.log("err", err);
+
+          setloading(false);
+        });
     } catch (error) {
       setloading(false);
     } finally {
@@ -382,8 +394,12 @@ const MeterSection = ({ navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchData();
-    }, [PopertyId])
+      if (isFocused) {
+        console.log("calls the api ...");
+
+        fetchData();
+      }
+    }, [PopertyId, isFocused])
   );
 
   const completedImage = (meterId, editAccess) => {
@@ -402,7 +418,6 @@ const MeterSection = ({ navigation }) => {
         setMeterReading(res?.data?.reading);
         setCompletedDataId(res?.data?.data_id);
         setEditAccess(editAccess);
-
         setCompletedUnit({
           reading: res?.data?.reading,
           readingType: res?.data?.readingType,
@@ -427,6 +442,7 @@ const MeterSection = ({ navigation }) => {
       setCompleteImage(null);
       setCompletedUnit({});
       setShowInfoIcon(false);
+      setIsPendingDropdown(false);
     }, [])
   );
 
@@ -435,6 +451,8 @@ const MeterSection = ({ navigation }) => {
   useEffect(() => {
     return () => {
       setinputValuePending("");
+      setIsCompletedDropdown(false);
+      setIsPendingDropdown(false);
     };
   }, [isFocus]);
 
@@ -527,7 +545,7 @@ const MeterSection = ({ navigation }) => {
                             meterid?.image
                           )
                         }
-                        key={index}
+                        key={meterid?.id}
                       >
                         <Text style={styles.input}>{meterid?.id}</Text>
                       </TouchableOpacity>
@@ -750,7 +768,7 @@ const MeterSection = ({ navigation }) => {
                       // console.log(option,"777777777777")
                       return (
                         <TouchableOpacity
-                          key={index}
+                          key={option?.id}
                           style={styles.dropdownOption}
                           onPress={() =>
                             handleCompletedSelectMeter(
@@ -837,7 +855,7 @@ const MeterSection = ({ navigation }) => {
                 {Object.keys(completedUnit).length !== 0 && (
                   <TouchableOpacity
                     disabled={editAccess === "Pending" ? false : true}
-                    onPress={() =>
+                    onPress={() => {
                       navigation.navigate("meterReadingScanner", {
                         id,
                         name,
@@ -851,12 +869,12 @@ const MeterSection = ({ navigation }) => {
                         completed_dataId: completedDataId,
                         completed_note: completedNotes,
                         billingId: meterCycleId,
-                        date: date,
+                        date: meterDataParams?.date,
                         flag: "editing",
                         isOverRideValue: isOverRide,
                         navigatePath: "meterSection",
-                      })
-                    }
+                      });
+                    }}
                   >
                     <Image
                       source={
@@ -902,7 +920,7 @@ const MeterSection = ({ navigation }) => {
               onPress={() => {
                 dispatch(setStringValue("Completion"));
                 readingStartTime();
-                navigation.jumpTo("meterReadingScanner", {
+                navigation.navigate("meterReadingScanner", {
                   id,
                   name,
                   lastReading,
@@ -913,7 +931,7 @@ const MeterSection = ({ navigation }) => {
                   completed_note: dropdownNotes,
                   // billingId: billingAddress,
                   billingId: meterCycleId,
-                  date: date,
+                  date: meterDataParams?.date,
                   isOverRideValue: isOverRide,
                   navigatePath: "meterSection",
                 });
