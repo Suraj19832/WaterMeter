@@ -71,10 +71,10 @@ function Login({ navigation }) {
     appApi
       .saveLocationApi(data)
       .then((res) => {
-        console.log(res)
+        console.log(res);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       });
   };
 
@@ -88,8 +88,7 @@ function Login({ navigation }) {
           setPassword(savedPassword);
           setChecked(true);
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     loadRememberedData();
@@ -182,7 +181,7 @@ function Login({ navigation }) {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView contentContainerStyle={{}}>
+      <ScrollView keyboardShouldPersistTaps="always" contentContainerStyle={{}}>
         <View style={styles.container}>
           <ImageBackground
             source={require("../assets/BackgroundImage.png")}
