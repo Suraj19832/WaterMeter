@@ -347,7 +347,6 @@ const MeterSection = ({ navigation }) => {
         .metersection(data)
         .then((res) => {
           setloading(false);
-          console.log("res for meter section", res.data);
           if (res?.status) {
             setname(res?.data?.name);
             setid(res?.data?.uid);
@@ -981,22 +980,24 @@ const MeterSection = ({ navigation }) => {
           <View style={styles.modalOverlay}>
             <View style={styles.modalContentt}>
               <View style={styles.imageBox}>
-                {completeLoading ? (
+                {completeLoading && (
                   <ActivityIndicator
                     size="medium"
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
+                    style={{ height: "100%", width: "100%" }}
+                  />
+                )}
+
+                {meterCompletedImage && (
+                  <Image
+                    source={{ uri: meterCompletedImage }}
+                    style={{ height: "100%", width: "100%" }}
+                    onLoadStart={() => setCompleteLoading(true)}
+                    onLoadEnd={() => setCompleteLoading(false)}
+                    onLoad={() => setCompleteLoading(false)}
+                    onError={() => {
+                      setCompleteLoading(false);
                     }}
                   />
-                ) : (
-                  meterCompletedImage && (
-                    <Image
-                      source={{ uri: meterCompletedImage }}
-                      style={{ height: "100%", width: "100%" }}
-                    />
-                  )
                 )}
               </View>
               <TouchableOpacity
