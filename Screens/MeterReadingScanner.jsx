@@ -15,6 +15,7 @@ import {
   Button,
   Dimensions,
   AppState,
+  Alert,
 } from "react-native";
 import {
   useFocusEffect,
@@ -56,6 +57,8 @@ import { useTextRecognition } from "react-native-vision-camera-text-recognition"
 import { useSharedValue, Worklets } from "react-native-worklets-core";
 import { runOnJS } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
+import * as MediaLibrary from "expo-media-library";
 
 function MeterReadingScanner({ navigation }) {
   const timerForScanCode = Platform.OS === "android" ? 5000 : 3000;
@@ -224,6 +227,16 @@ function MeterReadingScanner({ navigation }) {
       })
     ).start();
   };
+  const deleteImage = async (fileUri) => {
+    console.log("capture image", fileUri);
+
+    try {
+      await FileSystem.deleteAsync(fileUri);
+      console.log("Image deleted successfully");
+    } catch (error) {
+      console.log("Error deleting image:", error);
+    }
+  };
   const verifyNumber = async (imageFile) => {
     setLoading(true);
     try {
@@ -255,7 +268,33 @@ function MeterReadingScanner({ navigation }) {
       setLoading(false);
     }
   };
+  const requestMediaLibraryPermissions = async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission required",
+        "We need access to your media library to manage files."
+      );
+    } else {
+      console.log("Permission granted!");
+    }
+  };
+  const clearCache = async () => {
+    try {
+      const cacheDir = FileSystem.cacheDirectory;
+      const files = await FileSystem.readDirectoryAsync(cacheDir);
 
+      // Loop through all files in the cache directory and delete them
+      for (const file of files) {
+        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
+          idempotent: true,
+        });
+      }
+      console.log("Cache cleared");
+    } catch (error) {
+      console.log("Error clearing cache:", error);
+    }
+  };
   const captureImage = async (manualCapture = false) => {
     try {
       if (cameraRef.current) {
@@ -264,6 +303,8 @@ function MeterReadingScanner({ navigation }) {
         }
         const photo = await cameraRef.current.takePhoto();
         setCapturedImage(`file://${photo.path}`);
+        console.log("photo path", photo.path);
+
         setTimeout(() => {
           setIsCameraOpen(false);
         }, 1000);
@@ -273,8 +314,8 @@ function MeterReadingScanner({ navigation }) {
           { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
         );
         const fileData = getFileData(resizedImage);
-
         await verifyNumber(fileData);
+        deleteImage(resizedImage.uri);
       }
     } catch (error) {
       console.error(error);
@@ -284,6 +325,7 @@ function MeterReadingScanner({ navigation }) {
 
   const handleScan = () => {
     // setIsScanCodeAlreadyExecuted(false);
+    deleteImage(capturedImage);
     setIsScanTimeOut(false);
     startTimer();
     setZoom(1);
@@ -291,6 +333,7 @@ function MeterReadingScanner({ navigation }) {
     setIsCameraOpen(!isCameraOpen);
     setIsOverrideButton(false);
     startScanningAnimation();
+
     if (capturedImage) {
       setIsRescan(true);
     } else {
@@ -329,6 +372,8 @@ function MeterReadingScanner({ navigation }) {
     appApi
       .submitReading(data)
       .then((res) => {
+        deleteImage(capturedImage);
+        clearCache();
         if (res?.status) {
           toast.show("Successfully Submitted", {
             type: "success",
@@ -512,7 +557,13 @@ function MeterReadingScanner({ navigation }) {
         <Text style={styles.message}>
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button
+          onPress={() => {
+            requestPermission();
+            requestMediaLibraryPermissions();
+          }}
+          title="grant permission"
+        />
       </View>
     );
   }
@@ -524,11 +575,13 @@ function MeterReadingScanner({ navigation }) {
     >
       <TouchableOpacity
         style={{ marginTop: 5, height: 28, width: 50 }}
-        onPress={() =>
+        onPress={() => {
+          clearCache();
+          deleteImage(capturedImage);
           navigation.navigate(
             navigatePath === "meterSection" ? "MeterScreen" : "Dashboard"
-          )
-        }
+          );
+        }}
       >
         <Image
           source={require("../assets/left-arrow (1).png")}

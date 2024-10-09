@@ -347,6 +347,7 @@ const MeterSection = ({ navigation }) => {
         .metersection(data)
         .then((res) => {
           setloading(false);
+
           if (res?.status) {
             setname(res?.data?.name);
             setid(res?.data?.uid);
