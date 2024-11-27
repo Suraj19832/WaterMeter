@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   Image,
   ActivityIndicator,
@@ -20,11 +19,11 @@ import { useSelector } from "react-redux";
 
 export default function SummaryScreen({ navigation }) {
   const route = useRoute();
-  const { id, name, meter_reading_cycle_id, reading_approval ,billingAddress} =
+  const { id, name, reading_approval } =
     route.params ?? {};
-  
   const {meterCycleId} = useSelector((state)=>state.readingCycleId)
-    console.log(meterCycleId, "Meter Reading Cycle ID",billingAddress,"billingAddress");
+    console.log(meterCycleId, "Meter Reading Cycle ID");
+    
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [dropdownValue, setDropdownValue] = useState(null);
   const [data, setData] = useState(null);
@@ -50,25 +49,16 @@ export default function SummaryScreen({ navigation }) {
   
 
   function getLastFiveDigits(number) {
-    // Convert the number to a string only if it's a valid number
     let numberStr =
       number !== undefined && number !== null ? number.toString() : "";
-
-    // Split the string into integer and decimal parts if it's not empty
     if (numberStr) {
       let [integerPart, decimalPart] = numberStr.split(".");
-
-      // If no decimal part, return the integer part
       if (!decimalPart) {
         return integerPart;
       }
-
-      // Slice the first 5 digits of the decimal part and return the formatted string
       let truncatedDecimal = decimalPart.slice(0, 5);
       return `${integerPart}.${truncatedDecimal}`;
     }
-
-    // Handle invalid or empty input cases
     return "";
   }
 
@@ -95,11 +85,9 @@ export default function SummaryScreen({ navigation }) {
         meter_id: meterId,
         meter_reading_cycle_id: meterCycleId,
       };
-      console.log(data, "comppeteimahe");
       appApi
         .completedImage(data)
         .then((res) => {
-          console.log(res, " completed image api response ========>");
           setCompletedUnit({
             reading: res?.data?.reading,
             readingType: res?.data?.readingType,
@@ -135,11 +123,9 @@ export default function SummaryScreen({ navigation }) {
       const data = {
         meter_reading_cycle_id: meterCycleId,
       };
-      console.log(data, "summary");
       appApi
         .summaryCompletion(data)
         .then((res) => {
-          console.log(res, "summarycompletion api response=======>");
           setData(res?.data);
           setResfreshing(false);
           setDropdownData(res?.data?.completedMeters);
@@ -448,7 +434,6 @@ const styles = StyleSheet.create({
   heading: {
     marginVertical: 20,
     backgroundColor: "#F5F5F5",
-    // Adding shadow properties
     shadowColor: "#2198C9",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,

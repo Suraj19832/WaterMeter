@@ -176,7 +176,6 @@ function MeterReadingScanner({ navigation }) {
       meter_id: meterName,
       note: note,
     };
-    console.log(data, "PPPPPPPPP");
     appApi
       .meternote(data)
       .then((res) => {
@@ -359,16 +358,16 @@ function MeterReadingScanner({ navigation }) {
     const data = {
       property_id: id,
       meter_id: meterName,
-      // data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
       is_manual: meterValue !== value ? "1" : "0",
       note: notes ? notes : completed_note,
       meter_reading_cycle_id: billingId,
-      // date: date,
       flag: flag ? 1 : 0,
     };
-    console.log("submitted data ", data);
+
+
+    console.log("submitted data automatic", data);
     appApi
       .submitReading(data)
       .then((res) => {
@@ -394,6 +393,7 @@ function MeterReadingScanner({ navigation }) {
       })
       .catch((err) => {
         toast.show("something went wrong", { type: "error" });
+        setLoading(false)
       });
   };
 
@@ -406,17 +406,16 @@ function MeterReadingScanner({ navigation }) {
     const data = {
       property_id: id,
       meter_id: meterName,
-      // data_id: dataId,
       rescan: isRescan ? "yes" : "no",
       ocr_reading: value,
-      is_manual: meterValue !== value ? "1" : "0", // is_ocr in db
+      is_manual: meterValue !== value ? "1" : "0",
       note: notes ? notes : completed_note,
       me_reason: selectedReading,
       meter_reading_cycle_id: billingId,
-      // date: date,
       flag: flag ? 1 : 0,
     };
-    console.log(data, "with excuse submission");
+    console.log(data, "with manual submit");
+
     appApi
       .submitReading(data)
       .then((res) => {
@@ -739,10 +738,10 @@ function MeterReadingScanner({ navigation }) {
               {isCameraOpen
                 ? "Stop"
                 : loading
-                ? "Scanning"
-                : capturedImage || meterImage
-                ? "Rescan"
-                : "Scan"}
+                  ? "Scanning"
+                  : capturedImage || meterImage
+                    ? "Rescan"
+                    : "Scan"}
             </Text>
           </TouchableOpacity>
         </View>

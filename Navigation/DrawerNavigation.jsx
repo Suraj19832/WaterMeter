@@ -37,7 +37,7 @@ const DrawerNavigation = ({ navigation }) => {
     Constants.manifest2?.extra?.expoClient?.version || // Fallback for other cases
     'Version not available'; // Default fallback
 
-  console.log(appVersion, "App Version");
+  // console.log(appVersion, "App Version");
 
   const toast = useToast();
 

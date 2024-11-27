@@ -9,9 +9,8 @@ import {
   StatusBar,
   Text,
 } from "react-native";
-import { Button } from "react-native";
 import { View, StyleSheet } from "react-native";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
 import SubmitButton from "../Components/SubmitButton";
@@ -21,12 +20,9 @@ import appApi from "../Helper/Api";
 import { ToastAndroid } from "react-native";
 import InputField from "../Components/InputField";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { setAuthToken } from "../redux/slices/Authslice";
 import { useDispatch } from "react-redux";
 function EditProfile({ navigation }) {
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState(true);
-  const authToken = useSelector(selectAuthToken);
   const [loading, setloading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
@@ -46,7 +42,6 @@ function EditProfile({ navigation }) {
         setRefreshing(false);
       } else {
         setRefreshing(false);
-        // showToast("Login again");
       }
     } catch (err) {
       showToast("Login again");
@@ -98,17 +93,18 @@ function EditProfile({ navigation }) {
       setloading(true);
       const data = {
         name: firstname,
+        email:email
       };
       const res = await appApi.editProfile(data);
       if (res?.status) {
         showToast(res?.message);
         navigation.navigate("Dashboard");
       } else {
-        showToast("Login Agian");
+        showToast("please try again later!");
       }
     } catch (error) {
       setloading(false);
-      showToast("Login again");
+      showToast("please try again later!");
     } finally {
       setloading(false);
     }
@@ -215,7 +211,6 @@ function EditProfile({ navigation }) {
             </View>
           </View>
         </View>
-        {/* </ImageBackground> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -238,9 +233,6 @@ const styles = StyleSheet.create({
     color: "#5EC2C6",
     marginBottom: 20,
   },
-
-  // shourya
-
   img: {
     opacity: "10%",
   },
@@ -265,7 +257,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#2198C9",
     fontSize: 14,
-
     height: 60,
   },
   input: {
@@ -275,7 +266,6 @@ const styles = StyleSheet.create({
     height: "100%",
     fontSize: 14,
   },
-
   RememberPassword: {
     display: "flex",
     flexDirection: "row",
