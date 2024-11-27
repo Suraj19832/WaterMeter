@@ -262,7 +262,7 @@ function MeterReadingScanner({ navigation }) {
         setLoading(false);
       }
     } catch (err) {
-      toast.show("something went wrong");
+      toast.show("please try again later!");
       console.error(err, "error in detect ocr");
       setLoading(false);
     }
@@ -392,7 +392,7 @@ function MeterReadingScanner({ navigation }) {
         }
       })
       .catch((err) => {
-        toast.show("something went wrong", { type: "error" });
+        toast.show("please try again!", { type: "error" });
         setLoading(false)
       });
   };
@@ -440,7 +440,7 @@ function MeterReadingScanner({ navigation }) {
         }
       })
       .catch((err) => {
-        toast.show("something went wrong", { type: "error" });
+        toast.show("please try again  !", { type: "error" });
         setManulLoading(false);
         setReadingMismatchModalVisible(false);
       });
@@ -526,9 +526,9 @@ function MeterReadingScanner({ navigation }) {
   const handleDoubleTap = (point) => {
     // if single touch then try to focus the camera on the touched location else zoom in
     const cameraR = cameraRef.current;
-    cameraR.focus(point);
+    cameraR?.focus(point);
     const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300; // 300ms for double-tap detection
+    const DOUBLE_PRESS_DELAY = 200; // 300ms for double-tap detection
     if (lastTap.current && now - lastTap.current < DOUBLE_PRESS_DELAY) {
       // If the second tap happens within the delay, it's a double-tap
       setZoom((prevZoom) => prevZoom + 0.5);

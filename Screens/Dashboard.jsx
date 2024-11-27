@@ -192,7 +192,7 @@ function Dashboard({ navigation }) {
           />
         ) : toggleScheduleCompleted ? (
           <View>
-            {data.length === 0 ? (
+            {data?.length === 0 ? (
               <Text style={styles.noDataText}>No completed visits</Text>
             ) : (
               data?.map((items, index) => (
@@ -210,7 +210,7 @@ function Dashboard({ navigation }) {
           </View>
         ) : (
           <View style={{}}>
-            {data.length === 0 ? (
+            {data?.length === 0 ? (
               <Text style={styles.noDataText}>No scheduled visits</Text>
             ) : (
               <View style={{ marginBottom: 28 }}>
