@@ -27,7 +27,7 @@
       ],
       "react-native-vision-camera"
     ],
-    "version": "1.2.6",
+    "version": "1.2.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
