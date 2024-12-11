@@ -1,64 +1,61 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Modal,
-  TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
-  Platform,
-  ActivityIndicator,
-  Animated,
-  Button,
-  Dimensions,
-  AppState,
-  Alert,
-} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   useFocusEffect,
   useIsFocused,
   useRoute,
 } from "@react-navigation/native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { colorCodes } from "../ColorCodes/Colors";
-import appApi from "../Helper/Api";
-import { getFileData } from "../Helper/Helper";
-import { useToast } from "react-native-toast-notifications";
+import { useCameraPermissions } from "expo-camera";
+import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
-import LoaderComponent from "../Components/LoaderComponent";
-import "react-native-gesture-handler";
-import { CameraView, useCameraPermissions } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  PinchGestureHandler,
-  State,
-  GestureHandlerRootView,
-  TapGestureHandler,
-  GestureDetector,
-  Gesture,
-} from "react-native-gesture-handler";
+  ActivityIndicator,
+  Alert,
+  Animated,
+  AppState,
+  Button,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   CodeField,
   Cursor,
   useBlurOnFulfill,
   useClearByFocusCell,
 } from "react-native-confirmation-code-field";
+import "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
+import { useToast } from "react-native-toast-notifications";
 import {
   Camera,
-  runAsync,
   runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
-  useFrameProcessor,
+  useFrameProcessor
 } from "react-native-vision-camera";
 import { useTextRecognition } from "react-native-vision-camera-text-recognition";
 import { useSharedValue, Worklets } from "react-native-worklets-core";
-import { runOnJS } from "react-native-reanimated";
-import { Feather } from "@expo/vector-icons";
-import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
+import { colorCodes } from "../ColorCodes/Colors";
+import LoaderComponent from "../Components/LoaderComponent";
+import appApi from "../Helper/Api";
+import { getFileData } from "../Helper/Helper";
+
+
 
 function MeterReadingScanner({ navigation }) {
   const timerForScanCode = Platform.OS === "android" ? 5000 : 3000;
@@ -199,6 +196,7 @@ function MeterReadingScanner({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      console.log("completed_dataId", completed_dataId)
       if (!completed_dataId) {
         setDataId(null);
       }
@@ -341,10 +339,11 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleSubmit = () => {
-    if (dataId === null) {
-      toast.show("please scan first");
-      return;
-    }
+    // if (dataId === null) {
+    //   toast.show("please scan first");
+    //   return;
+    // }
+
     // if (meterValue !== value || meterValue === null) {
     //   setReadingMismatchModalVisible(true);
     //   return;
@@ -398,10 +397,10 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleManualReadingSubmit = () => {
-    if (dataId === null) {
-      toast.show("please scan first1");
-      return;
-    }
+    // if (dataId === null) {
+    //   toast.show("please scan first1");
+    //   return;
+    // }
     setManulLoading(true);
     const data = {
       property_id: id,
@@ -550,6 +549,7 @@ function MeterReadingScanner({ navigation }) {
   if (!permission) {
     return <View />;
   }
+  
   if (!permission.granted) {
     return (
       <View style={styles.permissionContainer}>

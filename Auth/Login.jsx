@@ -24,6 +24,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { colorCodes } from "../ColorCodes/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import { useCameraPermissions } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+
 function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,6 +40,19 @@ function Login({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const toast = useToast();
+
+  const [permission, requestPermission] = useCameraPermissions();
+  const requestMediaLibraryPermissions = async () => {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission required",
+        "We need access to your media library to manage files."
+      );
+    } else {
+      console.log("Permission granted!");
+    }
+  };
 
   const requestLocationPermission = async () => {
     try {
@@ -59,9 +75,15 @@ function Login({ navigation }) {
       setLocationPermission(false);
     }
   };
+
   useEffect(() => {
-    requestLocationPermission();
+    async () => {
+      await requestLocationPermission();
+      await requestPermission();
+      await requestMediaLibraryPermissions();
+    }
   }, []);
+
 
   const saveLocationApi = () => {
     const data = {
@@ -88,7 +110,7 @@ function Login({ navigation }) {
           setPassword(savedPassword);
           setChecked(true);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     loadRememberedData();
@@ -123,7 +145,9 @@ function Login({ navigation }) {
 
   const handleLogin = async () => {
     if (locationPermission === false) {
-      requestLocationPermission();
+      await requestLocationPermission();
+      await requestPermission();
+      await requestMediaLibraryPermissions();
       return;
     }
     if (validation() === false) {

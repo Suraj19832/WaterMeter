@@ -1,14 +1,15 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { ToastProvider } from "react-native-toast-notifications";
+import { Provider } from "react-redux";
 import NavigationComponent from "./Navigation/Navigation";
 import store from "./redux/reduxstore";
-import { Provider, useDispatch } from "react-redux";
-import { ToastProvider } from "react-native-toast-notifications";
 import { setAuthToken } from "./redux/slices/Authslice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, View } from "react-native";
 
 const App = () => {
   const [loading, setloading] = useState(true);
+
   useEffect(() => {
     const getAuthToken = async () => {
       const token = await AsyncStorage.getItem("token");

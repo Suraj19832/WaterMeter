@@ -929,6 +929,7 @@ const MeterSection = ({ navigation }) => {
                   totalDigit: meterMake?.totalDigit,
                   meterName: inputValuePending,
                   completed_note: dropdownNotes,
+                  completed_dataId: completedDataId,
                   // billingId: billingAddress,
                   billingId: meterCycleId,
                   date: meterDataParams?.date,
