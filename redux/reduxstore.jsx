@@ -1,5 +1,3 @@
-// src/redux/store.js
-
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/Authslice"; // Import your authSlice
 import uniqueReducer from "./slices/UniqueSlice";
