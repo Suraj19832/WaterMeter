@@ -321,7 +321,6 @@ function MeterReadingScanner({ navigation }) {
   };
 
   const handleScan = () => {
-    // setIsScanCodeAlreadyExecuted(false);
     deleteImage(capturedImage);
     setIsScanTimeOut(false);
     startTimer();
