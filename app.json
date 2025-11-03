@@ -60,7 +60,10 @@
       "package": "com.desun.watermeter",
       "permissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
       ]
     },
     "web": {
@@ -68,7 +71,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "a21bf8d9-86ce-435e-a332-10778e69c720"
+        "projectId": "1962d452-1335-4490-bed9-71e5b452a5cf"
       }
     }
   }

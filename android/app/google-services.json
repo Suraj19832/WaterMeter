@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964825460969",
+    "project_id": "medmart-123",
+    "storage_bucket": "medmart-123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964825460969:android:aa9bf1e0c2286fde688078",
+        "android_client_info": {
+          "package_name": "com.desun.watermeter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-l_sn1f7SFlEzwyPOFWCz41WYmtTHCIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
